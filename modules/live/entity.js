@@ -675,6 +675,7 @@ class Entity {
                     data.active = false;
                     return 0;
                 }
+                //if (mockupsLoaded && this.health.amount > 0 && this.master.master.team !== 101 && !this.invuln && !this.passive && this.alpha > 0.25 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss")) viewGrid.insert(this);
                 if (this.isPlayer && !this.isDead()) this.refreshBodyAttributes();
                 this.antiNaN();
                 if (this.multiboxMaster) {
@@ -786,7 +787,7 @@ class Entity {
         if (set.COLOR != null) {
             this.color = set.COLOR;
         }
-        if (set.CONTROLLERS != null) {
+        if (set.CONTROLLERS != null && mockupsLoaded) {
             let toAdd = [];
             set.CONTROLLERS.forEach((ioName) => {
                 toAdd.push(eval('new io_' + ioName + '(this)'));
@@ -934,6 +935,16 @@ class Entity {
                     level: c.TIER_3,
                     index: e.index,
                     tier: 3
+                });
+            });
+        }
+        if (set.UPGRADES_TIER_4 != null) {
+            set.UPGRADES_TIER_4.forEach((e) => {
+                this.upgrades.push({
+                    class: e,
+                    level: c.TIER_4,
+                    index: e.index,
+                    tier: 4
                 });
             });
         }
@@ -1104,7 +1115,7 @@ class Entity {
         this.move();
     }
     get size() {
-        if (this.bond == null) return (this.coreSize || this.SIZE) * (1 + this.skill.level / 45);
+        if (this.bond == null) return (this.coreSize || this.SIZE) * (1 + this.skill.level / 60);
         return this.bond.size * this.bound.size;
     }
     get mass() {

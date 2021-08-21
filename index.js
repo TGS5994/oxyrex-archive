@@ -209,8 +209,8 @@ const maintainloop = (() => {
             o.life();
         }
         // Start placing them
-        let roidcount = room.roid.length * room.width * room.height / room.xgrid / room.ygrid / 50000 / 1.5;
-        let rockcount = room.rock.length * room.width * room.height / room.xgrid / room.ygrid / 250000 / 1.5;
+        let roidcount = room.roid.length * room.width * room.height / room.xgrid / room.ygrid / 40000 / 1.5;
+        let rockcount = room.rock.length * room.width * room.height / room.xgrid / room.ygrid / 80000 / 1.5;
         let count = 0;
         for (let i = Math.ceil(roidcount); i; i--) {
             count++;
@@ -413,7 +413,7 @@ const maintainloop = (() => {
         o.refreshBodyAttributes();
         o.color = color;
         if (room.gameMode === "tdm") o.team = -team;
-        o.skill.score = 23500;
+        o.skill.score = 59210;
         o.isBot = true;
         if (c.GROUPS) {
             let master = {

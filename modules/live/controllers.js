@@ -276,37 +276,13 @@ class io_nearestDifferentMaster extends IO {
             sqrRange = range * range,
             keepTarget = false;
         // Filter through everybody...
-        let out = entities.map(e => {
-            // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
-            if (e.health.amount > 0) {
-                if (!e.invuln) {
-                    if (e.master.master.team !== this.body.master.master.team) {
-                        if (e.master.master.team !== -101) {
-                            if (e.type === 'tank' || e.type === 'crasher' || e.type === 'miniboss' || (!this.body.aiSettings.shapefriend && e.type === 'food')) {
-                                if (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range) {
-                                    if (!this.body.aiSettings.blind || (Math.abs(e.x - mm.x) < range && Math.abs(e.y - mm.y) < range)) {
-                                        if (this.body.isDominator) {
-                                            if (!e.isDominator) {
-                                                return e;
-                                            }
-                                        } else {
-                                            return e;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }).filter((e) => {
-            return e;
-        });
+        let out = [];
+        for (let i = 0, length = entities.length; i < length; i ++) if (this.checkEntity(entities[i], m, mm, range) != null) out.push(entities[i]);
         if (!out.length) return [];
         out = out.map((e) => {
             // Only look at those within range and arc (more expensive, so we only do it on the few)
             let yaboi = false;
-            if (Math.pow(this.body.x - e.x, 2) + Math.pow(this.body.y - e.y, 2) < sqrRange) {
+            if ((this.body.x - e.x) * (this.body.x - e.x) + (this.body.y - e.y) * (this.body.y - e.y) < sqrRange) {
                 if (this.body.firingArc == null || this.body.aiSettings.view360) {
                     yaboi = true;
                 } else if (Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) yaboi = true;
@@ -330,6 +306,23 @@ class io_nearestDifferentMaster extends IO {
         if (!keepTarget) this.targetLock = undefined;
         return out;
     }
+    checkEntity(e, m, mm, range) {
+        // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
+        if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && e.alpha > 0.25 && (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'))) {
+            if (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range) {
+                if (!this.body.aiSettings.blind || (Math.abs(e.x - mm.x) < range && Math.abs(e.y - mm.y) < range)) {
+                    if (this.body.isDominator) {
+                        if (!e.isDominator) {
+                            return e;
+                        }
+                    } else {
+                        return e;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     think(input) {
         // Override target lock upon other commands
         if (input.main || input.alt || this.body.master.autoOverride) {
@@ -344,7 +337,7 @@ class io_nearestDifferentMaster extends IO {
             if (this.body.guns[i].canShoot && !this.body.aiSettings.skynet) {
                 let v = this.body.guns[i].getTracking();
                 tracking = v.speed;
-                if (!this.body.isPlayer || this.body.type === "miniboss" || this.body.master !== this.body) range = 640 * this.body.FOV;
+                if (!this.body.isPlayer || this.body.type === "miniboss" || this.body.master !== this.body) range = 500 * this.body.FOV;
                 else range = Math.min(range, (v.speed || 1) * (v.range || 90));
                 break;
             }
@@ -373,14 +366,6 @@ class io_nearestDifferentMaster extends IO {
                 this.tick = -90;
             }
         }
-        // Lock onto whoever's shooting me.
-        // let damageRef = (this.body.bond == null) ? this.body : this.body.bond;
-        // if (damageRef.collisionArray.length && damageRef.health.display() < this.oldHealth) {
-        //     this.oldHealth = damageRef.health.display();
-        //     if (this.validTargets.indexOf(damageRef.collisionArray[0]) === -1) {
-        //         this.targetLock = (damageRef.collisionArray[0].master.id === -1) ? damageRef.collisionArray[0].source : damageRef.collisionArray[0].master;
-        //     }
-        // }
         // Consider how fast it's moving and shoot at it
         if (this.targetLock != null) {
             let radial = this.targetLock.velocity;

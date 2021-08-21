@@ -10,7 +10,7 @@ const defaults = require("../../config.json");
 const gamemode = "FFA";
 const gamemodes = {
     "FFA": {
-        BOTS: 7
+        BOTS: 40
     }, // "defaults" is already FFA.
     "1TDM": {
         WIDTH: 3000,

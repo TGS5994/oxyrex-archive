@@ -1372,11 +1372,8 @@ const sockets = (() => {
                                 // Update our timer
                                 lastVisibleUpdate = camera.lastUpdate;
                                 // And update the nearby list
-                                nearby = entities.map(e => {
-                                    if (check(socket.camera, e)) return e;
-                                }).filter(e => {
-                                    return e;
-                                });
+                                nearby = [];
+                                for (let i = 0, l = entities.length; i < l; i ++) if (check(socket.camera, entities[i])) nearby.push(entities[i]);
                             }
                             // Look at our list of nearby entities and get their updates
                             let visible = nearby.map(function mapthevisiblerealm(e) {
@@ -1423,9 +1420,9 @@ const sockets = (() => {
                         case -1:
                             return 10
                         case -2:
-                            return 11
-                        case -3:
                             return 12
+                        case -3:
+                            return 11
                         case -4:
                             return 15
                         default:

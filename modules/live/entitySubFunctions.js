@@ -27,13 +27,8 @@ const skcnv = {
     rgn: 8,
     mob: 9,
 };
-const levelers = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-    11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-    31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45
-];
+const levelers = [];
+for (let i = 0; i < 45; i ++) levelers.push(((i / 45) * 60 + 1) | 0);
 const botBuilds = [
     [9, 9, 9, 9, 9, 0, 0, 0, 0, 0],
     [8, 8, 8, 8, 8, 0, 0, 0, 0, 5],
@@ -49,10 +44,10 @@ const botSets = [/*{ // Smasher Ram Bots
     ai: "ramBot",
     build: [9, 0, 0, 0, 0, 5, 9, 9, 4, 9],
     startClass: "tri"
-}, { // Pounder Bots
+}, */{ // Pounder Bots
     ai: "bot",
     build: [3, 8, 8, 8, 7, 0, 0, 3, 0, 7],
-    startClass: "pound"
+    startClass: "pounder"
 }, { // Sniper Bots
     ai: "bot",
     build: [6, 8, 8, 8, 5, 0, 5, 5, 0, 2],
@@ -61,7 +56,7 @@ const botSets = [/*{ // Smasher Ram Bots
     ai: "bot",
     build: [3, 8, 8, 8, 7, 0, 3, 3, 0, 7],
     startClass: "director"
-}*/];
+}];
 for (let build of botBuilds) botSets.push({ // All the builds that bots have.
     ai: "bot",
     build: build,
@@ -376,8 +371,8 @@ var bringToLife = (() => {
         my.move();
         my.face();
         // Handle guns and turrets if we've got them
-        my.guns.forEach(gun => gun.live());
-        my.turrets.forEach(turret => turret.life());
+        loopThrough(my.guns, gun => gun.live());
+        loopThrough(my.turrets, turret => turret.life());
         if (my.skill.maintain()) my.refreshBodyAttributes();
     };
 })();
