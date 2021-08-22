@@ -616,7 +616,7 @@ class io_slowSpin extends IO {
         };
     }
 }
-class io_counterslowspin extends IO {
+class io_reverseSlowSpin extends IO {
     constructor(body) {
         super(body)
         this.a = 0
@@ -960,7 +960,7 @@ module.exports = {
     io_fastspin,
     io_reversespin,
     io_slowSpin,
-    io_counterslowspin,
+    io_reverseSlowSpin,
     io_dontTurn,
     io_dontTurnDominator,
     io_fleeAtLowHealth,

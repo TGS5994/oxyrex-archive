@@ -221,11 +221,14 @@ class Gun {
         this.motion += this.lastShot.power;
         // Find inaccuracy
         let ss, sd;
+        let loops = 0;
         do {
             ss = ran.gauss(0, Math.sqrt(this.settings.shudder));
+            if (loops ++ > 60) break;
         } while (Math.abs(ss) >= this.settings.shudder * 2);
         do {
             sd = ran.gauss(0, this.settings.spray * this.settings.shudder);
+            if (loops ++ > 60) break;
         } while (Math.abs(sd) >= this.settings.spray / 2);
         sd *= Math.PI / 180;
         // Find speed
@@ -702,10 +705,12 @@ class Entity {
                     }
                 }
                 // Get bounds
-                let x1 = Math.min(this.x, this.x + this.velocity.x + this.accel.x) - this.realSize - 5;
-                let y1 = Math.min(this.y, this.y + this.velocity.y + this.accel.y) - this.realSize - 5;
-                let x2 = Math.max(this.x, this.x + this.velocity.x + this.accel.x) + this.realSize + 5;
-                let y2 = Math.max(this.y, this.y + this.velocity.y + this.accel.y) + this.realSize + 5;
+                const width = this.width ? this.realSize * this.width : this.realSize;
+                const height = this.height ? this.realSize * this.height : this.realSize;
+                let x1 = Math.min(this.x, this.x + this.velocity.x + this.accel.x) - width - 5;
+                let y1 = Math.min(this.y, this.y + this.velocity.y + this.accel.y) - height - 5;
+                let x2 = Math.max(this.x, this.x + this.velocity.x + this.accel.x) + width + 5;
+                let y2 = Math.max(this.y, this.y + this.velocity.y + this.accel.y) + height + 5;
                 // Size check
                 let size = getLongestEdge(x1, y1, x2, y1);
                 let sizeDiff = savedSize / size;
@@ -1047,6 +1052,7 @@ class Entity {
             this.refreshBodyAttributes();
         }
         if (set.SPAWN_ON_DEATH) this.spawnOnDeath = set.SPAWN_ON_DEATH;
+        if (set.FRAG_SPAWNS) this.fragEntities = set.FRAG_SPAWNS;
         if (set.TURRETS != null) {
             let o;
             this.turrets.forEach(o => o.destroy());
@@ -1152,6 +1158,7 @@ class Entity {
             color: this.color,
             name: this.nameColor + this.name,
             score: this.skill.score,
+            sizeRatio: [this.width || 1, this.height || 1],
             guns: this.guns.map(gun => gun.getLastShot()),
             turrets: this.turrets.map(turret => turret.camera(true)),
         };
@@ -1541,6 +1548,17 @@ class Entity {
         // Check for death
         if (this.isDead()) {
             if (this.onDead) this.onDead();
+            if (this.fragEntities) {
+                for (let i = 0; i < this.fragEntities.length; i ++) {
+                    let o = new Entity({
+                        x: this.x + this.size * Math.cos(i / this.fragEntities.length),
+                        y: this.y + this.size * Math.sin(i / this.fragEntities.length)
+                    });
+                    o.team = this.team;
+                    o.color = this.color;
+                    o.define(Class[this.fragEntities[i]]);
+                }
+            }
             if (c.TAG && (this.isPlayer || this.isBot)) tagDeathEvent(this);
             // Initalize message arrays
             let killers = [],

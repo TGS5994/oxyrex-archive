@@ -287,17 +287,19 @@ function mooncollide(moon, n) {
 function reflectCollide(wall, bounce) {
     if (bounce.god === true || bounce.passive === true || bounce.ac || bounce.master.ac) return;
     if (bounce.team === wall.team && bounce.type === "tank") return;
-    if (bounce.x + bounce.size < wall.x - wall.size || bounce.x - bounce.size > wall.x + wall.size || bounce.y + bounce.size < wall.y - wall.size || bounce.y - bounce.size > wall.y + wall.size) return 0;
+    const width = wall.width ? wall.size * wall.width : wall.size;
+    const height = wall.height ? wall.size * wall.height : wall.size;
+    if (bounce.x + bounce.size < wall.x - width || bounce.x - bounce.size > wall.x + width || bounce.y + bounce.size < wall.y - height || bounce.y - bounce.size > wall.y + height) return 0;
     if (wall.intangibility) return 0
     let bounceBy = bounce.type === 'tank' ? 1.0 : bounce.type === 'miniboss' ? 2.5 : 0.1
-    let left = bounce.x < wall.x - wall.size
-    let right = bounce.x > wall.x + wall.size
-    let top = bounce.y < wall.y - wall.size
-    let bottom = bounce.y > wall.y + wall.size
-    let leftExposed = bounce.x - bounce.size < wall.x - wall.size
-    let rightExposed = bounce.x + bounce.size > wall.x + wall.size
-    let topExposed = bounce.y - bounce.size < wall.y - wall.size
-    let bottomExposed = bounce.y + bounce.size > wall.y + wall.size
+    let left = bounce.x < wall.x - width;
+    let right = bounce.x > wall.x + width;
+    let top = bounce.y < wall.y - height;
+    let bottom = bounce.y > wall.y + height;
+    let leftExposed = bounce.x - bounce.size < wall.x - width;
+    let rightExposed = bounce.x + bounce.size > wall.x + width;
+    let topExposed = bounce.y - bounce.size < wall.y - height;
+    let bottomExposed = bounce.y + bounce.size > wall.y + height;
     let intersected = true
     if (left && right) {
         left = right = false
@@ -312,29 +314,29 @@ function reflectCollide(wall, bounce) {
         topExposed = bottomExposed = false
     }
     if ((left && !top && !bottom) || (leftExposed && !topExposed && !bottomExposed)) {
-        bounce.accel.x -= (bounce.x + bounce.size - wall.x + wall.size) * bounceBy
+        bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy
     } else if ((right && !top && !bottom) || (rightExposed && !topExposed && !bottomExposed)) {
-        bounce.accel.x -= (bounce.x - bounce.size - wall.x - wall.size) * bounceBy
+        bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy
     } else if ((top && !left && !right) || (topExposed && !leftExposed && !rightExposed)) {
-        bounce.accel.y -= (bounce.y + bounce.size - wall.y + wall.size) * bounceBy
+        bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy
     } else if ((bottom && !left && !right) || (bottomExposed && !leftExposed && !rightExposed)) {
-        bounce.accel.y -= (bounce.y - bounce.size - wall.y - wall.size) * bounceBy
+        bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy
     } else {
-        let x = leftExposed ? -wall.size : rightExposed ? wall.size : 0
-        let y = topExposed ? -wall.size : bottomExposed ? wall.size : 0
-        let point = new Vector(wall.x + x - bounce.x, wall.y + y - bounce.y)
+        let x = leftExposed ? -width : rightExposed ? width : 0;
+        let y = topExposed ? -wall.size : bottomExposed ? height : 0;
+        let point = new Vector(wall.x + x - bounce.x, wall.y + y - bounce.y);
         if (!x || !y) {
             if (bounce.x + bounce.y < wall.x + wall.y) { // top left
                 if (bounce.x - bounce.y < wall.x - wall.y) { // bottom left
-                    bounce.accel.x -= (bounce.x + bounce.size - wall.x + wall.size) * bounceBy
+                    bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy
                 } else { // top right
-                    bounce.accel.y -= (bounce.y + bounce.size - wall.y + wall.size) * bounceBy
+                    bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy
                 }
             } else { // bottom right
                 if (bounce.x - bounce.y < wall.x - wall.y) { // bottom left
-                    bounce.accel.y -= (bounce.y - bounce.size - wall.y - wall.size) * bounceBy
+                    bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy
                 } else { // top right
-                    bounce.accel.x -= (bounce.x - bounce.size - wall.x - wall.size) * bounceBy
+                    bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy
                 }
             }
         } else if (!(left || right || top || bottom)) {

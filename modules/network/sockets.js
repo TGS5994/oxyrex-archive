@@ -1247,12 +1247,17 @@ const sockets = (() => {
                             // 14: shield
                             Math.round(255 * data.shield),
                             // 15: alpha
-                            Math.round(255 * data.alpha));
+                            Math.round(255 * data.alpha),
+                            // 16: width
+                            data.sizeRatio[0],
+                            // 17: height
+                            data.sizeRatio[1]
+                        );
                         if (data.type & 0x04) {
                             output.push(
-                                // 15: name
+                                // 17: name
                                 data.name,
-                                // 16: score
+                                // 18: score
                                 data.score);
                         }
                     }
@@ -1293,8 +1298,8 @@ const sockets = (() => {
                 }
 
                 function check(camera, obj) {
-                    let a = Math.abs(obj.x - camera.x) < camera.fov * 0.6 + 1.5 * obj.size + 100;
-                    let b = Math.abs(obj.y - camera.y) < camera.fov * 0.6 * 0.5625 + 1.5 * obj.size + 100;
+                    let a = Math.abs(obj.x - camera.x) < camera.fov * 0.6 + 1.5 * (obj.size * (obj.width || 1)) + 100;
+                    let b = Math.abs(obj.y - camera.y) < camera.fov * 0.6 * 0.5625 + 1.5 * (obj.size * (obj.height || 1)) + 100;
                     return a && b;
                 }
                 // The actual update world function
@@ -1376,27 +1381,21 @@ const sockets = (() => {
                                 for (let i = 0, l = entities.length; i < l; i ++) if (check(socket.camera, entities[i])) nearby.push(entities[i]);
                             }
                             // Look at our list of nearby entities and get their updates
-                            let visible = nearby.map(function mapthevisiblerealm(e) {
-                                if (e.photo) {
-                                    if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
+                            let visible = [];
+                            for (let i = 0, l = nearby.length; i < l; i ++) {
+                                if (nearby[i].photo) {
+                                    //if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
                                         // Grab the photo
-                                        if (!e.flattenedPhoto) e.flattenedPhoto = flatten(e.photo);
-                                        return perspective(e, player, e.flattenedPhoto);
-                                    }
+                                        if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
+                                        let output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
+                                        if (output) visible.push(output);
+                                    //}
                                 }
-                            }).filter(e => {
-                                return e;
-                            });
-                            // Spread it for upload
-                            let numberInView = visible.length,
-                                view = [];
-                            loopThrough(visible, function(instance) {
-                                view.push(...instance);
-                            });
+                            }
                             // Update the gui
                             player.gui.update();
                             // Send it to the player
-                            socket.talk('u', rightNow, camera.x, camera.y, setFov, camera.vx, camera.vy, ...player.gui.publish(), numberInView, ...view);
+                            socket.talk('u', rightNow, camera.x, camera.y, setFov, camera.vx, camera.vy, ...player.gui.publish(), visible.length, ...visible.flat());
                             logs.network.mark();
                         },
                     };
@@ -1491,7 +1490,7 @@ const sockets = (() => {
                     }
                 }
                 // Deltas
-                let minimapAll = new Delta(5, () => {
+                let minimapAll = new Delta(7, () => {
                     let all = []
                     for (let my of entities)
                         if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership) all.push({
@@ -1502,6 +1501,8 @@ const sockets = (() => {
                                 util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
                                 my.color,
                                 Math.round(my.SIZE),
+                                my.width || 1,
+                                my.height || 1
                             ]
                         })
                     return all

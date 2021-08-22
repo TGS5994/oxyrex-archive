@@ -62,7 +62,7 @@ room.random = function() {
     let x = ran.irandom(room.width);
     let y = ran.irandom(room.height);
     if (c.ARENA_TYPE === "circle") {
-        let i = 100;
+        let i = 15;
         do {
             x = ran.irandom(room.width);
             y = ran.irandom(room.height);
@@ -93,7 +93,7 @@ room.randomType = function(type) {
     let selection = room[type][ran.irandom(room[type].length - 1)];
     if (c.ARENA_TYPE === "circle") {
         let loc = JSON.parse(JSON.stringify(selection));
-        let i = 100;
+        let i = 15;
         do {
             loc = {
                 x: ran.irandom(0.5 * room.width / room.xgrid) * ran.choose([-1, 1]) + selection.x,
@@ -108,7 +108,7 @@ room.randomType = function(type) {
         y: ran.irandom(0.5 * room.height / room.ygrid) * ran.choose([-1, 1]) + selection.y,
     };
 };
-room.isIn = function(type, location, extendedWidth = false) {
+room.isIn = function(type, location) {
     if (!room.isInRoom(location)) return false;
     let a = Math.floor(location.y * room.ygrid / room.height);
     let b = Math.floor(location.x * room.xgrid / room.width);
@@ -119,22 +119,6 @@ room.isIn = function(type, location, extendedWidth = false) {
             return util.getDistance(a, location) - util.getDistance(b, location);
         })[0];
         if (util.getDistance(cell, location) > (room.width / room.xgrid) * 0.5) return false;
-    }
-    if (extendedWidth) {
-        let c = a - 1 > -1;
-        let d = a + 1 < room.setup.length;
-        let e = b - 1 > -1;
-        let f = b + 1 < room.setup[a].length;
-        let left = (c ? type === room.setup[a - 1][b] : false);
-        let right = (d ? type === room.setup[a + 1][b] : false);
-        let up = (e ? type === room.setup[a][b - 1] : false);
-        let down = (f ? type === room.setup[a][b + 1] : false);
-        let northWest = (c && e ? type === room.setup[a - 1][b - 1] : false);
-        let northEast = (d && e ? type === room.setup[a + 1][b - 1] : false);
-        let southWest = (c && f ? type === room.setup[a - 1][b + 1] : false);
-        let southEast = (d && f ? type === room.setup[a + 1][b + 1] : false);
-        let center = type === room.setup[a][b];
-        return left || right || up || down || northWest || northEast || southWest || southEast || center;
     }
     return type === room.setup[a][b];
 };
@@ -157,46 +141,54 @@ room.isInNorm = function(location) {
     return room.setup[a][b] !== 'nest';
 };
 room.gauss = function(clustering) {
-    let output;
+    let output,
+        i = 15;
     do {
         output = {
             x: ran.gauss(room.width / 2, room.height / clustering),
             y: ran.gauss(room.width / 2, room.height / clustering),
         };
-    } while (!room.isInRoom(output));
+        i --;
+    } while (!room.isInRoom(output) && i > 0);
     return output;
 };
 room.gaussInverse = function(clustering) {
-    let output;
+    let output,
+        i = 15;
     do {
         output = {
             x: ran.gaussInverse(0, room.width, clustering),
             y: ran.gaussInverse(0, room.height, clustering),
         };
-    } while (!room.isInRoom(output));
+        i --;
+    } while (!room.isInRoom(output), i > 0);
     return output;
 };
 room.gaussRing = function(radius, clustering) {
-    let output;
+    let output,
+        i = 15;
     do {
         output = ran.gaussRing(room.width * radius, clustering);
         output = {
             x: output.x + room.width / 2,
             y: output.y + room.height / 2,
         };
-    } while (!room.isInRoom(output));
+        i --;
+    } while (!room.isInRoom(output) && i > 0);
     return output;
 };
 room.gaussType = function(type, clustering) {
     if (!room[type]) return room.random();
     let selection = room[type][ran.irandom(room[type].length - 1)];
-    let location = {};
+    let location = {},
+        i = 15;
     do {
         location = {
             x: ran.gauss(selection.x, room.width / room.xgrid / clustering),
             y: ran.gauss(selection.y, room.height / room.ygrid / clustering),
         };
-    } while (!room.isIn(type, location));
+        i --;
+    } while (!room.isIn(type, location) && i > 0);
     return location;
 };
 for (let type of room.cellTypes) room.findType(type);

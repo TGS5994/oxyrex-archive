@@ -333,10 +333,13 @@ const maintainloop = (() => {
                 o.team = -100;
                 o.isSanctuary = true;
                 o.onDead = () => {
-                    let n = new Entity(o);
-                    n.define(Class[o.spawnOnDeath]);
-                    n.team = o.team;
-                    n.name = ran.chooseBossName("a", 1)[0];
+                    setTimeout(() => {
+                        let n = new Entity(o);
+                        n.define(Class[o.spawnOnDeath]);
+                        n.team = o.team;
+                        n.name = ran.chooseBossName("a", 1)[0];
+                        sockets.broadcast(util.addArticle(n.label, true) + " has spawned to avenge the " + o.label + "!");
+                    }, 5000);
                 };
             };
             return {
@@ -383,7 +386,50 @@ const maintainloop = (() => {
             } else if (!census.sanctuary) timer++;
         };
     })();
-    let spawnCrasher = census => {
+    let spawnCrasher = (() => {
+        let nestDefenderSpawned = false;
+        const config = {
+            max: 25,
+            chance: 0.8,
+            sentryChance: 0.95,
+            nestDefenderChance: 0.999,
+            crashers: [Class.crasher, Class.grouper, Class.fragment, Class.triBlade, Class.crusher],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.visDestructia],
+            nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
+        };
+        function getType() {
+            const seed = Math.random();
+            if (seed > config.nestDefenderChance && !nestDefenderSpawned) return ran.choose(config.nestDefenders);
+            if (seed > config.sentryChance) return ran.choose(config.sentries);
+            return ran.choose(config.crashers);
+        }
+        return census => {
+            if (census.crasher < config.max) {
+                for (let i = 0; i < config.max - census.crasher; i ++) {
+                    if (Math.random() > config.chance) {
+                        let spot, i = 25;
+                        do {
+                            spot = room.randomType('nest');
+                            i --;
+                            if (!i) return 0;
+                        } while (dirtyCheck(spot, 250));
+                        let o = new Entity(spot);
+                        o.define(getType());
+                        o.team = -100;
+                        if (o.label === "Nest Defender") {
+                            nestDefenderSpawned = true;
+                            sockets.broadcast("The nest cries out for help!");
+                            setTimeout(sockets.broadcast, 2500, "The call was answered.");
+                            o.onDead = () => {
+                                setTimeout(() => nestDefenderSpawned = false, 60000 * 3);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })();
+    /*let spawnCrasher = census => {
         if (census.crasher < 25) {
             let spot, i = 30;
             do {
@@ -391,12 +437,12 @@ const maintainloop = (() => {
                 i--;
                 if (!i) return 0;
             } while (dirtyCheck(spot, 100));
-            let type = (Math.random() > 0.9) ? ran.choose([Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.fragment]) : ran.choose([Class.crasher]);
+            let type = (Math.random() > 0.9) ? ran.choose([Class.sentryGun, Class.sentrySwarm, Class.sentryTrap]) : ran.choose([Class.crasher, Class.grouper, Class.fragment, Class.triBlade, Class.crusher, Class.visDestructia]);
             let o = new Entity(spot);
             o.define(type);
             o.team = -100;
         }
-    };
+    };*/
 
     function spawnBot(TEAM = null) {
         let set = ran.choose(botSets);
@@ -468,6 +514,28 @@ const maintainloop = (() => {
             room['bap' + i].forEach((loc) => {
                 f(loc, i);
             });
+        }
+        if (false) {
+            const size = 32;
+            const scale = room.width / size;
+            for (let [x, y, width, height] of [
+                [16, 10.5, 5, 0.25],
+                [16, 21.5, 5, 0.25],
+                [10.5, 16, 0.25, 5],
+                [21.5, 16, 0.25, 5]
+            ]) {
+                let o = new Entity({
+                    x: x * scale,
+                    y: y * scale
+                });
+                o.define(Class.mazeWall);
+                o.width = +width || 1;
+                o.height = +height || 1;
+                o.SIZE = scale;
+                o.team = -101;
+                o.protect();
+                o.life();
+            }
         }
         // Return the spawning function
         let bots = [];
