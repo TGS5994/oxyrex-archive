@@ -402,7 +402,7 @@ const maintainloop = (() => {
         let set = ran.choose(botSets);
         let team = TEAM ? TEAM : getTeam();
         const botName = ran.chooseBotName();
-        let color = [10, 12, 11, 15][team - 1];
+        let color = [10, 11, 12, 15][team - 1];
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);
         let loc = c.SPECIAL_BOSS_SPAWNS ? room.randomType("nest") : room.randomType("norm");
         let o = new Entity(loc);

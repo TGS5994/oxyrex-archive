@@ -1140,7 +1140,7 @@ const sockets = (() => {
                     switch (room.gameMode) {
                         case "tdm": {
                             body.team = -player.team;
-                            body.color = [10, 12, 11, 15][player.team - 1];
+                            body.color = [10, 11, 12, 15][player.team - 1];
                         }
                         break;
                     default: {
@@ -1420,9 +1420,9 @@ const sockets = (() => {
                         case -1:
                             return 10
                         case -2:
-                            return 12
-                        case -3:
                             return 11
+                        case -3:
+                            return 12
                         case -4:
                             return 15
                         default:
