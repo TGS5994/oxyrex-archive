@@ -292,7 +292,7 @@ const maintainloop = (() => {
             };
         })();
         return census => {
-            let timerThing = 60 * 12;
+            let timerThing = 60 * 4;
             if (timer > timerThing && ran.dice(timerThing - timer)) {
                 util.log('[SPAWN] Preparing to spawn...');
                 timer = 0;

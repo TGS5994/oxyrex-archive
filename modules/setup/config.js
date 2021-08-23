@@ -116,7 +116,7 @@ const gamemodes = {
         Y_GRID: 15,
         WIDTH: 5000,
         HEIGHT: 5000,
-        MAZE: 32,
+        MAZE: 33,
         ROOM_SETUP: [
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],

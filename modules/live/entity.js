@@ -1446,7 +1446,6 @@ class Entity {
                         let ry = ay * (room.width / room.ygrid) + (this.size * 2);
                         this.x = portTo.x + rx;
                         this.y = portTo.y + ry;
-                        this.invuln = true;
                         for (let o of entities)
                             if (o.id !== this.id && o.master.id === this.id && (o.type === "drone" || o.type === "minion")) {
                                 o.x = this.x + (ay * 30 * (Math.random() - .5));

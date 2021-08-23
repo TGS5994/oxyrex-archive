@@ -8,9 +8,6 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 let locsToAvoid = ["nest", "port"];
 for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i);
-let activeLocsThatWeCantPlaceIn = 0;
-for (let loc of locsToAvoid)
-    if (room[loc].length) activeLocsThatWeCantPlaceIn += room[loc].length;
 
 function generateMaze(size) {
     const scale = room.width / size;
@@ -55,31 +52,35 @@ function generateMaze(size) {
         for (let cell of row)
             if (cell) cells++;
     let eroded = 1;
-    let toErode = cells * 0.5;
-    toErode -= activeLocsThatWeCantPlaceIn * 4;
-    /*for (let i = 0; i < toErode; i++) {
-        if (eroded >= toErode) {
-            console.log("Done!");
-            break;
-        }
-        for (let i = 0; i < 10000; i++) {
-            let x = Math.floor(Math.random() * size);
-            let y = Math.floor(Math.random() * size);
-            if (maze[x][y]) continue;
-            if ((x === 0 || x === size - 1) && (y === 0 || y === size - 1)) continue;
-            let direction = Math.floor(Math.random() * 4);
-            if (x === 0) direction = 0;
-            else if (y === 0) direction = 1;
-            else if (x === size - 1) direction = 2;
-            else if (y === size - 1) direction = 3;
-            let tx = direction === 0 ? x + 1 : direction === 2 ? x - 1 : x;
-            let ty = direction === 1 ? y + 1 : direction === 3 ? y - 1 : y;
-            if (maze[tx][ty] !== true) continue;
+    let toErode = cells * 0.525;
+    function path(x, y, direction, length) {
+        for (let pathdistance = 0; pathdistance < length; pathdistance++) {
+            if (Math.random() > 0.5) {
+                const newDirs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).filter(entry => {
+                    if (entry !== direction) {
+                        const tx = entry === 0 ? x + 1 : entry === 2 ? x - 1 : x;
+                        const ty = entry === 1 ? y + 1 : entry === 3 ? y - 1 : y;
+                        if (tx >= size || ty >= size || tx < 1 || ty < 1) return false;
+                        if (!maze[tx][ty]) return false;
+                        return true;
+                    }
+                    return false;
+                });
+                if (newDirs.length) {
+                    direction = newDirs.shift();
+                    while (newDirs.length) if (Math.random() > 0.9) path(x, y, newDirs.shift(), Math.random() * 5);
+                }
+            }
+            const tx = direction === 0 ? x + 1 : direction === 2 ? x - 1 : x;
+            const ty = direction === 1 ? y + 1 : direction === 3 ? y - 1 : y;
+            if (tx >= size || ty >= size || tx < 1 || ty < 1) break;
+            if (!maze[tx][ty]) break;
             maze[tx][ty] = false;
             eroded++;
-            break;
+            x = tx;
+            y = ty;
         }
-    }*/
+    }
     for (let i = 0; i < toErode; i++) {
         if (eroded >= toErode) {
             console.log("Done!");
@@ -94,17 +95,8 @@ function generateMaze(size) {
             if (y === 0) direction = 1;
             if (x === size - 1) direction = 2;
             if (y === size - 1) direction = 3;
-            const pathSize = Math.floor(Math.random() * 5) + 4;
-            for (let pathdistance = 0; pathdistance < pathSize; pathdistance++) {
-                const tx = direction === 0 ? x + 1 : direction === 2 ? x - 1 : x;
-                const ty = direction === 1 ? y + 1 : direction === 3 ? y - 1 : y;
-                if (tx >= size || ty >= size || tx < 1 || ty < 1) break;
-                if (!maze[tx][ty]) break;
-                maze[tx][ty] = false;
-                eroded++;
-                x = tx;
-                y = ty;
-            }
+            const pathSize = Math.floor(Math.random() * 9) + 8;
+            path(x, y, direction, pathSize);
             break;
         }
     }
