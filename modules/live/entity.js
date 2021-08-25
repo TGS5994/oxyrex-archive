@@ -61,6 +61,7 @@ class Gun {
             }
             this.onShoot = (info.PROPERTIES.ON_SHOOT == null) ? null : info.PROPERTIES.ON_SHOOT;
             this.autofire = (info.PROPERTIES.AUTOFIRE == null) ? false : info.PROPERTIES.AUTOFIRE;
+			this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
             this.altFire = (info.PROPERTIES.ALT_FIRE == null) ? false : info.PROPERTIES.ALT_FIRE;
             this.settings = (info.PROPERTIES.SHOOT_SETTINGS == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS;
             this.settings2 = (info.PROPERTIES.SHOOT_SETTINGS2 == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS2;
@@ -260,7 +261,10 @@ class Gun {
     }
     bulletInit(o) {
         // Define it by its natural properties
-        this.bulletTypes.forEach(type => o.define(type));
+		if (this.randomType) {
+			o.define(ran.choose(this.bulletTypes))
+		} else {
+        this.bulletTypes.forEach(type => o.define(type))};
         // Pass the gun attributes
         o.define({
             BODY: this.interpret(),
@@ -1347,6 +1351,9 @@ class Entity {
             case 'looseToTarget':
             case 'smoothToTarget':
                 this.facing += util.loopSmooth(this.facing, Math.atan2(t.y, t.x), 4 / roomSpeed);
+                break;
+			case 'smootherToTarget':
+                this.facing += util.loopSmooth(this.facing, Math.atan2(t.y, t.x), 20 / roomSpeed);
                 break;
             case 'bound':
                 let givenangle;
