@@ -19,7 +19,7 @@ module.exports = {
                 data.push(`- Not spawned in.`);
             }
             messages[messages.length - 1].push({
-                name: socket.name,
+                name: "temp until fix",
                 value: data.join("\n")
             });
         }
