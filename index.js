@@ -520,7 +520,7 @@ const maintainloop = (() => {
             });
         }
         // Return the spawning function
-        let bots = [];
+        global.bots = [];
         return () => {
             let census = {
                 crasher: 0,

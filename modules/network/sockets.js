@@ -1119,8 +1119,13 @@ const sockets = (() => {
                     let body = new Entity(loc);
                     body.protect();
                     body.isPlayer = true;
-                    body.define(Class.basic); // Start as a basic tank
+                    body.define(survival.started ? Class.observer : Class.basic); // Start as a basic tank
                     body.name = name; // Define the name
+                    if (c.SURVIVAL && !survival.started) {
+                        survival.players.push(body);
+                        body.onDead = () => survival.removePlayer(body);
+                        body.godmode = true;
+                    }
                     // Dev hax
                     {
                         const beta = c.TOKENS.find(r => r[0] === socket.key);

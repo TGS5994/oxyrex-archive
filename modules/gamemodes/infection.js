@@ -16,7 +16,7 @@ let stats = {
 function spawnBoss() {
     stats.bosses ++;
     const o = new Entity(room.randomType("nest"));
-    o.define(ran.choose([Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus]));
+    o.define(ran.choose([Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx]));
     o.team = -100;
     o.onDead = function() {
         stats.bosses --;

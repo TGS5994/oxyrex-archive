@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gamemode = "Escort";
+const gamemode = "Survival";
 const gamemodes = {
     "TESTING": {
         BOTS: -1
@@ -231,6 +231,19 @@ const gamemodes = {
             ["bap4", "bas4", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "bas2", "bap2"]
         ]
     },
+    "Survival": {
+        SURVIVAL: true,
+        BOTS: -1,
+        WIDTH: 3500,
+        HEIGHT: 3500,
+        X_GRID: 3,
+        Y_GRID: 3,
+        ROOM_SETUP: [
+            ["rock", "norm", "roid"],
+            ["norm", "nest", "norm"],
+            ["roid", "norm", "rock"]
+        ]
+    },
     "Infection": {
         MODE: "tdm",
         TEAMS: 1,
@@ -248,16 +261,11 @@ const gamemodes = {
                 }
                 output.push(row);
             }
-            output[Math.random() * 50 | 0][Math.random() * 50 | 0] = "nest";
+            for (let i = 0; i < 10; i ++) {
+                output[Math.random() * 75 | 0][Math.random() * 75 | 0] = "nest";
+            }
             return output
         })()
-    },
-    "Escort": {
-        MODE: "tdm",
-        TEAMS: 1,
-        WIDTH: 6500,
-        HEIGHT: 6500,
-        ESCORT: true
     },
     "Siege": {
         MODE: "tdm",

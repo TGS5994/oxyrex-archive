@@ -59,7 +59,8 @@ global.rotatePoint = function rotatePoint({
     };
 };
 // Now that we've set up the global variables, we import all the modules, then put them into global varialbles and then export something just so this file is run.
-const requires = ["./setup/room.js", // These are the basic room functions, set up by config.json
+const requires = [
+    "./setup/room.js", // These are the basic room functions, set up by config.json
     "./physics/relative.js", // Some basic physics functions that are used across the game.
     "./live/entitySubFunctions.js", // Skill, HealthType and other functions related to entities are here.
     "./live/controllers.js", // The AI of the game.
@@ -75,7 +76,7 @@ const requires = ["./setup/room.js", // These are the basic room functions, set 
     "./gamemodes/mothership.js", // The mothership mode
     "./gamemodes/domination.js", // The Domination mode
     "./gamemodes/infection.js", // Infection mode
-    "./gamemodes/escort.js", // Escort mode
+    "./gamemodes/survival.js", // Survival mode
     "./gamemodes/gamemodeLoop.js", // The gamemode loop.
     "./gamemodes/groups.js", // Duos/Trios/Squads
     "./gamemodes/tag.js", // Tag
