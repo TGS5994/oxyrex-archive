@@ -7,13 +7,13 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gamemode = "Survival";
+const gamemode = "FFA";
 const gamemodes = {
     "TESTING": {
         BOTS: -1
     },
     "FFA": {
-        BOTS: 10
+        BOTS: 6
     }, // "defaults" is already FFA.
     "1TDM": {
         WIDTH: 3000,
