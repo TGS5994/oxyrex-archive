@@ -6,8 +6,8 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-let locsToAvoid = ["nest", "port"];
-for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i);
+let locsToAvoid = ["nest", "port", "dom0"];
+for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i), locsToAvoid.push("dom" + i);
 
 function generateMaze(size) {
     const scale = room.width / size;

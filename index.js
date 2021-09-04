@@ -259,7 +259,7 @@ const maintainloop = (() => {
                     m++;
                 } while (dirtyCheck(spot, 500) && m < 30);
                 let o = new Entity(spot);
-                o.name = names[i++];
+                o.name = ran.chooseBossName("all", 1)[0];
                 o.define(ran.choose(bois));
                 o.team = -100;
             };
@@ -268,7 +268,7 @@ const maintainloop = (() => {
                     n = number;
                     bois = classArray;
                     loc = typeOfLocation;
-                    names = ran.chooseBossName(nameClass, number);
+                    names = ran.chooseBossName("all", number + 3);
                     i = 0;
                     if (n === 1) {
                         begin = 'A visitor is coming.';
@@ -291,24 +291,30 @@ const maintainloop = (() => {
                 },
             };
         })();
+        let timerThing = 60 * 5;
         return census => {
-            let timerThing = 60 * 4;
             if (timer > timerThing && ran.dice(timerThing - timer)) {
                 util.log('[SPAWN] Preparing to spawn...');
                 timer = 0;
                 let choice = [];
-                switch (ran.chooseChance(2, 1)) {
+                switch (ran.chooseChance(1, 1, 1)) {
                     case 0:
                         choice = [
-                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1, 'a', 'nest'
+                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1 + (Math.random() * 3 | 0), 'a', 'nest'
                         ];
                         sockets.broadcast("A stirring in the distance...");
                         break;
                     case 1:
                         choice = [
-                            [Class.summoner, Class.eliteSkimmer, Class.palisade], 1, 'a', 'norm'
+                            [Class.summoner, Class.eliteSkimmer, Class.palisade], 1 + (Math.random() * 3 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("A strange trembling...");
+                        break;
+                    case 2:
+                        choice = [
+                            [Class.deltrablade, Class.trapeFighter], 1 + (Math.random() * 3 | 0), 'a', 'norm'
+                        ];
+                        sockets.broadcast("Don't get Distracted...");
                         break;
                 }
                 boss.prepareToSpawn(...choice);
@@ -337,7 +343,7 @@ const maintainloop = (() => {
                         let n = new Entity(o);
                         n.define(Class[o.spawnOnDeath]);
                         n.team = o.team;
-                        n.name = ran.chooseBossName("a", 1)[0];
+                        n.name = ran.chooseBossName("all", 1)[0];
                         sockets.broadcast(util.addArticle(n.label, true) + " has spawned to avenge the " + o.label + "!");
                     }, 5000);
                 };
@@ -370,14 +376,12 @@ const maintainloop = (() => {
             };
         })();
         return census => {
-            let timerThing = 60 * 6;
+            let timerThing = 60 * 4;
             if (timer > timerThing && ran.dice(timerThing - timer)) {
                 util.log('[SPAWN] Preparing to spawn...');
                 timer = 0;
                 let choice = [
-                    [
-                        [Class.eggsanc, Class.squaresanc, Class.trianglesanc, Class.pentagonsanc, Class.gemsanc][ran.chooseChance(5, 4, 3, 2100)]
-                    ],
+                    [[Class.eggSanctuary, Class.squareSanctuary, Class.triangleSanctuary][ran.chooseChance(5, 4, 3)]],
                     1 + Math.floor(Math.random()) | 0, "a"
                 ];
                 boss.prepareToSpawn(...choice);
@@ -515,28 +519,6 @@ const maintainloop = (() => {
                 f(loc, i);
             });
         }
-        if (false) {
-            const size = 32;
-            const scale = room.width / size;
-            for (let [x, y, width, height] of [
-                [16, 10.5, 5, 0.25],
-                [16, 21.5, 5, 0.25],
-                [10.5, 16, 0.25, 5],
-                [21.5, 16, 0.25, 5]
-            ]) {
-                let o = new Entity({
-                    x: x * scale,
-                    y: y * scale
-                });
-                o.define(Class.mazeWall);
-                o.width = +width || 1;
-                o.height = +height || 1;
-                o.SIZE = scale;
-                o.team = -101;
-                o.protect();
-                o.life();
-            }
-        }
         // Return the spawning function
         let bots = [];
         return () => {
@@ -566,7 +548,7 @@ const maintainloop = (() => {
             // Spawning
             spawnCrasher(census);
             spawnBosses(census);
-            //spawnSanctuaries(census);
+            spawnSanctuaries(census);
             // Bots
             if (bots.length < c.BOTS && !global.arenaClosed) bots.push(spawnBot(global.nextTagBotTeam || null));
             // Remove dead ones

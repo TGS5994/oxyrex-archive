@@ -136,7 +136,7 @@ class Skill {
         this.rst = 0.5 * attrib[skcnv.str] + 2.5 * attrib[skcnv.pen];
         this.ghost = attrib[skcnv.pen];
         this.shi = c.GLASS_HEALTH_FACTOR * apply(6 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.shi]);
-        this.atk = apply(0.5, attrib[skcnv.atk]);
+        this.atk = apply(0.25, attrib[skcnv.atk]);
         this.hlt = c.GLASS_HEALTH_FACTOR * apply(1.75 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.hlt]);
         this.mob = apply(0.8, attrib[skcnv.mob]);
         this.rgn = apply(25, attrib[skcnv.rgn]);

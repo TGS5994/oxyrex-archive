@@ -1355,6 +1355,9 @@ class Entity {
 			case 'smootherToTarget':
                 this.facing += util.loopSmooth(this.facing, Math.atan2(t.y, t.x), 20 / roomSpeed);
                 break;
+            case 'warshipTurn':
+                this.facing += util.loopSmooth(this.facing, this.velocity.direction, 50 / roomSpeed);
+                break;
             case 'bound':
                 let givenangle;
                 if (this.control.main) {

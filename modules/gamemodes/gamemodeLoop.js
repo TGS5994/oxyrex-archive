@@ -13,6 +13,8 @@ const gamemodeLoop = (function() {
   if (c.SPECIAL_BOSS_SPAWNS) bossRush.init();
   if (c.MAZE && typeof c.MAZE === "number") generateMaze(c.MAZE);
   if (c.DOMINATOR_LOOP) for (let loc of room.dom0) dominatorLoop.spawn(loc, -100);
+  if (c.INFECTION_LOOP) initInfectionLoop();
+  if (c.ESCORT) initEscortLoop();
   let logger = new LagLogger();
   return function() {
     logger.set();

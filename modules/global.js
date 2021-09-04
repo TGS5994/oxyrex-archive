@@ -74,6 +74,8 @@ const requires = ["./setup/room.js", // These are the basic room functions, set 
     "./gamemodes/maze.js", // Maze
     "./gamemodes/mothership.js", // The mothership mode
     "./gamemodes/domination.js", // The Domination mode
+    "./gamemodes/infection.js", // Infection mode
+    "./gamemodes/escort.js", // Escort mode
     "./gamemodes/gamemodeLoop.js", // The gamemode loop.
     "./gamemodes/groups.js", // Duos/Trios/Squads
     "./gamemodes/tag.js", // Tag

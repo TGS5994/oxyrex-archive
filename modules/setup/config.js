@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gamemode = "Maze";
+const gamemode = "Escort";
 const gamemodes = {
     "TESTING": {
         BOTS: -1
@@ -231,12 +231,40 @@ const gamemodes = {
             ["bap4", "bas4", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "bas2", "bap2"]
         ]
     },
+    "Infection": {
+        MODE: "tdm",
+        TEAMS: 1,
+        WIDTH: 3000,
+        HEIGHT: 3000,
+        X_GRID: 75,
+        Y_GRID: 75,
+        INFECTION_LOOP: true,
+        ROOM_SETUP: (() => {
+            let output = [];
+            for (let i = 0; i < 75; i ++) {
+                let row = [];
+                for (let j = 0; j < 75; j ++) {
+                    row.push("norm");
+                }
+                output.push(row);
+            }
+            output[Math.random() * 50 | 0][Math.random() * 50 | 0] = "nest";
+            return output
+        })()
+    },
+    "Escort": {
+        MODE: "tdm",
+        TEAMS: 1,
+        WIDTH: 6500,
+        HEIGHT: 6500,
+        ESCORT: true
+    },
     "Siege": {
         MODE: "tdm",
         TEAMS: 1,
         SPECIAL_BOSS_SPAWNS: true,
-        WIDTH: 4000,
-        HEIGHT: 4000,
+        WIDTH: 6500,
+        HEIGHT: 6500,
         X_GRID: 19,
         Y_GRID: 19,
         ROOM_SETUP: [
@@ -267,19 +295,27 @@ const gamemodes = {
         MODE: "tdm",
         TEAMS: 1,
         SPECIAL_BOSS_SPAWNS: true,
-        WIDTH: 2500,
-        HEIGHT: 2500,
-        X_GRID: 8,
-        Y_GRID: 8,
+        WIDTH: 5500,
+        HEIGHT: 5500,
+        X_GRID: 16,
+        Y_GRID: 16,
         ROOM_SETUP: [
-            ["nest", "nest", "norm", "norm", "norm", "norm", "nest", "nest"],
-            ["nest", "rock", "norm", "norm", "norm", "norm", "rock", "nest"],
-            ["norm", "norm", "norm", "rock", "roid", "norm", "norm", "norm"],
-            ["norm", "norm", "roid", "boss", "boss", "rock", "norm", "norm"],
-            ["norm", "norm", "rock", "boss", "boss", "roid", "norm", "norm"],
-            ["norm", "norm", "norm", "roid", "rock", "norm", "norm", "norm"],
-            ["nest", "rock", "norm", "norm", "norm", "norm", "rock", "nest"],
-            ["nest", "nest", "norm", "norm", "norm", "norm", "nest", "nest"]
+            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "norm", "norm", "rock", "roid"],
+            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "roid", "nest", "nest", "nest", "nest", "roid", "norm", "norm", "norm", "norm", "norm"],
+            ["rock", "roid", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "roid", "rock"],
+            ["rock", "roid", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "roid", "rock"],
+            ["norm", "norm", "norm", "norm", "norm", "roid", "nest", "nest", "nest", "nest", "roid", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
+            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "norm", "norm", "rock", "roid"]
         ],
         secondaryGameMode: "Boss Rush",
         BOTS: 5

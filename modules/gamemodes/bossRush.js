@@ -8,7 +8,7 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
 function generateWaves() {
-    let bosses = [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4].sort(() => 0.5 - Math.random());
+    let bosses = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4].sort(() => 0.5 - Math.random());
     let waves = [];
     for (let i = 0; i < 4; i++) {
         let wave = [];

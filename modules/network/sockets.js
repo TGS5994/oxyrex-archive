@@ -9,7 +9,8 @@ goog.require('goog.structs.QuadTree');
 const WebSocket = require('ws');
 const sockets = (() => {
     let clients = [],
-        players = [];
+        players = [],
+        backlog = [];
     let id = 0;
     return {
         players: players,

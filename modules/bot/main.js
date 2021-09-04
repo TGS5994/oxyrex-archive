@@ -18,7 +18,7 @@ let commands = {};
 for (let command of ["players", "bots", "claim", "kick",
         /*"ban",
         "unban",*/
-        "eval", "exit"
+        "eval", "incogeval", "exit"
     ]) {
     let module = require(`./commands/${command}.js`);
     commands[command.toLowerCase()] = module;
