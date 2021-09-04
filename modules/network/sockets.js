@@ -1179,6 +1179,7 @@ const sockets = (() => {
                         override: false,
                         autoguide: false,
                     };
+                    player.name = name;
                     // Set up the recording commands
                     player.records = (() => {
                         let begin = util.time();
