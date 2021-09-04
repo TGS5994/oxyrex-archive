@@ -161,6 +161,7 @@ const sockets = (() => {
                     }
                     socket.party = m[1];
                     console.log(m[1]);
+                    socket.name = name;
                     socket.player = socket.spawn(name);
                     //socket.view.gazeUpon();
                     //socket.lastUptime = Infinity;
@@ -1179,7 +1180,6 @@ const sockets = (() => {
                         override: false,
                         autoguide: false,
                     };
-                    player.name = name;
                     // Set up the recording commands
                     player.records = (() => {
                         let begin = util.time();
