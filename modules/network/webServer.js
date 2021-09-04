@@ -54,7 +54,7 @@ const webSocketServer = (function() {
     function httpServerListener() {
         util.log(`${new Date()}. HTTP + WebSocket Server turned on, listening on port ${httpServer.address().port}.`);
     };
-    httpServer.listen(c.port, httpServerListener);
+    httpServer.listen(process.env.PORT || c.port, httpServerListener);
     return new WebSocket.Server({
         server: httpServer
     });
