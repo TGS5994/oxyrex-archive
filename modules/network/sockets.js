@@ -43,7 +43,7 @@ const sockets = (() => {
                         }, 10000);
                     }
                     // Disconnect everything
-                    util.log('[INFO] User ' + player.name + ' disconnected!');
+                    util.log('[INFO] User ' + socket.name + ' disconnected!');
                     util.remove(players, index);
                 } else {
                     util.log('[INFO] A player disconnected before entering the game.');
@@ -1633,8 +1633,8 @@ const sockets = (() => {
                 socket.key = '';
                 socket.id = id ++;
                 socket.spawnEntity = Class.icosagon;
+                socket.name = "Unnamed";
                 socket.player = {
-                    name: "Unnamed",
                     camera: {},
                 };
                 socket.spectateEntity = null;
