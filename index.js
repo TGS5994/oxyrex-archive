@@ -185,7 +185,7 @@ const gameloop = (() => {
         }
     };
 })();
-setTimeout(closeArena, 60000 * 120); // Restart every 2 hours
+setTimeout(closeArena, 60000 * 240); // Restart every 2 hours
 // A less important loop. Runs at an actual 5Hz regardless of game speed.
 const maintainloop = (() => {
     // Place obstacles

@@ -16,8 +16,10 @@ bot.on("ready", async function() {
 // We use folders for our commands so that it is all simple and split up.
 let commands = {};
 for (let command of [
+    "ping",
     "players",
     "bots",
+    "say",
     "claim",
     "kick",
     "ban",

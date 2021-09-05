@@ -225,9 +225,13 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     stuff = n.health.getDamage(damageToApply._me, false);
                     deathFactor._n = (stuff > n.health.amount) ? n.health.amount / stuff : 1;
                     reductionFactor = Math.min(deathFactor._me, deathFactor._n);
+                    if (isNaN(damage._n)) damage._n = c.MIN_DAMAGE;
+                    if (isNaN(damage._me)) damage._me = c.MIN_DAMAGE;
+                    if (isNaN(deathFactor._n)) deathFactor._n = 1;
+                    if (isNaN(deathFactor._me)) deathFactor._me = 1;
                     // Now apply it
-                    my.damageRecieved += c.MIN_DAMAGE + damage._n * deathFactor._n;
-                    n.damageRecieved += c.MIN_DAMAGE + damage._me * deathFactor._me;
+                    my.damageRecieved += damage._n * deathFactor._n;
+                    n.damageRecieved += damage._me * deathFactor._me;
                 }
             }
             /************* DO MOTION ***********/
