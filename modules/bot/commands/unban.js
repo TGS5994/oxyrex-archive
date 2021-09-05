@@ -11,7 +11,7 @@ module.exports = {
         if (!ban) return util.error(message, "No bans matched that socket ID");
         securityDatabase.blackList.removeItem(ban);
         util.success(message, "The user has been unbanned.");
-        util.log(bot, `<@!${message.member.id}> unbanned a user. IP: ||${ban.ip}||`);
+        util.log(bot, "command", `<!@${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
     },
     description: "Bans a socket from the game.",
     usage: "ban <id> <reason>"

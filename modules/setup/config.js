@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Portal Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership"];
+const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership"];
 const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "FFA": {
