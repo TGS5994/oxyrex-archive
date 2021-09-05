@@ -15,11 +15,17 @@ bot.on("ready", async function() {
 });
 // We use folders for our commands so that it is all simple and split up.
 let commands = {};
-for (let command of ["players", "bots", "claim", "kick",
-        /*"ban",
-        "unban",*/
-        "eval", "incogeval", "exit"
-    ]) {
+for (let command of [
+    "players",
+    "bots",
+    "claim",
+    "kick",
+    "ban",
+    "unban",
+    "eval",
+    "incogeval",
+    "exit"
+]) {
     let module = require(`./commands/${command}.js`);
     commands[command.toLowerCase()] = module;
 }

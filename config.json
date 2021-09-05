@@ -51,6 +51,7 @@
     "SKILL_LEAK": 0,
     "STEALTH": 4,
     "MIN_SPEED": 0.001,
+    "MIN_DAMAGE": 1,
     "FOOD_AMOUNT": 0.15,
     "SKILL_BOOST": 5,
     "BOTS": 9,

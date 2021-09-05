@@ -13,11 +13,11 @@ class Vector {
         this.Y = y;
     }
     get x() {
-        if (isNaN(this.X)) this.X = 0;
+        if (isNaN(this.X)) this.X = c.MIN_SPEED;
         return this.X;
     }
     get y() {
-        if (isNaN(this.Y)) this.Y = 0;
+        if (isNaN(this.Y)) this.Y = c.MIN_SPEED;
         return this.Y;
     }
     set x(value) {

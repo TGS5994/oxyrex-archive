@@ -67,6 +67,8 @@ const requires = [
     "./live/entity.js", // The actual Entity constructor.
     "./setup/mockups.js", // This file loads the mockups.
     "./physics/collisionFunctions.js", // The actual collision functions that make the game work.
+    "./network/security/security.js", // Ava i STG I WILLL STOPPP UUUUUUUUUUUU
+    "./network/tokenGenerator.js", // Public token generator
     "./network/sockets.js", // The networking that helps players interact with the game.
     "./network/webServer.js", // The networking that actually hosts the server.
     "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.

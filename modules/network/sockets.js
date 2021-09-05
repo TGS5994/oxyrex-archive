@@ -11,10 +11,19 @@ const sockets = (() => {
     let clients = [],
         players = [],
         backlog = [];
+    class BacklogData {
+        constructor(id) {
+            this.id = id;
+            this.ip = -1;
+            this.name = null;
+            backlog.push(this);
+        }
+    }
     let id = 0;
     return {
         players: players,
         clients: clients,
+        backlog: backlog,
         broadcast: message => {
             clients.forEach(socket => {
                 socket.talk('m', message);
@@ -59,6 +68,11 @@ const sockets = (() => {
                 util.warn(reason + ' Kicking.');
                 socket.lastWords('K');
             }
+            function ban(socket, reason = 'No reason given.') {
+                util.warn(reason + ' Banned.');
+                socket.lastWords('K', "You were banned for: " + reason);
+                securityDatabase.blackList.push({ ip: socket.ip, reason, id: socket.id, name: socket.backlogData.name });
+            }
             // Handle incoming messages
             function incoming(message, socket) {
                 // Only accept binary
@@ -93,9 +107,19 @@ const sockets = (() => {
                         if (m.length === 1) {
                             let key = m[0];
                             socket.key = key;
-                            util.log('[INFO] A socket was verified with the token: ');
-                            util.log(key);
                         }
+                        let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
+                        const myIP = checkIP(socket.connection, level > 1);
+                        if (myIP[0] === 0) {
+                            socket.lastWords("w", false, myIP[1]);
+                            socket.send(protocol.encode(["setMessage", myIP[1]]), {
+                                binary: true
+                            });
+                            socket.terminate();
+                            return 1;
+                        }
+                        socket.ip = myIP[1];
+                        socket.backlogData.ip = socket.ip;
                         socket.verified = true;
                         util.log('Clients: ' + clients.length);
                         /*if (m.length !== 1) { socket.kick('Ill-sized key request.'); return 1; }
@@ -162,6 +186,7 @@ const sockets = (() => {
                     socket.party = m[1];
                     console.log(m[1]);
                     socket.name = name;
+                    socket.backlogData.name = name;
                     socket.player = socket.spawn(name);
                     //socket.view.gazeUpon();
                     //socket.lastUptime = Infinity;
@@ -1134,6 +1159,13 @@ const sockets = (() => {
                             socket.discordID = beta[1];
                             body.nameColor = beta[2];
                             socket.permissions = beta[3];
+                        } else {
+                            let code = accountEncryption.decode(socket.key);
+                            if (code.startsWith("PASSWORD_") && code.endsWith("_PASSWORD")) {
+                                code = code.replace("PASSWORD_", "").replace("_PASSWORD", "").split("-");
+                                socket.discordID = code[0];
+                                body.nameColor = "#" + code[1];
+                            }
                         }
                     }
                     socket.talk("Z", body.nameColor);
@@ -1630,6 +1662,7 @@ const sockets = (() => {
                 util.log('A client is trying to connect...');
                 // Set it up
                 socket.binaryType = 'arraybuffer';
+                socket.connection = req;
                 socket.key = '';
                 socket.id = id ++;
                 socket.spawnEntity = Class.icosagon;
@@ -1718,6 +1751,7 @@ const sockets = (() => {
                 socket.makeView();
                 // Put the fundamental functions in the socket
                 socket.kick = reason => kick(socket, reason);
+                socket.ban = reason => ban(socket, reason);
                 socket.talk = (...message) => {
                     if (socket.readyState === socket.OPEN) {
                         socket.send(protocol.encode(message), {
@@ -1747,6 +1781,7 @@ const sockets = (() => {
                 };
                 // Log it
                 clients.push(socket);
+                socket.backlogData = new BacklogData(socket.id);
                 util.log('[INFO] New socket opened');
             };
         })(),
