@@ -9,8 +9,22 @@ goog.require('goog.structs.QuadTree');
 // Basic Vector
 class Vector {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.X = x;
+        this.Y = y;
+    }
+    get x() {
+        if (isNaN(this.X)) this.X = 0;
+        return this.X;
+    }
+    get y() {
+        if (isNaN(this.Y)) this.Y = 0;
+        return this.Y;
+    }
+    set x(value) {
+        this.X = value;
+    }
+    set y(value) {
+        this.Y = value;
     }
     update() {
         this.len = this.length;

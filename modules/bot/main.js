@@ -52,6 +52,7 @@ async function messageEvent(message) {
     util.error(message, "That command doesn't exist!");
 };
 bot.on("message", messageEvent);
+bot.on("error", console.log);
 bot.login(config.token);
 bot.util = util;
 module.exports = {

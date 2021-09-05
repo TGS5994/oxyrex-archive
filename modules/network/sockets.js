@@ -1634,6 +1634,7 @@ const sockets = (() => {
                 socket.id = id ++;
                 socket.spawnEntity = Class.icosagon;
                 socket.player = {
+                    name: "Unnamed",
                     camera: {},
                 };
                 socket.spectateEntity = null;
