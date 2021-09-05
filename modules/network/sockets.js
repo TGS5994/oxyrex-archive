@@ -109,7 +109,7 @@ const sockets = (() => {
                             socket.key = key;
                         }
                         let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
-                        const myIP = checkIP(socket.connection, level > 1);
+                        const myIP = checkIP(socket, socket.connection, level > 1);
                         if (myIP[0] === 0) {
                             socket.lastWords("w", false, myIP[1]);
                             socket.send(protocol.encode(["setMessage", myIP[1]]), {
