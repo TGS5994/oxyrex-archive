@@ -80,7 +80,7 @@ function checkIP(socket, req, bypassVPNBlocker = false) {
     }
     let ipAddress;
     try {
-        socket._socket.address().address.slice(7);
+        ipAddress = socket._socket.address().address.slice(7);
     } catch (e) {
         console.log(e);
         return [0, "Invalid IP"];
