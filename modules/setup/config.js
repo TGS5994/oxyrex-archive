@@ -7,30 +7,19 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze"];
+const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Portal Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership"];
 const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
-    "TESTING": {
-        BOTS: -1
-    },
     "FFA": {
         BOTS: 6
     }, // "defaults" is already FFA.
-    "1TDM": {
-        WIDTH: 3000,
-        HEIGHT: 3000,
-        BOTS: 50,
-        TEAMS: 1,
-        MODE: "tdm",
-        SPECIAL_BOSS_SPAWNS: true
-    },
     "Open TDM": {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 3 | 0),
-        BOTS: 10
+        BOTS: 8
     },
     "Portal FFA": {
-        BOTS: 10,
+        BOTS: 8,
         X_GRID: 15,
         Y_GRID: 15,
         WIDTH: 5000,
@@ -56,7 +45,7 @@ const gamemodes = {
     "Groups": {
         GROUPS: (Math.random() * 3 | 0) + 2,
         secondaryGameMode: "Squads",
-        BOTS: 15
+        BOTS: 8
     },
     "Maze Groups": {
         GROUPS: (Math.random() * 3 | 0) + 2,
@@ -112,7 +101,7 @@ const gamemodes = {
         secondaryGameMode: "Maze"
     },
     "Portal Maze": {
-        BOTS: 10,
+        BOTS: 8,
         X_GRID: 15,
         Y_GRID: 15,
         WIDTH: 5000,
@@ -145,7 +134,7 @@ const gamemodes = {
         HEIGHT: 6500,
         MODE: "tdm",
         TEAMS: 2,
-        BOTS: 10,
+        BOTS: 8,
         ROOM_SETUP: [
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "bap1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
@@ -174,7 +163,7 @@ const gamemodes = {
         HEIGHT: 6500,
         MODE: "tdm",
         TEAMS: 4,
-        BOTS: 24,
+        BOTS: 8,
         ROOM_SETUP: [
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "bap1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas4", "bap4", "norm"],
@@ -212,7 +201,7 @@ const gamemodes = {
             ["roid", "rock", "norm", "norm", "norm", "rock", "rock", "norm", "norm", "norm", "rock", "roid"],
             ["rock", "rock", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "rock", "rock"]
         ],
-        BOTS: 10
+        BOTS: 8
     },
     "4TDM": {
         MODE: "tdm",
@@ -334,10 +323,10 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         MOTHERSHIP_LOOP: true,
         secondaryGameMode: "Mothership",
-        BOTS: 24
+        BOTS: 8
     },
     "Portal Mothership": {
-        BOTS: 10,
+        BOTS: 8,
         X_GRID: 15,
         Y_GRID: 15,
         WIDTH: 5000,
@@ -369,7 +358,7 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         TAG: true,
         secondaryGameMode: "Tag",
-        BOTS: 10
+        BOTS: 8
     },
     "Portal Tag": {
         BOTS: 10,
@@ -398,7 +387,7 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         TAG: true,
         secondaryGameMode: "Tag",
-        BOTS: 24
+        BOTS: 8
     },
     "Domination": {
         MODE: "tdm",
@@ -424,7 +413,7 @@ const gamemodes = {
         ],
         DOMINATOR_LOOP: true,
         secondaryGameMode: "Domination",
-        BOTS: 24
+        BOTS: 8
     },
     "Portal Domination": {
         MODE: "tdm",
@@ -450,61 +439,7 @@ const gamemodes = {
         ],
         DOMINATOR_LOOP: true,
         secondaryGameMode: "Domination",
-        BOTS: 24
-    },
-    "2TDM Domination": {
-        MODE: "tdm",
-        TEAMS: 2,
-        X_GRID: 15,
-        Y_GRID: 15,
-        ROOM_SETUP: [
-            ["bap1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "dom0", "norm", "norm", "norm", "nest", "dom0", "nest", "norm", "norm", "norm", "dom0", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bap2"]
-        ],
-        DOMINATOR_LOOP: true,
-        secondaryGameMode: "Domination",
-        BOTS: 24
-    },
-    "4TDM Domination": {
-        MODE: "tdm",
-        TEAMS: 4,
-        X_GRID: 15,
-        Y_GRID: 15,
-        WIDTH: 6500,
-        HEIGHT: 6500,
-        ROOM_SETUP: [
-            ["bap1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3", "bap3"],
-            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3", "bas3"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "dom0", "norm", "norm", "norm", "nest", "dom0", "nest", "norm", "norm", "norm", "dom0", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["bas4", "bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
-            ["bap4", "bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bap2"]
-        ],
-        DOMINATOR_LOOP: true,
-        secondaryGameMode: "Domination",
-        BOTS: 24
+        BOTS: 8
     },
     "Circular TDM": {
         MODE: "tdm",
