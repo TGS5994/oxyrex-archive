@@ -62,7 +62,7 @@ Object.keys(securityDatabase).forEach(key => {
     };
 });
 
-function checkIP(req, bypassVPNBlocker = false) {
+function checkIP(socket, req, bypassVPNBlocker = false) {
     // Returns
     // 0 - Kick (Reason is arg 2)
     // 1 - Valid (IP is arg 2)
@@ -78,9 +78,13 @@ function checkIP(req, bypassVPNBlocker = false) {
         console.log("Invalid user trying to connect! Origin:", req.headers.origin, "Has:", has, "Agent:", req.headers["user-agent"]) //"IP", req.headers["x-forwarded-for"]);
         return [0, `Fasttalk communication error. Error Code: (${has[0]}, ${has[1]})`]; // The error message is a lie :) That's part of why it works so well.
     }
-    let ipAddress = null;
-    if ((req.connection.remoteAddress === '::ffff:127.0.0.1' || req.connection.remoteAddress === '::1') && req.headers["x-forwarded-for"] !== undefined) ipAddress = req.headers['x-forwarded-for'].split(/\s*,\s*/)[0]; // Glitch
-    else ipAddress = req.connection.remoteAddress.slice(7); // Heroku
+    let ipAddress;
+    try {
+        socket._socket.address().address.slice(7);
+    } catch (e) {
+        console.log(e);
+        return [0, "Invalid IP"];
+    }
     if (ipAddress == null) return [0, "Attempting to spawn with a null IP adress."];
     if ((binarySearch(IPv4BadASNBlocks, ({
             ip,
