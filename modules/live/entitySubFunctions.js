@@ -248,6 +248,7 @@ class HealthType {
         this.type = type;
         this.resist = resist;
         this.regen = 0;
+        this.lastDamage = 0;
     }
     set(health, regen = 0) {
         this.amount = (this.max) ? this.amount / this.max * health : health;
@@ -258,6 +259,7 @@ class HealthType {
         return this.amount / this.max;
     }
     getDamage(amount, capped = true) {
+        this.lastDamage = Date.now();
         switch (this.type) {
             case 'dynamic':
                 return (capped) ? (Math.min(amount * this.permeability, this.amount)) : (amount * this.permeability);
@@ -266,6 +268,7 @@ class HealthType {
         }
     }
     regenerate(boost = false) {
+        if (Date.now() - this.lastDamage < 10000) return;
         boost /= 2;
         let cons = 5;
         switch (this.type) {
