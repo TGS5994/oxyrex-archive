@@ -90,7 +90,7 @@ const verifySocket = (function() {
     function checkIP(socket, request, bypassVPNBlocker) {
         let ipAddress;
         try {
-            ipAddress = getIP(request, request.headers).ip.slice(7);
+            ipAddress = getIP(request, request.headers).ip.split(":").pop()
         } catch (e) {
             console.log(e);
             return [0, "Invalid IP"];
