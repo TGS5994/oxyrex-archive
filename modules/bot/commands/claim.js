@@ -7,7 +7,7 @@ module.exports = {
     run: function(bot, message, args) {
         let token;
         if (args.length === 1 && args[0] === "token") {
-            let betaTester = c.btConfig.find(entry => entry[3] === message.member.id);
+            let betaTester = c.TOKENS.find(entry => entry[1] === message.member.id);
             if (betaTester) token = betaTester[0];
             else return util.error(message, "You are not a Beta-Tester!");
         } else {

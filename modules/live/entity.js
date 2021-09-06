@@ -865,6 +865,13 @@ class Entity {
         if (set.NECRO != null) {
             this.settings.isNecromancer = set.NECRO;
         }
+        if (set.TARGETS_AMMO != null) {
+            this.settings.targetAmmo = set.TARGETS_AMMO;
+        }
+        if (set.TARGETS_MISSILES != null) {
+            this.settings.targetMissiles = set.TARGETS_MISSILES;
+        }
+        if (set.MISSILE != null) this.settings.missile = set.MISSILE;
         if (set.NECRO_BULLETS) this.settings.necroBullets = set.NECRO_BULLETS;
         if (set.GO_THROUGH_BASES != null) this.settings.goThroughBases = set.GO_THROUGH_BASES;
         if (set.GO_THROUGH_WALLS != null) this.settings.goThroughWalls = set.GO_THROUGH_WALLS;

@@ -181,7 +181,9 @@ const gameloop = (() => {
                 instance.socket.view.gazeUpon();
                 instance.socket.lastUptime = Infinity;
             });
-            if (Math.min(1, global.fps / roomSpeed / 1000 * 30) < 0.95) antiLagbot();
+        }
+        if (ticks % 25 === 0 && Math.min(1, global.fps / roomSpeed / 1000 * 30) < 0.95) {
+            antiLagbot();
         }
     };
 })();

@@ -1,14 +1,22 @@
-let paths = [Class.hexa, Class.machine, Class.miniswarmer, Class.launcher];
-let laggyTanks = ["Hexa Tank", "Machine Gun", "Mini Swarmer", "Launcher"];
-for (let tank of paths) {
+let paths = [Class.hexa, Class.miniswarmer, Class.promenader]; // the actual tanks that start the branch that are really laggy.
+let laggyTanks = []; // The names of the tanks, added properly
+const ignore = ["Shrapnel"]; // Ignore these in the branches
+
+function getLaggyTanks(tank) {
+    laggyTanks.push(tank.LABEL);
     for (let key in tank) {
         if (key.includes("UPGRADES_TIER_")) {
             for (let upgrade of tank[key]) {
-                laggyTanks.push(upgrade.LABEL);
+                if (!ignore.includes(upgrade.LABEL)) {
+                    laggyTanks.push(upgrade.LABEL);
+                    getLaggyTanks(upgrade);
+                }
             }
         }
     }
 }
+
+paths.forEach(path => getLaggyTanks(path));
 
 function antiLagbot() {
     let names = sockets.clients.filter(r => r.player != null).filter(e => e.player.body != null).map(d => d.player.body.name);
