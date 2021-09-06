@@ -1,5 +1,5 @@
-let paths = [Class.hexa];
-let laggyTanks = ["Hexa Tank"];
+let paths = [Class.hexa, Class.machine, Class.miniswarmer, Class.launcher];
+let laggyTanks = ["Hexa Tank", "Machine Gun", "Mini Swarmer", "Launcher"];
 for (let tank of paths) {
     for (let key in tank) {
         if (key.includes("UPGRADES_TIER_")) {

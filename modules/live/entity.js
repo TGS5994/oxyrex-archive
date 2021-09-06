@@ -1687,6 +1687,7 @@ class Entity {
     sendMessage(message) {} // Dummy
     setKillers(killers) {} // Dummy
     kill() {
+        this.health.lastDamage = this.shield.lastDamage = Infinity;
         this.invuln = false;
         this.godmode = false;
         this.passive = false;
