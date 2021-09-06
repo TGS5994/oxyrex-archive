@@ -9,7 +9,7 @@ module.exports = {
         let id = args.shift();
         let socket = sockets.clients.find(socket => socket.id == id);
         if (!socket) return util.error(message, "No sockets matched that ID");
-        socket.kick(args.join(" "));
+        socket.kick(args.join(" "), false);
         util.success(message, "The user has been kicked.");
         util.log(bot, "kick", `<@!${message.author.id}> kicked \`${socket.name}\` for \`${args.join(" ")}\` IP: ||${socket.ip}||`);
     },

@@ -66,14 +66,16 @@ const sockets = (() => {
                 bot.util.log(bot, "player", 'Socket closed. Views: ' + views.length + '. Clients: ' + clients.length + '.');
             }
             // Being kicked
-            function kick(socket, reason = 'No reason given.') {
+            function kick(socket, reason = 'No reason given.', log = true) {
                 util.warn(reason + ' Kicking.');
                 socket.lastWords('K', "You were kicked for: " + reason);
+                if (log) bot.util.log(bot, "kick", `${socket.name} was kicked for \`${reason}\` IP: ||${socket.ip}||`);
             }
-            function ban(socket, reason = 'No reason given.') {
+            function ban(socket, reason = 'No reason given.', log = true) {
                 util.warn(reason + ' Banned.');
                 socket.lastWords('K', "You were banned for: " + reason);
                 securityDatabase.blackList.push({ ip: socket.ip, reason, id: socket.id, name: socket.backlogData.name });
+                if (log) bot.util.log(bot, "kick", `${socket.name} was banned for \`${reason}\` IP: ||${socket.ip}||`);
             }
             // Handle incoming messages
             function incoming(message, socket) {
@@ -167,7 +169,6 @@ const sockets = (() => {
                         socket.makeView();
                     }
                     socket.party = m[1];
-                    console.log(m[1]);
                     socket.name = name;
                     socket.backlogData.name = name;
                     socket.player = socket.spawn(name);
@@ -1734,8 +1735,8 @@ const sockets = (() => {
                 };
                 socket.makeView();
                 // Put the fundamental functions in the socket
-                socket.kick = reason => kick(socket, reason);
-                socket.ban = reason => ban(socket, reason);
+                socket.kick = (reason, log = true) => kick(socket, reason, log);
+                socket.ban = (reason, log = true) => ban(socket, reason, log);
                 socket.talk = (...message) => {
                     if (socket.readyState === socket.OPEN) {
                         socket.send(protocol.encode(message), {

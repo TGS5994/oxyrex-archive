@@ -14,7 +14,7 @@ module.exports = {
             socket = backlog;
             socket.ban = reason => securityDatabase.blackList.push({ ip: socket.ip, reason, id: socket.id, name: socket.name });
         }
-        socket.ban(args.join(" "));
+        socket.ban(args.join(" "), false);
         util.success(message, "The user has been banned. If this ban is meant to be final, please notify a developer.");
         util.log(bot, "kick", `<@!${message.author.id}> banned \`${socket.name}\` for \`${args.join(" ")}\` IP: ||${socket.ip}||`);
     },

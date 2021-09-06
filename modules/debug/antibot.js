@@ -15,37 +15,48 @@ function antiLagbot() {
     let usingLaggyTanks = [];
 
     function checkSocket(socket) {
-        let flags = 0;
+        let flags = {
+            tank: 0,
+            sameName: -1,
+            numericalName: 0
+        };
         if (socket.player && socket.player.body) {
-            if (socket.player.body.score > 50000) return null;
+            if (socket.player.body.score > 250000) return null;
             if (laggyTanks.includes(socket.player.body.label)) {
-                flags++
+                flags.tank ++;
                 usingLaggyTanks.push(socket);
             }
-            let sameName = -1;
             for (let i = 0; i < names.length; i++) {
-                if (names[i] === socket.player.body.name) sameName++;
+                if (names[i] === socket.player.body.name) flags.sameName += 2;
             }
-            if (sameName > 1) flags += sameName;
+            if (!isNaN(+socket.player.body.name)) flags.numericalName += 4;
+            {
+                let newName = socket.player.body.name.split(" ");
+                const NaNCheck = newName.map(spot => isNaN(+spot));
+                if (NaNCheck[0] === NaNCheck[NaNCheck.length - 1] && isNaN(NaNCheck[0])) flags.numericalName += 3;
+            }
         }
-        evalPacket(socket);
-        return (flags > 4 ? socket : null);
+        //evalPacket(socket);
+        let output = 0;
+        for (let key in flags) if (flags[key] > 0) output += flags[key];
+        return { socket, output };
     }
     for (let i = 0; i < sockets.clients.length; i++) {
         let response = checkSocket(sockets.clients[i]);
-        if (response != null) {
-            response.player.body.kill();
-            console.log("Lagbot kicked.");
-            response.terminate();
+        if (response != null && response.output > 1) { // strict
+            response.socket.player.body.kill();
+            response.socket.kick("Possible lagbot");
+            //response.socket.terminate();
         }
     }
-    if (usingLaggyTanks.length >= names.length * 0.5 && names.length > 5) {
+    /*if (usingLaggyTanks.length >= names.length * 0.5 && names.length > 5) { // false positives
         for (let i = 0; i < usingLaggyTanks.length; i++) {
             usingLaggyTanks[i].player.body.kill();
+            usingLaggyTanks[i].kick("Possible lagbot");
             console.log("Lagbot kicked.");
             usingLaggyTanks[i].terminate();
         }
-    }
+    }*/
 }
 
 function evalPacket(socket) {

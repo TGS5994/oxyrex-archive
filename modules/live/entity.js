@@ -1559,7 +1559,7 @@ class Entity {
         // Check for death
         if (this.isDead()) {
             if (this.onDead) this.onDead();
-            if (c.KILL_RACE && this.isPlayer || this.isBot) {
+            if (c.KILL_RACE && (this.isPlayer || this.isBot)) {
                 killRace.getKillData(this);
             }
             if (this.fragEntities) {
