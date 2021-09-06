@@ -8,7 +8,7 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership", "Kill Race"];
-const gamemode = "Boss Rush";//gameModeTable[(Math.random() * gameModeTable.length | 0)];
+const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "FFA": {
         BOTS: 6
