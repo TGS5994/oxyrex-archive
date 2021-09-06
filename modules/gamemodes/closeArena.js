@@ -38,6 +38,9 @@ function closeArena() {
         if (ticks >= 240) return close();
         let alive = 0;
         loopThrough(entities, function amIAPlayer(instance, index) {
+            instance.invuln = false;
+            instance.passive = false;
+            instance.godmode = false;
             if (instance.isPlayer || instance.isBot || (instance.isDominator && instance.team !== -100) || instance.isMothership) alive++;
         });
         if (!alive) close();

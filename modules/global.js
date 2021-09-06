@@ -73,6 +73,7 @@ const requires = [
     "./network/webServer.js", // The networking that actually hosts the server.
     "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.
     "./debug/speedLoop.js", // The speed check loop lmao.
+    "./gamemodes/killRace.js", // Kill Race
     "./gamemodes/bossRush.js", // Boss Rush
     "./gamemodes/maze.js", // Maze
     "./gamemodes/mothership.js", // The mothership mode

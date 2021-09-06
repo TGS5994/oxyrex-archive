@@ -11,6 +11,7 @@ bot.on("ready", async function() {
         type: "WATCHING"
     });
     // Now we log that we started up in our logs channel.
+    bot.active = true;
     util.log(bot, "status", "Discord bot active.");
 });
 // We use folders for our commands so that it is all simple and split up.

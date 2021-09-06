@@ -16,7 +16,7 @@ module.exports = {
         }
         socket.ban(args.join(" "));
         util.success(message, "The user has been banned. If this ban is meant to be final, please notify a developer.");
-        util.log(bot, "command", `<!@${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
+        util.log(bot, "kick", `<@!${message.author.id}> banned \`${socket.name}\` for \`${args.join(" ")}\` IP: ||${socket.ip}||`);
     },
     description: "Bans a socket from the game.",
     usage: "ban <id> <reason>"

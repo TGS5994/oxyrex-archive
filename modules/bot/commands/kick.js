@@ -11,7 +11,7 @@ module.exports = {
         if (!socket) return util.error(message, "No sockets matched that ID");
         socket.kick(args.join(" "));
         util.success(message, "The user has been kicked.");
-        util.log(bot, "command", `<!@${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
+        util.log(bot, "kick", `<@!${message.author.id}> kicked \`${socket.name}\` for \`${args.join(" ")}\` IP: ||${socket.ip}||`);
     },
     description: "Kicks a socket from the game.",
     usage: "kick <id> <reason>"

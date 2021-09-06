@@ -708,6 +708,8 @@ class Entity {
                         }
                     }
                 }
+                if (this.shield.max) this.shield.regenerate();
+                if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);
                 // Get bounds
                 const width = this.width ? this.realSize * this.width : this.realSize;
                 const height = this.height ? this.realSize * this.height : this.realSize;
@@ -1557,6 +1559,9 @@ class Entity {
         // Check for death
         if (this.isDead()) {
             if (this.onDead) this.onDead();
+            if (c.KILL_RACE && this.isPlayer || this.isBot) {
+                killRace.getKillData(this);
+            }
             if (this.fragEntities) {
                 for (let i = 0; i < this.fragEntities.length; i ++) {
                     let o = new Entity({

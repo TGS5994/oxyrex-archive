@@ -49,24 +49,26 @@ const sockets = (() => {
                         setTimeout(() => {
                             if (player.body.underControl) player.body.giveUp(player);
                             if (player.body != null) player.body.kill();
-                        }, 10000);
+                        }, 5000);
                     }
                     // Disconnect everything
                     util.log('[INFO] User ' + socket.name + ' disconnected!');
                     util.remove(players, index);
                 } else {
                     util.log('[INFO] A player disconnected before entering the game.');
+                    bot.util.log(bot, "player", "A player disconnected before entering the game.");
                 }
                 // Free the view
                 util.remove(views, views.indexOf(socket.view));
                 // Remove the socket
                 util.remove(clients, clients.indexOf(socket));
                 util.log('[INFO] Socket closed. Views: ' + views.length + '. Clients: ' + clients.length + '.');
+                bot.util.log(bot, "player", 'Socket closed. Views: ' + views.length + '. Clients: ' + clients.length + '.');
             }
             // Being kicked
             function kick(socket, reason = 'No reason given.') {
                 util.warn(reason + ' Kicking.');
-                socket.lastWords('K');
+                socket.lastWords('K', "You were kicked for: " + reason);
             }
             function ban(socket, reason = 'No reason given.') {
                 util.warn(reason + ' Banned.');
@@ -99,7 +101,7 @@ const sockets = (() => {
                             socket.kick('Ill-sized key request.');
                             return 1;
                         }
-                        if (socket.status.verified) {
+                        if (socket.verified) {
                             socket.kick('Duplicate player spawn attempt.');
                             return 1;
                         }
@@ -121,32 +123,13 @@ const sockets = (() => {
                         socket.ip = myIP[1];
                         socket.backlogData.ip = socket.ip;
                         socket.verified = true;
-                        util.log('Clients: ' + clients.length);
-                        /*if (m.length !== 1) { socket.kick('Ill-sized key request.'); return 1; }
-                        // Get data
-                        // Verify it
-                        if (typeof key !== 'string') { socket.kick('Weird key offered.'); return 1; }
-                        if (key.length > 64) { socket.kick('Overly-long key offered.'); return 1; }
-                        if (socket.status.verified) { socket.kick('Duplicate player spawn attempt.'); return 1; }
-                        // Otherwise proceed to check if it's available.
-                        if (keys.indexOf(key) != -1) {
-                            // Save the key
-                            socket.key = key.substr(0, 64);
-                            // Make it unavailable
-                            util.remove(keys, keys.indexOf(key));
-                            socket.verified = true;
-                            // Proceed
-                            socket.talk('w', true);
-                            util.log('[INFO] A socket was verified with the token: '); util.log(key);
-                            util.log('Clients: ' + clients.length);
-                        } else {
-                            // If not, kick 'em (nicely)
-                            util.log('[INFO] Invalid player verification attempt.');
-                            socket.lastWords('w', false);
-                        }*/
+                        bot.util.log(bot, "player", "Socket verified.");
                     }
                     break;
                 case 's': { // spawn request
+                    if (!socket.verified) {
+                        return socket.kick("Unverified.");
+                    }
                     if (!socket.status.deceased) {
                         socket.kick('Trying to spawn while already alive.');
                         return 1;
@@ -188,12 +171,10 @@ const sockets = (() => {
                     socket.name = name;
                     socket.backlogData.name = name;
                     socket.player = socket.spawn(name);
-                    //socket.view.gazeUpon();
-                    //socket.lastUptime = Infinity;
-                    // Give it the room state
                     socket.talk('R', room.width, room.height, JSON.stringify(c.ROOM_SETUP), JSON.stringify(util.serverStartTime), roomSpeed, ["rect", "circle"].indexOf(c.ARENA_TYPE));
                     // Log it
                     util.log('[INFO] ' + (m[0]) + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
+                    bot.util.log(bot, "player", (m[0]) + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
                 }
                 break;
                 case 'S': { // clock syncing
@@ -1564,23 +1545,24 @@ const sockets = (() => {
                 }))
                 let leaderboard = new Delta(6, () => {
                     let list = [];
-                    if (c.TAG)
+                    if (c.TAG || c.KILL_RACE) {
                         for (let i = 0; i < c.TEAMS; i++) {
-                            let teamNames = ["BLUE", "GREEN", "RED", "PURPLE"];
+                            let teamNames = ["BLUE", "RED", "GREEN", "PURPLE"];
                             let teamColors = [10, 11, 12, 15];
                             list.push({
                                 id: i,
                                 skill: {
-                                    score: 0
+                                    score: (c.KILL_RACE && typeof killRace === "object") ? killRace.data[i] : 0
                                 },
-                                index: Class.tagMode.index,
+                                index: Class[c.TAG ? "tagMode" : "killRace"].index,
                                 name: teamNames[i],
                                 color: teamColors[i],
                                 nameColor: "#FFFFFF",
                                 team: -i - 1
                             });
                         }
-                    loopThrough(entities, function(instance) {
+                    }
+                    if (!c.KILL_RACE) loopThrough(entities, function(instance) {
                         if (c.MOTHERSHIP_LOOP) {
                             if (instance.isMothership) list.push(instance);
                         } else if (c.TAG) {
@@ -1638,8 +1620,8 @@ const sockets = (() => {
                     logs.minimap.mark()
                     let time = util.time()
                     for (let socket of clients) {
-                        if (socket.timeout.check(time)) socket.lastWords('K')
-                        if (time - socket.statuslastHeartbeat > c.maxHeartbeatInterval) socket.kick('Lost heartbeat.')
+                        if (socket.timeout.check(time)) socket.lastWords('K', "Socket timed out.");
+                        if (time - socket.statuslastHeartbeat > c.maxHeartbeatInterval) socket.kick('Lost heartbeat.');
                     }
                 }, 250);
                 return {
@@ -1660,10 +1642,12 @@ const sockets = (() => {
                 lastTime = Date.now();
                 // Get information about the new connection and verify it
                 util.log('A client is trying to connect...');
+                bot.util.log(bot, "player", "A client is connecting...");
                 // Set it up
                 socket.binaryType = 'arraybuffer';
                 socket.connection = req;
                 socket.key = '';
+                socket.ip = -1;
                 socket.id = id ++;
                 socket.spawnEntity = Class.icosagon;
                 socket.name = "Unnamed";
@@ -1783,8 +1767,9 @@ const sockets = (() => {
                 clients.push(socket);
                 socket.backlogData = new BacklogData(socket.id);
                 util.log('[INFO] New socket opened');
+                bot.util.log(bot, "player", "New socket opened!");
             };
-        })(),
+        })()
     };
 })();
 module.exports = {

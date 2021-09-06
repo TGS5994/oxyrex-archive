@@ -41,6 +41,7 @@ const httpServer = http.createServer(function(request, response) {
             response.end(JSON.stringify({
                 gameMode: c.gameModeName,
                 players: views.length,
+                maxPlayers: c.maxPlayers,
                 code: [c.MODE, c.MODE === "ffa" ? "f" : c.TEAMS, c.secondaryGameMode].join("-")
             }));
             break;

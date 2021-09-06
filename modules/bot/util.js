@@ -9,8 +9,9 @@ const config = require("./botConfig.json");
 
 // Basic logging. Needs the bot to reference, channel ID and a message to send.
 function log(bot, id, message) {
+    if (!bot.active) return;
     const channel = bot.channels.cache.get(config.logs[id]);
-    message = `[${new Date()}]: ${message}`;
+    message = `${message}`;
     console.log(message);
     if (!channel) {
         console.log("Unable to get channel:", config.channels.logs);

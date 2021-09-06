@@ -51,7 +51,7 @@ let securityDatabase = {
 };
 Object.keys(securityDatabase).forEach(key => {
     securityDatabase[key].removeItem = function(e) {
-        let arr = [];
+        const arr = [];
         for (let i = 0; i < this.length; i ++)
             if (this[i] !== e)
                 arr.push(this[i]);
@@ -62,51 +62,64 @@ Object.keys(securityDatabase).forEach(key => {
     };
 });
 
-function checkIP(socket, req, bypassVPNBlocker = false) {
-    // Returns
-    // 0 - Kick (Reason is arg 2)
-    // 1 - Valid (IP is arg 2)
-    let valid = ["woomy.surge.sh"];
-    let has = [0, 0];
-    if (req.headers.origin)
-        for (let ip of valid)
-            if (req.headers.origin.includes(ip)) has[0]++;
-    if (req.headers["user-agent"])
-        for (let agent of ["Mozilla", "AppleWebKit", "Chrome", "Safari"])
-            if (req.headers["user-agent"].includes(agent)) has[1]++;
-    if (has[0] !== 1 || has[1] === 0) {
-        console.log("Invalid user trying to connect! Origin:", req.headers.origin, "Has:", has, "Agent:", req.headers["user-agent"]) //"IP", req.headers["x-forwarded-for"]);
-        return [0, `Fasttalk communication error. Error Code: (${has[0]}, ${has[1]})`]; // The error message is a lie :) That's part of why it works so well.
+const verifySocket = (function() {
+    const getIP = require("forwarded-for");
+    const validOrigins = ["woomy.surge.sh"];
+    function checkHeaders(headers) {
+        const origin = headers.origin.replace("http://", "").replace("https://", "").replace("/", "");
+        if (validOrigins.indexOf(origin) === -1) {
+            bot.util.log(bot, "player", "Failed header verification! Origin: " + origin);
+            return [0, "You may only connect to the game from the proper client."];
+        }
+        if (headers.upgrade !== "websocket") {
+            bot.util.log(bot, "player", "Failed header verification! Upgrade: " + headers.upgrade);
+            return [0, "Proxy detected."];
+        }
+        let agentIndex = 0;
+        for (let agent of ["Mozilla", "AppleWebKit", "Chrome", "Safari"]) {
+            if (headers["user-agent"].includes(agent)) {
+                agentIndex ++;
+            }
+        }
+        if (agentIndex === 0) {
+            bot.util.log(bot, "player", "Failed header verification! User-Agent: " + headers["user-agent"]);
+            return [0, "Unsupported client."];
+        }
+        return [1];
     }
-    let ipAddress;
-    try {
-        ipAddress = socket._socket.address().address.slice(7);
-    } catch (e) {
-        console.log(e);
-        return [0, "Invalid IP"];
-    }
-    if (ipAddress == null) return [0, "Attempting to spawn with a null IP adress."];
-    if ((binarySearch(IPv4BadASNBlocks, ({
-            ip,
-            mask,
-            asn
-        }) => {
+    function checkIP(socket, request, bypassVPNBlocker) {
+        let ipAddress;
+        try {
+            ipAddress = getIP(request, request.headers).ip.slice(7);
+        } catch (e) {
+            console.log(e);
+            return [0, "Invalid IP"];
+        }
+        if (ipAddress == null) return [0, "Attempting to spawn with a null IP adress."];
+        if ((binarySearch(IPv4BadASNBlocks, ({ ip, mask, asn }) => {
             let dbOut = ip >>> (32 - mask),
                 ipOut = parseIPv4(ipAddress) >>> (32 - mask);
             return ipOut - dbOut;
         }) >= 0 || blockerDB.torIPs.includes(ipAddress)) && !bypassVPNBlocker) return [0, "VPN detected. Please disable it and try again."];
-    let same = 0;
-    for (let socket of sockets.clients)
-        if (socket.ip === ipAddress) same++;
-    if (same >= c.TAB_LIMIT) return [0, "You have too many tabs open. Please close some tabs and try again."];
-    for (let ban of securityDatabase.bans)
-        if (ipAddress === ban.ip) return [0, "You were banned from the game for: " + ban.reason];
-    for (let ban of securityDatabase.blackList)
-        if (ipAddress === ban.ip) return [0, "Your IP has been temporarily blacklisted for: " + ban.reason];
-    if (sockets.clients.length >= c.MAX_PLAYERS) return [0, `The max player limit for this server (${c.MAX_PLAYERS}) has been reached. Please try a different server or come back later.`];
-    return [1, ipAddress];
-};
+        let same = 0;
+        for (let socket of sockets.clients)
+            if (socket.ip === ipAddress) same++;
+        if (same >= c.tabLimit) return [0, "You have too many tabs open. Please close some tabs and try again."];
+        for (let ban of securityDatabase.bans)
+            if (ipAddress === ban.ip) return [0, "You were banned from the game for: " + ban.reason];
+        for (let ban of securityDatabase.blackList)
+            if (ipAddress === ban.ip) return [0, "Your IP has been temporarily blacklisted for: " + ban.reason];
+        if (sockets.clients.length >= c.maxPlayers) return [0, `The max player limit for this server (${c.MAX_PLAYERS}) has been reached. Please try a different server or come back later.`];
+        return [1, ipAddress];
+    }
+    return function(socket, request, bypassVPNBlocker = false) {
+        const headerCheck = checkHeaders(request.headers);
+        if (headerCheck[0] === 0) return headerCheck;
+        return checkIP(socket, request, bypassVPNBlocker);
+    }
+})();
+
 module.exports = {
     securityDatabase,
-    checkIP
+    checkIP: verifySocket
 };

@@ -33,4 +33,13 @@ const killRace = (function() {
             setTimeout(closeArena, 2500);
         }
     }
+    return {
+        registerKill,
+        getKillData,
+        data
+    };
 })();
+
+module.exports = {
+    killRace
+};

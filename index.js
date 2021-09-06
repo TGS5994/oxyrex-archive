@@ -921,11 +921,6 @@ const maintainloop = (() => {
         // Do stuff
         makenpcs();
         createFood();
-        // Regen health and update the grid
-        loopThrough(entities, function(instance) {
-            if (instance.shield.max) instance.shield.regenerate();
-            if (instance.health.amount) instance.health.regenerate(instance.shield.max && instance.shield.max === instance.shield.amount);
-        });
     };
 })();
 // Bring it to life
