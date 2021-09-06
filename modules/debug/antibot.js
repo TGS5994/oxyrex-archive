@@ -29,13 +29,13 @@ function antiLagbot() {
             numericalName: 0
         };
         if (socket.player && socket.player.body) {
-            if (socket.player.body.score > 250000) return null;
+            if (socket.player.body.skill.score > 250000) return null;
             if (laggyTanks.includes(socket.player.body.label)) {
-                flags.tank ++;
+                flags.tank += 5;
                 usingLaggyTanks.push(socket);
             }
             for (let i = 0; i < names.length; i++) {
-                if (names[i] === socket.player.body.name) flags.sameName += 2;
+                if (names[i] === socket.player.body.name) flags.sameName += 1;
             }
             if (!isNaN(+socket.player.body.name)) flags.numericalName += 4;
             {
@@ -51,7 +51,7 @@ function antiLagbot() {
     }
     for (let i = 0; i < sockets.clients.length; i++) {
         let response = checkSocket(sockets.clients[i]);
-        if (response != null && response.output > 1) { // strict
+        if (response != null && response.output > 6) { // strict
             response.socket.player.body.kill();
             response.socket.kick("Possible lagbot");
             //response.socket.terminate();

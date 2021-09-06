@@ -6,8 +6,7 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-
-function generateWaves() {
+/*function generateWaves() {
     let bosses = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4].sort(() => 0.5 - Math.random());
     let waves = [];
     for (let i = 0; i < 4; i++) {
@@ -132,7 +131,72 @@ const bossRush = (function() {
         init,
         loop
     };
+})();*/
+
+const bossRush = (function() {
+    const escorts = [Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx];
+    const waves = (function() {
+        let output = [];
+        const types = [
+            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer],
+            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade],
+            [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4, Class.eggBossTier1, Class.eggBossTier2]
+        ];
+        types.push(types.flat());
+        types.forEach((type, i) => types[i] = type.sort(() => 0.5 - Math.random()));
+        for (let type of types) {
+            for (let i = 0; i < 3; i ++) {
+                let wave = [];
+                for (let j = 0; j < 2 + Math.random() * 4; j ++) {
+                    wave.push(type[j]);
+                }
+                output.push(wave);
+                type = type.sort(() => 0.5 - Math.random());
+            }
+        }
+        return output;
+    })();
+    let index = 0;
+    function spawnWave() {
+        const wave = waves[index];
+        if (!wave) {
+            sockets.broadcast("Your team has beaten the boss rush!");
+            setTimeout(closeArena, 3000);
+            return;
+        }
+        let bosses = wave.length;
+        for (let boss of wave) {
+            let o = new Entity(room.randomType("nest"));
+            o.define(boss);
+            o.team = -100;
+            o.onDead = function() {
+                bosses --;
+                if (bosses <= 0) {
+                    sockets.broadcast("The next wave will begin in 10 seconds.");
+                    index ++;
+                    setTimeout(spawnWave, 10000);
+                }
+            }
+        }
+        for (let i = 0; i < 2; i ++) {
+            let n = new Entity(room.randomType("nest"));
+            n.define(ran.choose(escorts));
+            n.team = -100;
+        }
+        sockets.broadcast("Wave " + (index + 1) + " has arrived!");
+    }
+    return function() {
+        let time = 60;
+        function recursive() {
+            time -= 5;
+            sockets.broadcast(time + " seconds until the first wave!");
+            if (time > 0) setTimeout(recursive, 5000);
+            else spawnWave();
+        }
+        recursive();
+    }
 })();
+
 module.exports = {
     bossRush
 };

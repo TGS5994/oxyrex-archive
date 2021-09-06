@@ -8,7 +8,7 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership", "Kill Race"];
-const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
+const gamemode = "Boss Rush";//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "FFA": {
         BOTS: 6
@@ -236,38 +236,6 @@ const gamemodes = {
             return output
         })()
     },
-    "Siege": {
-        MODE: "tdm",
-        TEAMS: 1,
-        SPECIAL_BOSS_SPAWNS: true,
-        WIDTH: 6500,
-        HEIGHT: 6500,
-        X_GRID: 19,
-        Y_GRID: 19,
-        ROOM_SETUP: [
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "wall", "wall", "wall", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "boss", "boss", "boss", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "boss", "boss", "boss", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "wall", "wall", "wall", "wall", "boss", "boss", "boss", "wall", "wall", "wall", "wall", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "wall", "wall", "norm", "norm", "wall", "norm", "norm", "norm", "wall", "norm", "norm", "wall", "wall", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "wall", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "wall", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "wall", "norm", "norm", "bas1", "norm", "norm", "bas1", "norm", "norm", "bas1", "norm", "norm", "wall", "outb", "outb", "outb"],
-            ["wall", "wall", "wall", "wall", "wall", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "wall", "wall", "wall", "wall", "wall"],
-            ["wall", "boss", "boss", "boss", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "boss", "boss", "boss", "wall"],
-            ["wall", "boss", "boss", "boss", "norm", "norm", "bas1", "norm", "nest", "nest", "nest", "norm", "bas1", "norm", "norm", "boss", "boss", "boss", "wall"],
-            ["wall", "boss", "boss", "boss", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "boss", "boss", "boss", "wall"],
-            ["wall", "wall", "wall", "wall", "wall", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "wall", "wall", "wall", "wall", "wall"],
-            ["outb", "outb", "outb", "wall", "norm", "norm", "bas1", "norm", "norm", "bas1", "norm", "norm", "bas1", "norm", "norm", "wall", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "wall", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "wall", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "wall", "wall", "norm", "norm", "wall", "norm", "norm", "norm", "wall", "norm", "norm", "wall", "wall", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "wall", "wall", "wall", "wall", "boss", "boss", "boss", "wall", "wall", "wall", "wall", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "boss", "boss", "boss", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "boss", "boss", "boss", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "wall", "wall", "wall", "wall", "wall", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
-        ],
-        secondaryGameMode: "Boss Rush",
-        BOTS: 2
-    },
     "Boss Rush": {
         MODE: "tdm",
         TEAMS: 1,
@@ -280,7 +248,7 @@ const gamemodes = {
             ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "norm", "norm", "rock", "roid"],
             ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "roid", "nest", "nest", "nest", "nest", "roid", "norm", "norm", "norm", "norm", "norm"],
@@ -289,7 +257,7 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "roid", "nest", "nest", "nest", "nest", "roid", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
             ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "roid", "roid", "norm", "norm", "norm", "norm", "norm", "rock", "roid"]
