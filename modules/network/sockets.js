@@ -404,7 +404,7 @@ const sockets = (() => {
                     if (body != null && socket.permissions > 0 && !global.arenaClosed) {
                         switch (m[0]) {
                             case 0: { // Testbed
-                                let tank = ["basic", "betaTester", "testbed"][socket.permissions];
+                                let tank = ["basic", "betaTanks", "testbed"][socket.permissions];
                                 body.define(Class.resetSkills);
                                 body.define(Class[tank]);
                                 body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
