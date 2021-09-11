@@ -14,8 +14,8 @@ let mockupJsonData = (() => {
         return +val.toPrecision(6);
     }
     // Define mocking up functions
-    function getMockup(e, positionInfo) {
-        return {
+    function getMockup(e, positionInfo, tank) {
+        const output = {
             index: e.index,
             name: e.label,
             x: rounder(e.x),
@@ -52,8 +52,33 @@ let mockupJsonData = (() => {
                 out.layer = rounder(t.bound.layer);
                 out.angle = rounder(t.bound.angle);
                 return out;
-            }),
+            })
         };
+        if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
+            const body = {};
+            if (tank.PARENT) {
+                if (Array.isArray(tank.PARENT)) {
+                    for (let parent of tank.PARENT) {
+                        if (parent.BODY) {
+                            for (let key in parent.BODY) {
+                                body[key] = parent.BODY[key];
+                            }
+                        }
+                    }
+                } else if (tank.PARENT.BODY) {
+                    for (let key in tank.PARENT.BODY) {
+                        body[key] = tank.PARENT.BODY[key];
+                    }
+                }
+            }
+            if (tank.BODY) {
+                for (let key in tank.BODY) {
+                    body[key] = tank.BODY[key];
+                }
+            }
+            output.body = body;
+        }
+        return output;
     }
 
     function getDimensions(entities) {
@@ -291,7 +316,7 @@ let mockupJsonData = (() => {
             // This is to pass the size information about the mockup that we didn't have until we created the mockup
             type.mockup.body.position = type.mockup.position;
             // Add the new data to the thing.
-            mockupData.push(getMockup(temptank, type.mockup.position));
+            mockupData.push(getMockup(temptank, type.mockup.position, Class[k]));
             // Kill the reference entities.
             temptank.destroy();
         } catch (error) {
