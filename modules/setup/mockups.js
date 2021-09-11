@@ -76,6 +76,11 @@ let mockupJsonData = (() => {
                     body[key] = tank.BODY[key];
                 }
             }
+            for (const key in body) {
+                if (body[key] === Class.baseStats[key]) {
+                    delete body[key];
+                }
+            }
             output.body = body;
         }
         return output;
