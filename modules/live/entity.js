@@ -532,7 +532,7 @@ class Entity {
         };
         this.addToGrid = () => {
             if (!mockupsLoaded) return;
-            if (!this.isInGrid && this.bond == null) {
+            if (!this.isInGrid && (this.settings.hitsOwnType === "everything" || this.bond == null)) {
                 grid.addObject(this);
                 this.isInGrid = true;
             }
@@ -677,7 +677,7 @@ class Entity {
                 return Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1));
             };
             this.updateAABB = active => {
-                if (this.bond != null) return 0;
+                if (this.settings.hitsOwnType !== "everything" && this.bond != null) return 0;
                 if (!active) {
                     data.active = false;
                     return 0;
@@ -832,6 +832,9 @@ class Entity {
         if (set.GIVE_KILL_MESSAGE != null) {
             this.settings.givesKillMessage = set.GIVE_KILL_MESSAGE;
         }
+        if (set.DAMAGE_TURRET != null) {
+            this.settings.collision = set.DAMAGE_TURRET;
+        }
         if (set.CAN_GO_OUTSIDE_ROOM != null) {
             this.settings.canGoOutsideRoom = set.CAN_GO_OUTSIDE_ROOM;
         }
@@ -875,6 +878,9 @@ class Entity {
         if (set.NECRO_BULLETS) this.settings.necroBullets = set.NECRO_BULLETS;
         if (set.GO_THROUGH_BASES != null) this.settings.goThroughBases = set.GO_THROUGH_BASES;
         if (set.GO_THROUGH_WALLS != null) this.settings.goThroughWalls = set.GO_THROUGH_WALLS;
+        if (set.SCOPE != null) {
+            this.settings.canScope = set.SCOPE;
+        }
         if (set.AUTO_UPGRADE != null) {
             this.settings.upgrading = set.AUTO_UPGRADE;
         }
@@ -1093,18 +1099,16 @@ class Entity {
         if (this.settings.reloadToAcceleration) this.acceleration *= this.skill.acl;
         this.topSpeed = c.runSpeed * this.SPEED * this.skill.mob / speedReduce;
         if (this.settings.reloadToAcceleration) this.topSpeed /= Math.sqrt(this.skill.acl);
-        this.health.set(
-            (((this.settings.healthWithLevel) ? 2 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
+        this.health.set((((this.settings.healthWithLevel) ? 2 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
         this.health.resist = 1 - 1 / Math.max(1, this.RESIST + this.skill.brst);
-        this.shield.set(
-            (((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * this.skill.rgn));
-        this.damage = this.DAMAGE * this.skill.atk;
-        this.penetration = this.PENETRATION + 1.5 * (this.skill.brst + 0.8 * (this.skill.atk - 1));
+        this.shield.set((((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * this.skill.rgn));
+        this.damage = this.DAMAGE * (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk);;
+        this.penetration = this.PENETRATION + 1.5 * ((this.settings.hitsOwnType === 'everything' ? this.skill.lancer.pen : this.skill.brst) + 0.8 * (this.skill.atk - 1));
         if (!this.settings.dieAtRange || !this.range) {
             this.range = this.RANGE;
         }
         this.fov = this.FOV * 250 * Math.sqrt(this.size) * (1 + 0.003 * this.skill.level);
-        this.density = (1 + 0.08 * this.skill.level) * this.DENSITY;
+        this.density = (1 + 0.08 * this.skill.level) * this.DENSITY * this.settings.hitsOwnType === "everything" ? this.skill.lancer.str : 1;
         this.stealth = this.STEALTH;
         this.pushability = this.PUSHABILITY;
     }
@@ -1115,7 +1119,7 @@ class Entity {
         this.skill = this.bond.skill;
         this.label = this.bond.label + ' ' + this.label;
         // It will not be in collision calculations any more nor shall it be seen.
-        this.removeFromGrid();
+        if (this.settings.hitsOwnType !== "everything") this.removeFromGrid();
         this.settings.drawShape = false;
         // Get my position.
         this.bound = {};
@@ -1150,12 +1154,14 @@ class Entity {
         return (this.velocity.y + this.accel.y) / roomSpeed;
     }
     camera(tur = false) {
-        return {
+        const out = {
             type: 0 + tur * 0x01 + this.settings.drawHealth * 0x02 + (this.type === 'tank') * 0x04,
             id: this.id,
             index: this.index,
             x: this.x,
             y: this.y,
+            cx: this.x,
+            cy: this.y,
             vx: this.velocity.x,
             vy: this.velocity.y,
             size: this.size,
@@ -1175,6 +1181,18 @@ class Entity {
             guns: this.guns.map(gun => gun.getLastShot()),
             turrets: this.turrets.map(turret => turret.camera(true)),
         };
+        if (this.settings.canScope) {
+            if (!this.control.alt) {
+                this.cameraShiftFacing = null;
+            } else if (this.cameraShiftFacing) {
+                [out.cx, out.cy] = this.cameraShiftFacing;
+            } else {
+                out.cx += (this.fov * Math.cos(this.facing)) / 4;
+                out.cy += (this.fov * Math.sin(this.facing)) / 4;
+                this.cameraShiftFacing = [out.cx, out.cy];
+            }
+        }
+        return out;
     }
     skillUp(stat) {
         let suc = this.skill.upgrade(stat);
@@ -1531,7 +1549,7 @@ class Entity {
         }
     }
     contemplationOfMortality() {
-        if (this.invuln) {
+        if (this.invuln || this.settings.collision) {
             this.damageRecieved = 0;
             return 0;
         }

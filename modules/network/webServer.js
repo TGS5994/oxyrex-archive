@@ -35,6 +35,11 @@ const httpServer = http.createServer(function(request, response) {
             response.writeHead(200);
             response.end(mockupJsonData);
             break;
+        case "/liveReloadChanges.json":
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.writeHead(200);
+            response.end(JSON.stringify(liveReload.output));
+            break;
         case "/gamemodeData.json":
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.writeHead(200);

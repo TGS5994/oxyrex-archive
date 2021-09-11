@@ -85,6 +85,7 @@ class Skill {
         this.brst = 0;
         this.ghost = 0;
         this.acl = 0;
+        this.lancer = {};
         this.reset();
     }
     reset() {
@@ -141,6 +142,12 @@ class Skill {
         this.mob = apply(0.8, attrib[skcnv.mob]);
         this.rgn = apply(25, attrib[skcnv.rgn]);
         this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt] + attrib[skcnv.rgn]);
+        this.lancer = {
+            pen: apply(3, attrib[skcnv.pen]),
+            str: apply(3, attrib[skcnv.str]),
+            dam: apply(3, attrib[skcnv.dam]),
+            spd: apply(5, attrib[skcnv.spd])
+        }
     }
     set(thing) {
         this.raw[0] = thing[0];

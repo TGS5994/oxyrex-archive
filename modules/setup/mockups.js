@@ -134,10 +134,12 @@ let mockupJsonData = (() => {
             });*/
             for (let i = 0; i < model.turrets.length; i++) {
                 let turret = model.turrets[i];
-                pushEndpoints(turret, turret.bound.size, {
-                    x: turret.bound.offset * Math.cos(turret.bound.angle),
-                    y: turret.bound.offset * Math.sin(turret.bound.angle)
-                }, turret.bound.angle);
+                if (!turret.label.includes("Collision")) {
+                    pushEndpoints(turret, turret.bound.size, {
+                        x: turret.bound.offset * Math.cos(turret.bound.angle),
+                        y: turret.bound.offset * Math.sin(turret.bound.angle)
+                    }, turret.bound.angle);
+                }
             }
             /*model.turrets.forEach(function(turret) {
               pushEndpoints(turret, turret.bound.size, {

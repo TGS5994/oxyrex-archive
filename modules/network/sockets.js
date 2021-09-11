@@ -258,13 +258,13 @@ const sockets = (() => {
                     player.target = target;
                     // Process the commands
                     if (player.command != null && player.body != null) {
-                        player.command.up = (commands & 1)
-                        player.command.down = (commands & 2) >> 1
-                        player.command.left = (commands & 4) >> 2
-                        player.command.right = (commands & 8) >> 3
-                        player.command.lmb = (commands & 16) >> 4
-                        player.command.mmb = (commands & 32) >> 5
-                        player.command.rmb = (commands & 64) >> 6
+                        player.command.up = (commands & 1);
+                        player.command.down = (commands & 2) >> 1;
+                        player.command.left = (commands & 4) >> 2;
+                        player.command.right = (commands & 8) >> 3;
+                        player.command.lmb = (commands & 16) >> 4;
+                        player.command.mmb = (commands & 32) >> 5;
+                        player.command.rmb = (commands & 64) >> 6;
                     }
                     // Update the thingy
                     socket.timeout.set(commands)
@@ -1367,8 +1367,8 @@ const sockets = (() => {
                                 // I live!
                                 else if (player.body.photo) {
                                     // Update camera position and motion
-                                    camera.x = player.body.photo.x;
-                                    camera.y = player.body.photo.y;
+                                    camera.x = player.body.photo.cx;
+                                    camera.y = player.body.photo.cy;
                                     camera.vx = player.body.photo.vx;
                                     camera.vy = player.body.photo.vy;
                                     // Get what we should be able to see

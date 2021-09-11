@@ -53,6 +53,9 @@ const gameloop = (() => {
             util.warn('Tried to collide with an inactive instance.');
             return 0;
         }
+        if (instance.settings.hitsOwnType === "everything" && other.settings.hitsOwnType === "everything") {
+            return 0;
+        }
         if (instance.master.passive || other.master.passive) return;
         switch (true) {
             case (instance.type === "wall" || other.type === "wall"):
@@ -73,6 +76,14 @@ const gameloop = (() => {
                         break;
                 };
                 break;
+            case ((instance.label.includes("Collision") || other.label.includes("Collision")) && (instance.settings.hitsOwnType === "everything" || other.settings.hitsOwnType === "everything") && instance.team !== other.team): {
+                if (instance.passive || other.passive) return;
+                if (instance.invuln || other.invuln) return;
+                const flail = instance.label.includes("Collision") ? instance : other;
+                const entity = instance.label.includes("Collision") ? other : instance;
+                if (entity.label.includes("Collision")) return;
+                advancedcollide(flail, entity, true, false, null);
+            } break;
             case (instance.team === other.team && (instance.settings.hitsOwnType === "pushOnlyTeam" || other.settings.hitsOwnType === "pushOnlyTeam")): { // Dominator / Mothership collisions
                 if (instance.settings.hitsOwnType === other.settings.hitsOwnType) return;
                 let pusher = instance.settings.hitsOwnType === "pushOnlyTeam" ? instance : other;
