@@ -44,6 +44,10 @@ const botSets = [/*{ // Smasher Ram Bots
     ai: "ramBot",
     build: [9, 0, 0, 0, 0, 5, 9, 9, 4, 9],
     startClass: "tri"
+}, { // Tri-Angle Bullet Bots
+    ai: "bot",
+    build: [9, 9, 9, 9, 0, 0, 0, 0, 0, 9],
+    startClass: "tri"
 }, { // Pounder Bots
     ai: "bot",
     build: [3, 8, 8, 8, 7, 0, 0, 3, 0, 7],

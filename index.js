@@ -570,7 +570,7 @@ const maintainloop = (() => {
             spawnBosses(census);
             spawnSanctuaries(census);
             // Bots
-            if (bots.length + views.length < c.maxPlayers && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam || null));
+            if (bots.length + views.length < c.maxPlayers && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
             // Remove dead ones
             bots = bots.filter(e => {
                 return !e.isDead();

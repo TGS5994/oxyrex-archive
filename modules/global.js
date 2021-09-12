@@ -24,7 +24,7 @@ global.entitiesToAvoid = [];
 global.grid = new hshg.HSHG();
 global.arenaClosed = false;
 global.mockupsLoaded = false;
-global.nextTagBotTeam = false;
+global.nextTagBotTeam = [];
 global.getTeam = () => {
     let teamData = {};
     for (let i = 1; i < c.TEAMS + 1; i++) teamData[i] = 0;

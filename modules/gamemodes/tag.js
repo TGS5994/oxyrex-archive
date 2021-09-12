@@ -38,7 +38,7 @@ function tagDeathEvent(instance) {
     if (!killers.length) return;
     let killer = ran.choose(killers);
     if (instance.socket) instance.socket.rememberedTeam = -killer.team;
-    if (instance.isBot) global.nextTagBotTeam = -killer.team;
+    if (instance.isBot) global.nextTagBotTeam.push(-killer.team);
     /*if (room.width > 1500) {
       room.width -= 10;
       room.height -= 10;
