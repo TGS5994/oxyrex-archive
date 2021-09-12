@@ -5,7 +5,7 @@
     "networkUpdateFactor": 24,
     "socketWarningLimit": 5,
     "tabLimit": 2,
-    "maxPlayers": 20,
+    "maxPlayers": 13,
     "networkFrontlog": 1,
     "networkFallbackTime": 150,
     "visibleListInterval": 1000,

@@ -305,30 +305,36 @@ const maintainloop = (() => {
                 },
             };
         })();
-        let timerThing = 60 * 5;
+        let timerThing = 60 * 6;
         return census => {
             if (timer > timerThing && ran.dice(timerThing - timer)) {
                 util.log('[SPAWN] Preparing to spawn...');
                 timer = 0;
                 let choice = [];
-                switch (ran.chooseChance(1, 1, 1)) {
+                switch (ran.chooseChance(1, 1, 1, 1)) {
                     case 0:
                         choice = [
-                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1 + (Math.random() * 3 | 0), 'a', 'nest'
+                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1 + (Math.random() * 2 | 0), 'a', 'nest'
                         ];
                         sockets.broadcast("A stirring in the distance...");
                         break;
                     case 1:
                         choice = [
-                            [Class.summoner, Class.eliteSkimmer, Class.palisade], 1 + (Math.random() * 3 | 0), 'a', 'norm'
+                            [Class.summoner, Class.eliteSkimmer, Class.palisade], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("A strange trembling...");
                         break;
                     case 2:
                         choice = [
-                            [Class.deltrablade, Class.trapeFighter], 1 + (Math.random() * 3 | 0), 'a', 'norm'
+                            [Class.deltrablade, Class.trapeFighter], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("Don't get Distracted...");
+                        break;
+                    case 3:
+                        choice = [
+                            [Class.fallenOverlord], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                        ];
+                        sockets.broadcast("Many sought the day they'd return, but not in this way...");
                         break;
                 }
                 boss.prepareToSpawn(...choice);
@@ -401,7 +407,7 @@ const maintainloop = (() => {
                 boss.prepareToSpawn(...choice);
                 setTimeout(boss.spawn, 3000);
                 // Set the timeout for the spawn functions
-            } else if (!census.sanctuary) timer++;
+            } else if (!census.sanctuary && !census.miniboss) timer++;
         };
     })();
     let spawnCrasher = (() => {
@@ -564,7 +570,7 @@ const maintainloop = (() => {
             spawnBosses(census);
             spawnSanctuaries(census);
             // Bots
-            if (bots.length < c.BOTS && !global.arenaClosed) bots.push(spawnBot(global.nextTagBotTeam || null));
+            if (bots.length + views.length < c.maxPlayers && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam || null));
             // Remove dead ones
             bots = bots.filter(e => {
                 return !e.isDead();

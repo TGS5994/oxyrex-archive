@@ -40,11 +40,11 @@ const botSets = [/*{ // Smasher Ram Bots
     ai: "ramBot",
     build: [0, 0, 0, 0, 0, 5, 9, 12, 3, 10],
     startClass: "smash"
-}, { // Tri-Angle Ram Bots
+}, */{ // Tri-Angle Ram Bots
     ai: "ramBot",
     build: [9, 0, 0, 0, 0, 5, 9, 9, 4, 9],
     startClass: "tri"
-}, */{ // Pounder Bots
+}, { // Pounder Bots
     ai: "bot",
     build: [3, 8, 8, 8, 7, 0, 0, 3, 0, 7],
     startClass: "pounder"
@@ -139,7 +139,7 @@ class Skill {
         this.shi = c.GLASS_HEALTH_FACTOR * apply(6 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.shi]);
         this.atk = apply(0.25, attrib[skcnv.atk]);
         this.hlt = c.GLASS_HEALTH_FACTOR * apply(1.75 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.hlt]);
-        this.mob = apply(0.8, attrib[skcnv.mob]);
+        this.mob = apply(.9, attrib[skcnv.mob]);
         this.rgn = apply(25, attrib[skcnv.rgn]);
         this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt] + attrib[skcnv.rgn]);
         this.lancer = {

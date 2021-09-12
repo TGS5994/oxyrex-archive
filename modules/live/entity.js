@@ -1739,7 +1739,7 @@ class Entity {
                 } else if (this.skill.score >= 1000000) {
                     bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
                         id: this.socket.discordID,
-                        achievement: "Achievement|||Die with at least one million points."
+                        achievement: "Millionare|||Die with at least one million points."
                     });
                     this.sendMessage("achievement get: " + "Millionare");
                 }
