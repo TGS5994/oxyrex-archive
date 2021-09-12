@@ -5,6 +5,7 @@ const util = require("./util.js");
 global.operatingSystem = require("os");
 // Create the bot.
 const bot = new Discord.Client();
+bot.database = require("./database.js");
 // When our bot is online, we set it's activity.
 bot.on("ready", async function() {
     bot.user.setActivity(`for commands (${config.prefix})`, {
@@ -22,6 +23,7 @@ for (let command of [
     "bots",
     "say",
     "claim",
+    "achievements",
     "kick",
     "ban",
     "unban",
@@ -64,6 +66,7 @@ bot.on("message", messageEvent);
 bot.on("error", console.log);
 bot.login(config.token);
 bot.util = util;
+bot.config = config;
 module.exports = {
     bot
 };

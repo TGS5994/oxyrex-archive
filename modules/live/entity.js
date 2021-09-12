@@ -1620,6 +1620,29 @@ class Entity {
                 if (instance.master.settings.acceptsScore) { // If it's not food, give its master the score
                     if (instance.master.type === 'tank' || instance.master.type === 'miniboss') notJustFood = true;
                     instance.master.skill.score += jackpot;
+                    if (instance.socket && instance.socket.discordID != null) {
+                        if (jackpot >= 250000) {
+                            bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                                id: instance.socket.discordID,
+                                achievement: "Jackpot|||Get at least 250k score from one kill."
+                            });
+                            instance.sendMessage("Achievement get: " + "Jackpot");
+                        }
+                        if (this.label === "Mothership" && this.isMothership) {
+                            bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                                id: instance.socket.discordID,
+                                achievement: "Big Game Hunter|||Kill a Mothership."
+                            });
+                            instance.sendMessage("Achievement get: " + "Big Game Hunter");
+                        }
+                        if (this.type === "miniboss") {
+                            bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                                id: instance.socket.discordID,
+                                achievement: "That was tough...|||Kill a boss."
+                            });
+                            instance.sendMessage("Achievement get: " + "That was tough...");
+                        }
+                    }
                     killers.push(instance.master); // And keep track of who killed me
                 } else if (instance.settings.acceptsScore) {
                     instance.skill.score += jackpot;
@@ -1700,6 +1723,27 @@ class Entity {
                 sockets.broadcast(usurptText);
             }
             this.setKillers(killers);
+            if (this.socket && this.socket.discordID != null) {
+                if (this.skill.score >= 10000000) {
+                    bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                        id: this.socket.discordID,
+                        achievement: "Wtf dude.... How much time do you have?|||Die with at least ten million points."
+                    });
+                    this.sendMessage("Achievement get: " + "Wtf dude.... How much time do you have?");
+                } else if (this.skill.score >= 5000000) {
+                    bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                        id: this.socket.discordID,
+                        achievement: "Dang this guy is serious|||Die with at least five million points."
+                    });
+                    this.sendMessage("Achievement get: " + "Dang this guy is serious");
+                } else if (this.skill.score >= 1000000) {
+                    bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                        id: this.socket.discordID,
+                        achievement: "Achievement|||Die with at least one million points."
+                    });
+                    this.sendMessage("achievement get: " + "Millionare");
+                }
+            }
             // Kill it
             return 1;
         }
