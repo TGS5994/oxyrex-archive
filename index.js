@@ -60,6 +60,7 @@ const gameloop = (() => {
         switch (true) {
             case (instance.type === "wall" || other.type === "wall"):
                 if (instance.type === "wall" && other.type === "wall") return;
+                if (instance.label.includes("Collision") || other.label.includes("Collision")) return;
                 if (instance.settings.goThroughWalls || other.settings.goThroughWalls || instance.master.settings.goThroughWalls || other.master.settings.goThroughWalls || instance.master.godmode || other.master.godmode) return;
                 let wall = instance.type === "wall" ? instance : other;
                 let entity = instance.type === "wall" ? other : instance;
