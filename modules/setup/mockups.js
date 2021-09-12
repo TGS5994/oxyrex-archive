@@ -6,14 +6,100 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
+/*const atlas = ["name", "index", "x", "y", "color", "shape", "size", "realSize", "facing", "position", "middle", "axis", "points", "upgrades", "guns", "turrets", "offset", "direction", "length", "width", "aspect", "angle", "skin", "layer", "sizeFactor", "body", "Health", "Body Damage", "Movement Speed", "Regeneration", "Shield", "Acceleration", "Density", "Penetration", "Pushability"];
+
+function encode(json) {
+    let output = {};
+    for (let key in json) {
+        if (typeof json[key] === "object") {
+            if (Array.isArray(json[key])) {
+                for (let index = 0, length = json[key].length; index < length; index ++) {
+                    if (typeof json[key][index] === "object" && !Array.isArray(json[key][index])) {
+                        json[key][index] = encode(json[key][index]);
+                    }
+                }
+            } else {
+                json[key] = encode(json[key]);
+            }
+        }
+        let newKey = (atlas.indexOf(key) === -1 ? key : atlas.indexOf(key));
+        output[newKey] = json[key];
+    }
+    return output;
+}
+
+function decode(json) {
+    let output = {};
+    for (let key in json) {
+        if (typeof json[key] === "object") {
+            if (Array.isArray(json[key])) {
+                for (let index = 0, length = json[key].length; index < length; index ++) {
+                    if (typeof json[key][index] === "object" && !Array.isArray(json[key][index])) {
+                        json[key][index] = decode(json[key][index]);
+                    }
+                }
+            } else {
+                json[key] = decode(json[key]);
+            }
+        }
+        let newKey = (isNaN(+key) ? key : atlas[+key]);
+        output[newKey] = json[key];
+    }
+    return output;
+}
+
+function encodeMockups(data) {
+    let output = [];
+    for (let i = 0, length = data.length; i < length; i ++) output.push(encode(data[i]));
+    return output;
+}
+
+function decodeMockups(data) {
+    let output = [];
+    for (let i = 0, length = data.length; i < length; i ++) output.push(decode(data[i]));
+    return output;
+}
+
+const protocol = {
+    encode: encodeMockups,
+    decode: decodeMockups
+};
+
+if (typeof module !== "undefined") {
+    module.exports = protocol;
+} else if (typeof window !== "undefined") {
+    window.mockupProtocol = protocol;
+}*/
 let mockupJsonData = (() => {
     console.log("Started loading mockups...");
-
     function rounder(val) {
         if (Math.abs(val) < 0.00001) val = 0;
         return +val.toPrecision(6);
     }
     // Define mocking up functions
+    const bodyData = {
+        HEALTH: "Health",
+        DAMAGE: "Body Damage",
+        SPEED: "Movement Speed",
+        REGEN: "Regeneration",
+        SHIELD: "Shield",
+        ACCELERATION: "Acceleration",
+        DENSITY: "Density",
+        PENETRATION: "Penetration",
+        PUSHABILITY: "Pushability"
+    };
+    const defaults = {
+        x: 0,
+        y: 0,
+        color: 16,
+        shape: 0,
+        size: 1,
+        realSize: 1,
+        facing: 0,
+        layer: 0,
+        statnames: 0,
+        defaultArrayLength: 0
+    };
     function getMockup(e, positionInfo, tank) {
         const output = {
             index: e.index,
@@ -54,6 +140,10 @@ let mockupJsonData = (() => {
                 return out;
             })
         };
+        for (const key in defaults) {
+            if (output[key] === defaults[key]) delete output[key];
+            if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
+        }
         if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
             const body = {};
             if (tank.PARENT) {
@@ -77,11 +167,12 @@ let mockupJsonData = (() => {
                 }
             }
             for (const key in body) {
-                if (body[key] === Class.baseStats[key]) {
+                if (body[key] === Class.baseStats[key] || bodyData[key] == null) {
                     delete body[key];
                 }
             }
-            output.body = body;
+            output.body = {};
+            for (const key in body) output.body[bodyData[key]] = body[key];
         }
         return output;
     }
