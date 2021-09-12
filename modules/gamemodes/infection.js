@@ -22,7 +22,7 @@ function spawnBoss() {
         stats.bosses --;
         sockets.broadcast("The infection has been temporarily reversed!");
         if (stats.reverseTime < 0) stats.reverseTime = 0;
-        stats.reverseTime += Math.floor(Math.random() * 65 + 10);
+        stats.reverseTime += Math.floor(Math.random() * 115 + 10);
     }
 }
 

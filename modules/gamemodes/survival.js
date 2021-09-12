@@ -54,6 +54,13 @@ let survival = {
         sockets.broadcast(player.name + " has been eliminated!");
         if (survival.players.length === 1) {
             sockets.broadcast(survival.players[0].name + " has won!");
+            if (survival.players[0].socket != null && survival.players[0].discordID != null) {
+                bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                    id: survival.players[0].socket.discordID,
+                    achievement: "Survivor|||Win a game of Survival."
+                });
+                instance.sendMessage("Achievement get: " + "Survivor");
+            }
             setTimeout(closeArena, 1500);
         }
     }

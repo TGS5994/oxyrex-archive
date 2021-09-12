@@ -24,7 +24,7 @@ const gameloop = (() => {
         let instance = collision[0],
             other = collision[1];
         // Check for ghosts...
-        if (other.isGhost) {
+        if (other.isGhost && !other.label.includes("Collision")) {
             util.error('GHOST FOUND');
             util.error(other.label);
             util.error('x: ' + other.x + ' y: ' + other.y);
@@ -37,7 +37,7 @@ const gameloop = (() => {
             }
             return 0;
         }
-        if (instance.isGhost) {
+        if (instance.isGhost && !instance.label.includes("Collision")) {
             util.error('GHOST FOUND');
             util.error(instance.label);
             util.error('x: ' + instance.x + ' y: ' + instance.y);
