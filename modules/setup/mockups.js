@@ -140,10 +140,10 @@ let mockupJsonData = (() => {
                 return out;
             })
         };
-        for (const key in defaults) {
-            if (output[key] === defaults[key]) delete output[key];
-            if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
-        }
+        //for (const key in defaults) {
+        //    if (output[key] === defaults[key]) delete output[key];
+        //    if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
+        //}
         if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
             const body = {};
             if (tank.PARENT) {
