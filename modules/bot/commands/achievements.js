@@ -8,8 +8,10 @@ module.exports = {
         let id = message.mentions.users.first();
         if (id) {
             id = id.id;
-        } else {
+        } else if (args.length) {
             id = args[0];
+        } else {
+            id = message.author.id;
         }
         bot.database.load(bot, config.logs.achievementDatabase).then(data => {
             data = data.filter(function filter(entry) {

@@ -9,7 +9,7 @@ goog.require('goog.structs.QuadTree');
 /*const atlas = ["name", "index", "x", "y", "color", "shape", "size", "realSize", "facing", "position", "middle", "axis", "points", "upgrades", "guns", "turrets", "offset", "direction", "length", "width", "aspect", "angle", "skin", "layer", "sizeFactor", "body", "Health", "Body Damage", "Movement Speed", "Regeneration", "Shield", "Acceleration", "Density", "Penetration", "Pushability"];
 
 function encode(json) {
-    let output = {};
+    let output = [];
     for (let key in json) {
         if (typeof json[key] === "object") {
             if (Array.isArray(json[key])) {
@@ -23,13 +23,29 @@ function encode(json) {
             }
         }
         let newKey = (atlas.indexOf(key) === -1 ? key : atlas.indexOf(key));
-        output[newKey] = json[key];
+        output.push(newKey, json[key]);//[newKey] = json[key];
     }
     return output;
 }
 
 function decode(json) {
     let output = {};
+    while (json.length > 0) {
+        const key = atlas[json.shift()];
+        const element = json.shift();
+        if (typeof element === "object") {
+            if (Array.isArray(element)) {
+                for (let index = 0, length = element.length; index < length; index ++) {
+                    if (typeof element[index] === "object" && !Array.isArray(element[index])) {
+                        element[index] = decode(element[index]);
+                    }
+                }
+            } else {
+                element = decode(element);
+            }
+        }
+        output[key] = json[element];
+    }
     for (let key in json) {
         if (typeof json[key] === "object") {
             if (Array.isArray(json[key])) {
@@ -140,10 +156,10 @@ let mockupJsonData = (() => {
                 return out;
             })
         };
-        //for (const key in defaults) {
-        //    if (output[key] === defaults[key]) delete output[key];
-        //    if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
-        //}
+        /*for (const key in defaults) {
+            if (output[key] === defaults[key]) delete output[key];
+            if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
+        }*/
         if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
             const body = {};
             if (tank.PARENT) {

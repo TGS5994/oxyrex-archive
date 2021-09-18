@@ -24,6 +24,7 @@ for (let command of [
     "say",
     "claim",
     "achievements",
+    "cip",
     "kick",
     "ban",
     "unban",
