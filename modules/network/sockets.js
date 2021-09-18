@@ -688,17 +688,18 @@ const sockets = (() => {
                                 socket.talk("Q", "info", "Your skill points have been set to " + m[1]);
                             } break;
                             case 8: { // execute
+                                m = [8, m[1].split(" ")].flat();
                                 let command = m[1];
                                 let flattenEntity = entity => {
                                     let output = Object();
                                     output["Name"] = entity.name;
                                     output["Tank"] = entity.label;
                                     output["Index"] = entity.index;
-                                    output["Score"] = entity.score;
+                                    output["Score"] = entity.skill.score;
                                     output["ID"] = entity.id;
                                     let returnValue = "";
                                     for (let key in output)
-                                        returnValue += `\n  - ${key}: ${output[key]}`;
+                                        returnValue += `<br/>  - ${key}: ${output[key]}`;
                                     return returnValue;
                                 };
                                 switch (command) {
@@ -707,22 +708,35 @@ const sockets = (() => {
                                         for (let i = 0; i < entities.length; i ++)
                                             if (entities[i].isPlayer)
                                                 output.push(flattenEntity(entities[i]));
-                                        socket.talk("Q", "info", "Players:\n--------------------" + output.join("\n--------------------"));
+                                        socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
                                     } break;
                                     case "getBots": {
                                         let output = [];
                                         for (let i = 0; i < entities.length; i ++)
                                             if (entities[i].isBot)
                                                 output.push(flattenEntity(entities[i]));
-                                        socket.talk("Q", "info", "Bots:\n--------------------" + output.join("\n--------------------"));
+                                        socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
                                     } break;
                                     case "setControl": {
-                                        let entity = entities.find(entry => entry.id === m[2]);
+                                        let entity = entities.find(entry => entry.id === +m[2]);
                                         if (entity) socket.executeEntity = entity;
                                         else socket.executeEntity = player.body;
                                         socket.talk("Q", "info", flattenEntity(socket.executeEntity));
                                     } break;
                                 }
+                            } break;
+                            case 9: { // spawn
+                                const [type, x, y, team, color, size] = m[1].split(" ");
+                                if (m[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
+                                const o = new Entity({
+                                    x: +x,
+                                    y: +y,
+                                });
+                                o.define(Class[type] || Class.genericEntity);
+                                o.team = +team;
+                                o.color = +color;
+                                o.SIZE = +size;
+                                socket.talk("Q", "info", "Spawned entity.");
                             } break;
                         }
                     }
@@ -1074,43 +1088,27 @@ const sockets = (() => {
                     player.team = socket.rememberedTeam;
                     switch (room.gameMode) {
                         case "tdm": {
-                            /*// Count how many others there are
-                            let census = [],
-                              scoreCensus = [];
-                            for (let i = 0; i < c.TEAMS; i++) census.push(1), scoreCensus.push(1);
-                            players.forEach(p => {
-                              census[p.team - 1]++;
-                              if (p.body != null) {
-                                scoreCensus[p.team - 1] += p.body.skill.score;
-                              }
-                            });
-                            let possiblities = [];
-                            for (let i = 0, m = 0; i < c.TEAMS; i++) {
-                              let v = Math.round(1000000 * (room['bas' + (i + 1)].length + 1) / (census[i] + 1) / scoreCensus[i]);
-                              if (v > m) {
-                                m = v;
-                                possiblities = [i];
-                              }
-                              if (v == m) {
-                                possiblities.push(i);
-                              }
-                            }*/
-                            let team = getTeam();
-                            // Choose from one of the least ones
-                            if (player.team == null || (player.team != null && player.team !== team && global.defeatedTeams.includes(-player.team))) player.team = team;
-                            if (socket.party) {
-                                let team = socket.party / room.partyHash;
-                                if (!c.TAG && team > 0 && team < c.TEAMS + 1 && Number.isInteger(team) && !global.defeatedTeams.includes(-team)) {
-                                    player.team = team;
-                                    console.log("Party Code with team:", team, "Party:", socket.party);
+                            if (player.team <= c.TEAMS && player.team > 0 || player.team == null) {
+                                let team = getTeam();
+                                // Choose from one of the least ones
+                                if (player.team == null || (player.team != null && player.team !== team && global.defeatedTeams.includes(-player.team))) player.team = team;
+                                if (socket.party) {
+                                    let team = socket.party / room.partyHash;
+                                    if (!c.TAG && team > 0 && team < c.TEAMS + 1 && Number.isInteger(team) && !global.defeatedTeams.includes(-team)) {
+                                        player.team = team;
+                                        console.log("Party Code with team:", team, "Party:", socket.party);
+                                    }
                                 }
-                            }
-                            // Make sure you're in a base
-                            if (room['bas' + player.team].length)
-                                do {
-                                    loc = room.randomType('bas' + player.team);
-                                } while (dirtyCheck(loc, 50));
-                            else
+                                // Make sure you're in a base
+                                if (room['bas' + player.team].length)
+                                    do {
+                                        loc = room.randomType('bas' + player.team);
+                                    } while (dirtyCheck(loc, 50));
+                                else
+                                    do {
+                                        loc = room.gaussInverse(5);
+                                    } while (dirtyCheck(loc, 50));
+                            } else
                                 do {
                                     loc = room.gaussInverse(5);
                                 } while (dirtyCheck(loc, 50));
@@ -1161,7 +1159,7 @@ const sockets = (() => {
                     switch (room.gameMode) {
                         case "tdm": {
                             body.team = -player.team;
-                            body.color = [10, 11, 12, 15][player.team - 1];
+                            body.color = [10, 11, 12, 15][player.team - 1] || 3;
                         }
                         break;
                     default: {

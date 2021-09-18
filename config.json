@@ -54,7 +54,7 @@
     "STEALTH": 4,
     "MIN_SPEED": 0.001,
     "MIN_DAMAGE": 1,
-    "FOOD_AMOUNT": 0.15,
+    "FOOD_AMOUNT": 0.075,
     "SKILL_BOOST": 5,
     "BOTS": 9,
     "GLASS_HEALTH_FACTOR": 2,
