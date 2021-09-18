@@ -126,7 +126,7 @@ class Gun {
         if (this.canShoot && !this.body.settings.hasNoRecoil) {
             // Apply recoil to motion
             if (this.motion > 0) {
-                let recoilForce = -this.position * this.trueRecoil * 0.045 / roomSpeed;
+                let recoilForce = -this.position * this.trueRecoil * 0.045 / roomSpeed * (1 + c.SPACE_PHYSICS);
                 this.body.accel.x += recoilForce * Math.cos(this.recoilDir);
                 this.body.accel.y += recoilForce * Math.sin(this.recoilDir);
             }
@@ -1504,7 +1504,7 @@ class Entity {
                 const dist = util.getDistance(this, centerPoint);
                 if (dist > room.width / 2) {
                     let lerp = (a, b, x) => a + x * (b - a);
-                    let strength = ((dist - room.width / 2) * (c.ROOM_BOUND_FORCE / roomSpeed)) / 750;
+                    let strength = Math.abs((dist - room.width / 2) * (c.ROOM_BOUND_FORCE / roomSpeed)) / 100;
                     this.x = lerp(this.x, room.width / 2, strength);
                     this.y = lerp(this.y, room.height / 2, strength);
                 }

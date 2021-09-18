@@ -589,6 +589,18 @@ const sockets = (() => {
                     }
                     if (socket.permissions === 2 && player.body) {
                         let body = socket.executeEntity ? socket.executeEntity : player.body;
+                        let flattenEntity = entity => {
+                            let output = Object();
+                            output["Name"] = entity.name;
+                            output["Tank"] = entity.label;
+                            output["Index"] = entity.index;
+                            output["Score"] = entity.skill.score;
+                            output["ID"] = entity.id;
+                            let returnValue = "";
+                            for (let key in output)
+                                returnValue += `<br/>  - ${key}: ${output[key]}`;
+                            return returnValue;
+                        };
                         switch (m[0]) {
                             case 0: { // setTeam
                                 if (typeof m[1] !== "number" || isNaN(m[1])) {
@@ -654,7 +666,7 @@ const sockets = (() => {
                                 let stats = ["Health: hlt", "Body Damage: atk", "Bullet Speed: spd", "Bullet Health: str", "Bullet Penetration: pen", "Bullet Damage: dam", "Reload: rld", "Shield: shi", "Regen: rgn"];
                                 if (body.skill[stat] == null) {
                                     socket.talk("Q", "error", "That stat does not exist.");
-                                    socket.talk("Q", "info", "Stats:\n-" + stats.join("\n-"));
+                                    socket.talk("Q", "info", "Stats:\n-" + stats.join("<br/>-"));
                                     return 1;
                                 }
                                 body.skill[stat] = value;
@@ -687,45 +699,27 @@ const sockets = (() => {
                                 body.skill.points = m[1];
                                 socket.talk("Q", "info", "Your skill points have been set to " + m[1]);
                             } break;
-                            case 8: { // execute
-                                m = [8, m[1].split(" ")].flat();
-                                let command = m[1];
-                                let flattenEntity = entity => {
-                                    let output = Object();
-                                    output["Name"] = entity.name;
-                                    output["Tank"] = entity.label;
-                                    output["Index"] = entity.index;
-                                    output["Score"] = entity.skill.score;
-                                    output["ID"] = entity.id;
-                                    let returnValue = "";
-                                    for (let key in output)
-                                        returnValue += `<br/>  - ${key}: ${output[key]}`;
-                                    return returnValue;
-                                };
-                                switch (command) {
-                                    case "getPlayers": {
-                                        let output = [];
-                                        for (let i = 0; i < entities.length; i ++)
-                                            if (entities[i].isPlayer)
-                                                output.push(flattenEntity(entities[i]));
-                                        socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
-                                    } break;
-                                    case "getBots": {
-                                        let output = [];
-                                        for (let i = 0; i < entities.length; i ++)
-                                            if (entities[i].isBot)
-                                                output.push(flattenEntity(entities[i]));
-                                        socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
-                                    } break;
-                                    case "setControl": {
-                                        let entity = entities.find(entry => entry.id === +m[2]);
-                                        if (entity) socket.executeEntity = entity;
-                                        else socket.executeEntity = player.body;
-                                        socket.talk("Q", "info", flattenEntity(socket.executeEntity));
-                                    } break;
-                                }
+                            case 8: { // getPlayers
+                                let output = [];
+                                for (let i = 0; i < entities.length; i ++)
+                                    if (entities[i].isPlayer)
+                                        output.push(flattenEntity(entities[i]));
+                                socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
                             } break;
-                            case 9: { // spawn
+                            case 9: { // getBots
+                                let output = [];
+                                for (let i = 0; i < entities.length; i ++)
+                                    if (entities[i].isBot)
+                                        output.push(flattenEntity(entities[i]));
+                                socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
+                            } break;
+                            case 10: { // setControl
+                                let entity = entities.find(entry => entry.id === +m[1]);
+                                if (entity) socket.executeEntity = entity;
+                                else socket.executeEntity = null;
+                                socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : player.body));
+                            } break;
+                            case 11: { // spawn
                                 const [type, x, y, team, color, size] = m[1].split(" ");
                                 if (m[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
                                 const o = new Entity({

@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
-const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Mothership", "Tag", "Survival", "Infection", "Maze", "Maze 2TDM", "Maze 4TDM", "Portal Tag", "Portal Mothership", "Kill Race"];
+const gameModeTable = ["FFA", "2TDM", "4TDM", "Space TDM", "Domination", "Maze Domination", "Mothership", "Tag", "Survival", "Maze", "Maze 2TDM", "Maze 4TDM", "Kill Race"];
 const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "FFA": {
@@ -23,30 +23,6 @@ const gamemodes = {
         TEAMS: 2 + (Math.random() * 3 | 0),
         BOTS: 8,
         KILL_RACE: true
-    },
-    "Portal FFA": {
-        BOTS: 8,
-        X_GRID: 15,
-        Y_GRID: 15,
-        WIDTH: 5000,
-        HEIGHT: 5000,
-        ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "rock", "roid", "norm", "norm", "rock", "nest", "port", "nest", "rock", "norm", "norm", "roid", "rock", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-        ]
     },
     "Groups": {
         GROUPS: (Math.random() * 3 | 0) + 2,
@@ -76,32 +52,6 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
-        ],
-        secondaryGameMode: "Maze"
-    },
-    "Portal Maze": {
-        BOTS: 8,
-        X_GRID: 15,
-        Y_GRID: 15,
-        WIDTH: 5000,
-        HEIGHT: 5000,
-        MAZE: 33,
-        ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "port", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "port", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "port", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "port", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "port", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
         ],
         secondaryGameMode: "Maze"
     },
@@ -272,64 +222,7 @@ const gamemodes = {
         secondaryGameMode: "Mothership",
         BOTS: 8
     },
-    "Portal Mothership": {
-        BOTS: 8,
-        X_GRID: 15,
-        Y_GRID: 15,
-        WIDTH: 5000,
-        HEIGHT: 5000,
-        ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "rock", "roid", "norm", "norm", "rock", "nest", "port", "nest", "rock", "norm", "norm", "roid", "rock", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-        ],
-        MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
-        MOTHERSHIP_LOOP: true,
-        secondaryGameMode: "Mothership"
-    },
     "Tag": {
-        MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
-        TAG: true,
-        secondaryGameMode: "Tag",
-        BOTS: 8
-    },
-    "Portal Tag": {
-        BOTS: 10,
-        X_GRID: 15,
-        Y_GRID: 15,
-        WIDTH: 5000,
-        HEIGHT: 5000,
-        ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "rock", "roid", "norm", "norm", "rock", "nest", "port", "nest", "rock", "norm", "norm", "roid", "rock", "norm"],
-            ["norm", "rock", "norm", "norm", "norm", "rock", "nest", "nest", "nest", "rock", "norm", "norm", "norm", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "roid", "rock", "rock", "rock", "roid", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "rock", "port", "rock", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "rock", "port", "rock", "norm"],
-            ["norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "rock", "rock", "rock", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-        ],
         MODE: "tdm",
         TEAMS: (Math.random() * 3 | 0) + 2,
         TAG: true,
@@ -362,15 +255,16 @@ const gamemodes = {
         secondaryGameMode: "Domination",
         BOTS: 8
     },
-    "Portal Domination": {
+    "Maze Domination": {
         MODE: "tdm",
         TEAMS: (Math.random() * 3 | 0) + 2,
         X_GRID: 15,
         Y_GRID: 15,
+        MAZE: 30,
         ROOM_SETUP: [
-            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "roid"],
-            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
-            ["norm", "norm", "port", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "port", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
@@ -380,15 +274,15 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "port", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "port", "norm", "norm"],
-            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
-            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "roid"]
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
         ],
         DOMINATOR_LOOP: true,
         secondaryGameMode: "Domination",
         BOTS: 8
     },
-    "Circular TDM": {
+    "Space TDM": {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 3 | 0),
         ARENA_TYPE: "circle",
@@ -397,6 +291,7 @@ const gamemodes = {
         HEIGHT: 5000,
         X_GRID: 9,
         Y_GRID: 9,
+        SPACE_PHYSICS: false,
         ROOM_SETUP: [
             ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "rock", "norm", "norm", "norm", "norm"],
@@ -445,7 +340,7 @@ for (let key in defaults) {
 output.gameModeName = gamemode;
 if (["Tag", "Domination", "Mothership"].includes(gamemode)) output.gameModeName = `${output.TEAMS} TDM ${gamemode}`;
 if (gamemode === "Open TDM") output.gameModeName = `Open ${output.TEAMS} TDM`;
-if (gamemode === "Circular TDM") output.gameModeName = `Circular ${output.TEAMS} TDM`;
+if (gamemode === "Space TDM") output.gameModeName = `Space ${output.TEAMS} TDM`;
 module.exports = {
     output
 };
