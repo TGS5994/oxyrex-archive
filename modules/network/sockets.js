@@ -596,7 +596,7 @@ const sockets = (() => {
                                     return 1;
                                 }
                                 let team = Math.abs(m[1]);
-                                socket.rememberedTeam = team;
+                                if (body.socket) body.socket.rememberedTeam = team;
                                 body.team = -team;
                                 let color = [10, 11, 12, 15][team - 1];
                                 if (color == null) color = 12;
