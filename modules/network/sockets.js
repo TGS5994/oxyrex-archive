@@ -34,6 +34,7 @@ const sockets = (() => {
     };
     const terminalCommands = [{
         permissions: "setTeam",
+        usage: "setTeam [team (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid team id! Please use a finite integer.");
@@ -49,6 +50,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setScore",
+        usage: "setScore [score (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid score amount! Please use a finite integer.");
@@ -59,6 +61,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setColor",
+        usage: "setColor [color (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid color id! Please use a finite integer.");
@@ -69,6 +72,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setSize",
+        usage: "setSize [size (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid size! Please use a finite integer.");
@@ -79,6 +83,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setTank",
+        usage: "setTank [export name]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "string") {
                 socket.talk("Q", "info", "Please specify a valid tank export.");
@@ -91,6 +96,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setStat",
+        usage: "setStat [stat name] [value (must be a number)]",
         callback: function(socket, message, body) {
             const stat = message[1];
             if (typeof stat !== "string") {
@@ -112,6 +118,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setEntity",
+        usage: "setEntity [export name]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "string") {
                 socket.talk("Q", "info", "Please specify a valid tank export.");
@@ -124,6 +131,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setSkill",
+        usage: "setSkill [points (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid point amount! Please use a finite integer.");
@@ -134,6 +142,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "getPlayers",
+        usage: "getPlayers",
         callback: function(socket, message, body) {
             let output = [];
             for (let i = 0; i < entities.length; i ++)
@@ -143,6 +152,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "getBots",
+        usage: "getBots",
         callback: function(socket, message, body) {
             let output = [];
             for (let i = 0; i < entities.length; i ++)
@@ -152,6 +162,7 @@ const sockets = (() => {
         }
     }, {
         permissions: "setControl",
+        usage: "setControl [player/bot id (must be a number)]",
         callback: function(socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid entity id! Please use a finite integer.");
@@ -163,7 +174,8 @@ const sockets = (() => {
             socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : player.body));
         }
     }, {
-        permissions: "spawn",
+        permissions: "spawnEntity",
+        usage: "spawnEntity [tank export] [x (must be a number)] [y (must be a number)] [team (must be a number)] [color (must be a number)] [size (must be a number)]",
         callback: function(socket, message, body) {
             const [type, x, y, team, color, size] = message[1].split(" ");
             if (message[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
@@ -177,10 +189,20 @@ const sockets = (() => {
             o.SIZE = +size;
             socket.talk("Q", "info", "Spawned entity.");
         }
+    }, {
+        permissions: "broadcast",
+        usage: "broadcast [message]",
+        callback: function(socket, message, body) {
+            if (Date.now() - socket.lastChatTime < 3000) return socket.talk("Q", "info", "Chat cooldown active, please wait.");
+            socket.lastChatTime = Date.now();
+            const say = message[1] || " ";
+            sockets.broadcast(socket.name + ": " + say);
+            socket.talk("Q", "info", "Message broadcasted.");
+        }
     }];
     terminalCommands.permissions = [
         [], // Normal players
-        ["setTeam", "setColor", "getPlayers", "getBots"], // Beta-Testers
+        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast"], // Beta-Testers
         terminalCommands.map(entry => entry.permissions) // Developers
     ];
     terminalCommands.checkPermissions = function(socket, commandID) {
@@ -756,7 +778,9 @@ const sockets = (() => {
                         return 1;
                     }
                     if (m[0] === -1) {
-                        const commands = terminalCommands.permissions[socket.permissions || 0];
+                        const commands = terminalCommands.permissions[socket.permissions || 0].map(name => {
+                            return `${name} - Useage: <code>${terminalCommands.find(entry => entry.permissions === name).usage}</code>`;
+                        });
                         if (!commands.length) return socket.talk("Q", "info", "You are unable to use any commands.");
                         socket.talk("Q", "info", `You are able to use the following commands:<br/>- ${commands.join("<br/>- ")}`);
                         return;
