@@ -284,15 +284,15 @@ const gamemodes = {
         Y_GRID: 9,
         SPACE_PHYSICS: false,
         ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "rock", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "rock", "norm", "norm", "norm", "rock", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["roid", "rock", "norm", "norm", "nest", "norm", "norm", "rock", "roid"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "rock", "norm", "norm", "norm", "rock", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "rock", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"]
+            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "norm", "norm"],
+            ["norm", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
         ],
         secondaryGameMode: "Space"
     },

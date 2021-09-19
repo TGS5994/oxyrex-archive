@@ -525,6 +525,33 @@ const maintainloop = (() => {
         o.life();
         room.blackHoles.push(o);
     }*/
+    if (c.SPACE_MODE) {
+        {
+            let o = new Entity(room.random());
+            o.define(Class.moon);
+            o.team = -101;
+            o.SIZE = room.width / 12.5;
+            o.protect();
+            o.life();
+        }
+        function ring(x, y, radius, size = 1, gap = 1) {
+            const angle = Math.random() * Math.PI * 2;
+            const amount = 20 + radius / 10;
+            for (let i = gap; i < amount; i ++) {
+                let o = new Entity({
+                    x: x + radius * Math.cos(angle + (i / amount) * (Math.PI * 2)) * 5,
+                    y: y + radius * Math.sin(angle + (i / amount) * (Math.PI * 2)) * 5
+                });
+                o.define(Class.obstacle);
+                o.team = -101;
+                o.SIZE = radius / 2.5 * size;
+                o.facing = angle + (i / amount) * (Math.PI * 2);
+                o.protect();
+                o.life();
+            }
+        }
+        for (const loc of room.nest) ring(loc.x, loc.y, room.width / room.xgrid / room.xgrid, 2, 3);
+    }
     // The NPC function
     let makenpcs = (() => {
         // Make base protectors if needed.

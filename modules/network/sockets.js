@@ -734,7 +734,7 @@ const sockets = (() => {
                                     body.stealthMode = !body.stealthMode;
                                     body.settings.leaderboardable = !body.stealthMode;
                                     body.alpha = +!body.stealthMode;
-                                    body.sendMessage(`Stealth mode ${body.passive ? "enabled" : "disabled"}.`);
+                                    body.sendMessage(`Stealth mode ${body.stealthMode ? "enabled" : "disabled"}.`);
                                 }
                             } break;
                             case 13: {
