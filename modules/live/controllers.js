@@ -338,7 +338,7 @@ class io_nearestDifferentMaster extends IO {
             if (this.body.guns[i].canShoot && !this.body.aiSettings.skynet) {
                 let v = this.body.guns[i].getTracking();
                 tracking = v.speed;
-                if (!this.body.isPlayer || this.body.type === "miniboss" || this.body.master !== this.body) range = 500 * this.body.FOV;
+                if (!this.body.isPlayer || this.body.type === "miniboss" || this.body.master !== this.body) range = 640 * this.body.FOV;
                 else range = Math.min(range, (v.speed || 1) * (v.range || 90));
                 break;
             }
