@@ -338,7 +338,7 @@ const maintainloop = (() => {
                         break;
                     case 4:
                         choice = [
-                            [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.aresCelestial, Class.demeterCelestial, Class.lokiCelestial], 1, 'a', 'norm'
+                            [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.aresCelestial, Class.demeterCelestial, Class.lokiCelestial, Class.oceanusCelestial, Class.thorCelestial, Class.raCelestial], 1, 'a', 'norm'
                         ];
                         sockets.broadcast("lol");
                         break;
