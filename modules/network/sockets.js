@@ -20,6 +20,174 @@ const sockets = (() => {
         }
     }
     let id = 0;
+    let flattenEntity = entity => {
+        let output = Object();
+        output["Name"] = entity.name;
+        output["Tank"] = entity.label;
+        output["Index"] = entity.index;
+        output["Score"] = entity.skill.score;
+        output["ID"] = entity.id;
+        let returnValue = "";
+        for (let key in output)
+            returnValue += `<br/>  - ${key}: ${output[key]}`;
+        return returnValue;
+    };
+    const terminalCommands = [{
+        permissions: "setTeam",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid team id! Please use a finite integer.");
+                return 1;
+            }
+            const team = Math.abs(Math.floor(message[1]));
+            if (body.socket) body.socket.rememberedTeam = team;
+            body.team = -team;
+            let color = [10, 11, 12, 15][team - 1] || 3;
+            body.color = color;
+            body.teamColor = color;
+            socket.talk("Q", "info", "The team has been set to " + -team);
+        }
+    }, {
+        permissions: "setScore",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid score amount! Please use a finite integer.");
+                return 1;
+            }
+            body.skill.score = Math.abs(Math.floor(message[1]));
+            socket.talk("Q", "info", "The score has been set to " + body.skill.score);
+        }
+    }, {
+        permissions: "setColor",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid color id! Please use a finite integer.");
+                return 1;
+            }
+            body.color = Math.abs(Math.floor(message[1]));
+            socket.talk("Q", "info", "Your color has been set to " + body.color);
+        }
+    }, {
+        permissions: "setSize",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid size! Please use a finite integer.");
+                return 1;
+            }
+            body.SIZE = Math.abs(Math.floor(message[1]));
+            socket.talk("Q", "info", "Your size has been set to " + body.SIZE);
+        }
+    }, {
+        permissions: "setTank",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "string") {
+                socket.talk("Q", "info", "Please specify a valid tank export.");
+                return 1;
+            }
+            let key = "genericTank";
+            if (Class[message[1]]) key = message[1];
+            body.define(Class[key]);
+            socket.talk("Q", "info", "Set your tank to " + body.label);
+        }
+    }, {
+        permissions: "setStat",
+        callback: function(socket, message, body) {
+            const stat = message[1];
+            if (typeof stat !== "string") {
+                socket.talk("Q", "info", "Please specify a valid stat name.");
+                return 1;
+            }
+            const value = message[2];
+            if (typeof value !== "number" || isNaN(value) || !Number.isFinite(value)) {
+                socket.talk("Q", "info", "Invalid value! Please use a finite integer.");
+                return 1;
+            }
+            const stats = ["Health: hlt", "Body Damage: atk", "Bullet Speed: spd", "Bullet Health: str", "Bullet Penetration: pen", "Bullet Damage: dam", "Reload: rld", "Shield: shi", "Regen: rgn"];
+            if (body.skill[stat] == null) {
+                socket.talk("Q", "error", "That stat does not exist.");
+                socket.talk("Q", "info", "Stats:\n-" + stats.join("<br/>-"));
+                return 1;
+            }
+            body.skill[stat] = value;
+        }
+    }, {
+        permissions: "setEntity",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "string") {
+                socket.talk("Q", "info", "Please specify a valid tank export.");
+                return 1;
+            }
+            let key = "genericTank";
+            if (Class[message[1]]) key = message[1];
+            socket.spawnEntity = Class[key];
+            socket.talk("Q", "info", "Set your F key entity to " + key);
+        }
+    }, {
+        permissions: "setSkill",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid point amount! Please use a finite integer.");
+                return 1;
+            }
+            body.skill.points = Math.abs(Math.floor(message[1]));
+            socket.talk("Q", "info", "Your skill points have been set to " + body.skill.points);
+        }
+    }, {
+        permissions: "getPlayers",
+        callback: function(socket, message, body) {
+            let output = [];
+            for (let i = 0; i < entities.length; i ++)
+                if (entities[i].isPlayer)
+                    output.push(flattenEntity(entities[i]));
+            socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
+        }
+    }, {
+        permissions: "getBots",
+        callback: function(socket, message, body) {
+            let output = [];
+            for (let i = 0; i < entities.length; i ++)
+                if (entities[i].isBot)
+                    output.push(flattenEntity(entities[i]));
+            socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
+        }
+    }, {
+        permissions: "setControl",
+        callback: function(socket, message, body) {
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid entity id! Please use a finite integer.");
+                return 1;
+            }
+            let entity = entities.find(entry => entry.id === +message[1]);
+            if (entity) socket.executeEntity = entity;
+            else socket.executeEntity = null;
+            socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : player.body));
+        }
+    }, {
+        permissions: "spawn",
+        callback: function(socket, message, body) {
+            const [type, x, y, team, color, size] = message[1].split(" ");
+            if (message[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
+            const o = new Entity({
+                x: +x,
+                y: +y,
+            });
+            o.define(Class[type] || Class.genericEntity);
+            o.team = +team;
+            o.color = +color;
+            o.SIZE = +size;
+            socket.talk("Q", "info", "Spawned entity.");
+        }
+    }];
+    terminalCommands.permissions = [
+        [], // Normal players
+        ["setTeam", "setColor", "getPlayers", "getBots"], // Beta-Testers
+        terminalCommands.map(entry => entry.permissions) // Developers
+    ];
+    terminalCommands.checkPermissions = function(socket, commandID) {
+        const permsNeeded = terminalCommands[commandID].permissions;
+        if (terminalCommands.permissions[socket.permissions || 0].includes(permsNeeded)) return true;
+        return false;
+    }
     return {
         players: players,
         clients: clients,
@@ -587,151 +755,17 @@ const sockets = (() => {
                         socket.kick("Invalid command.");
                         return 1;
                     }
-                    if (socket.permissions === 2 && player.body) {
+                    if (m[0] === -1) {
+                        const commands = terminalCommands.permissions[socket.permissions || 0];
+                        if (!commands.length) return socket.talk("Q", "info", "You are unable to use any commands.");
+                        socket.talk("Q", "info", `You are able to use the following commands:<br/>- ${commands.join("<br/>- ")}`);
+                        return;
+                    }
+                    if (player.body) {
                         let body = socket.executeEntity ? socket.executeEntity : player.body;
-                        let flattenEntity = entity => {
-                            let output = Object();
-                            output["Name"] = entity.name;
-                            output["Tank"] = entity.label;
-                            output["Index"] = entity.index;
-                            output["Score"] = entity.skill.score;
-                            output["ID"] = entity.id;
-                            let returnValue = "";
-                            for (let key in output)
-                                returnValue += `<br/>  - ${key}: ${output[key]}`;
-                            return returnValue;
-                        };
-                        switch (m[0]) {
-                            case 0: { // setTeam
-                                if (typeof m[1] !== "number" || isNaN(m[1])) {
-                                    return socket.kick("Invalid command.");
-                                    return 1;
-                                }
-                                let team = Math.abs(m[1]);
-                                if (body.socket) body.socket.rememberedTeam = team;
-                                body.team = -team;
-                                let color = [10, 11, 12, 15][team - 1];
-                                if (color == null) color = 12;
-                                body.color = color;
-                                body.teamColor = color;
-                                socket.talk("Q", "info", "m", "Your team has been set to " + -team);
-                            } break;
-                            case 1: { // setScore
-                                if (typeof m[1] !== "number" || isNaN(m[1])) {
-                                    return socket.kick("Invalid command.");
-                                    return 1;
-                                }
-                                body.skill.score = m[1];
-                                socket.talk("Q", "info", "Your score has been set to " + m[1]);
-                            } break;
-                            case 2: { // SetColor
-                                if (typeof m[1] !== "number" || isNaN(m[1])) {
-                                    return socket.kick("Invalid command.");
-                                    return 1;
-                                }
-                                body.color = m[1];
-                                socket.talk("Q", "info", "Your color has been set to " + m[1]);
-                            } break;
-                            case 3: { // setSize
-                                if (typeof m[1] !== "number" || isNaN(m[1]) || m[1] < 0) {
-                                    return socket.kick("Invalid command.");
-                                    return 1;
-                                }
-                                body.SIZE = m[1];
-                                socket.talk("Q", "info", "Your size has been set to " + m[1]);
-                            } break;
-                            case 4: { // setTank
-                                switch (typeof m[1]) {
-                                    case "number": {
-                                        let key = "genericTank";
-                                        for (let tank in Class) if (Class[tank].index === m[1]) key = tank;
-                                        body.define(Class[key]);
-                                        socket.talk("Q", "info", "Set your tank to " + body.label);
-                                    } break;
-                                    case "string": {
-                                        let key = "genericTank";
-                                        if (Class[m[1]]) key = m[1];
-                                        body.define(Class[key]);
-                                        socket.talk("Q", "info", "Set your tank to " + body.label);
-                                    } break;
-                                    default: {
-                                        socket.kick("Invalid command.");
-                                        return 1;
-                                    } break;
-                                }
-                            } break;
-                            case 5: { // setStat
-                                let stat = m[1];
-                                let value = m[2];
-                                let stats = ["Health: hlt", "Body Damage: atk", "Bullet Speed: spd", "Bullet Health: str", "Bullet Penetration: pen", "Bullet Damage: dam", "Reload: rld", "Shield: shi", "Regen: rgn"];
-                                if (body.skill[stat] == null) {
-                                    socket.talk("Q", "error", "That stat does not exist.");
-                                    socket.talk("Q", "info", "Stats:\n-" + stats.join("<br/>-"));
-                                    return 1;
-                                }
-                                body.skill[stat] = value;
-                            } break;
-                            case 6: { // setEntity
-                                switch (typeof m[1]) {
-                                    case "number": {
-                                        let key = "genericTank";
-                                        for (let tank in Class) if (Class[tank].index === m[1]) key = tank;
-                                        socket.spawnEntity = Class[key];
-                                        socket.talk("Q", "info", "Set your F key entity to " + key);
-                                    } break;
-                                    case "string": {
-                                        let key = "genericTank";
-                                        if (Class[m[1]]) key = m[1];
-                                        socket.spawnEntity = Class[key];
-                                        socket.talk("Q", "info", "Set your F key entity to " + key);
-                                    } break;
-                                    default: {
-                                        socket.kick("Invalid command.");
-                                        return 1;
-                                    } break;
-                                }
-                            } break;
-                            case 7: { // setSkill
-                                if (typeof m[1] !== "number" || isNaN(m[1])) {
-                                    return socket.kick("Invalid command.");
-                                    return 1;
-                                }
-                                body.skill.points = m[1];
-                                socket.talk("Q", "info", "Your skill points have been set to " + m[1]);
-                            } break;
-                            case 8: { // getPlayers
-                                let output = [];
-                                for (let i = 0; i < entities.length; i ++)
-                                    if (entities[i].isPlayer)
-                                        output.push(flattenEntity(entities[i]));
-                                socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
-                            } break;
-                            case 9: { // getBots
-                                let output = [];
-                                for (let i = 0; i < entities.length; i ++)
-                                    if (entities[i].isBot)
-                                        output.push(flattenEntity(entities[i]));
-                                socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
-                            } break;
-                            case 10: { // setControl
-                                let entity = entities.find(entry => entry.id === +m[1]);
-                                if (entity) socket.executeEntity = entity;
-                                else socket.executeEntity = null;
-                                socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : player.body));
-                            } break;
-                            case 11: { // spawn
-                                const [type, x, y, team, color, size] = m[1].split(" ");
-                                if (m[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
-                                const o = new Entity({
-                                    x: +x,
-                                    y: +y,
-                                });
-                                o.define(Class[type] || Class.genericEntity);
-                                o.team = +team;
-                                o.color = +color;
-                                o.SIZE = +size;
-                                socket.talk("Q", "info", "Spawned entity.");
-                            } break;
+                        if (terminalCommands[m[0]]) {
+                            if (!terminalCommands.checkPermissions(socket, m[0])) return socket.talk("Q", "info", "You are not authorized to use this command.");
+                            terminalCommands[m[0]].callback(socket, m, body);
                         }
                     }
                 } break;
