@@ -597,6 +597,7 @@ class Entity {
         this.invuln = false;
         this.alpha = 1;
         this.invisible = [0, 0];
+        this.dangerValue = 5;
         this.antiNaN = (function(me) {
             let nansInARow = 0;
             let data = {

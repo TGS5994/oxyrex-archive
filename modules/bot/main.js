@@ -53,11 +53,15 @@ commands.help = (function() {
         usage: config.prefix + "help"
     }
 })();
+const whitelistedChannels = [
+    "874395524894187531", // Bot Commands
+    "876435248903229532" // Beta Tester Chat
+];
 async function messageEvent(message) {
     if (!message.content.startsWith(config.prefix)) return;
     if (message.author.bot) return;
     if (message.channel.type === "dm") return util.error(message, "You cannot use commands in a DM channel!");
-    if (message.guild.id === "874377758007001099"/* && message.channel.id !== "874395524894187531"*/) return;// util.error(message, `Please go to <#874395524894187531> to use commands.`);
+    if (message.guild.id === "874377758007001099" && !whitelistedChannels.includes(message.channel.id)) return util.error(message, `Please go to <#874395524894187531> to use commands.`);
     if (util.checkPermissions(message) === -1) return util.error(message, "You are blacklisted from using the bot.");
     let args = message.content.split(" ");
     let command = args.shift().slice(config.prefix.length).toLowerCase();
