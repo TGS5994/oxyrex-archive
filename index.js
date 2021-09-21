@@ -485,7 +485,7 @@ const maintainloop = (() => {
         if (room.gameMode === "tdm") o.team = -team;
         o.skill.score = 59210;
         o.isBot = true;
-        if (c.GROUPS) {
+        /*if (c.GROUPS) {
             let master = {
                 player: {
                     body: o
@@ -496,7 +496,7 @@ const maintainloop = (() => {
             o.ondead = function() {
                 groups.removeMember(master);
             }
-        }
+        }*/
         setTimeout(function() {
             if (!o || o.isDead()) return;
             const index = o.index;

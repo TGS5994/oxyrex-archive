@@ -1136,7 +1136,7 @@ const sockets = (() => {
                     let player = {},
                         loc = {};
                     // Find the desired team (if any) and from that, where you ought to spawn
-                    if (!socket.group && c.GROUPS) groups.addMember(socket, socket.party || -1);
+                    if (!socket.group && c.GROUPS) groups.addMember(socket, socket.party);
                     player.team = socket.rememberedTeam;
                     switch (room.gameMode) {
                         case "tdm": {
@@ -1217,14 +1217,14 @@ const sockets = (() => {
                     default: {
                         if (socket.group) {
                             body.team = -player.team;
+                            body.color = socket.group.color;
                             //socket.talk("J", player.team * 12345);
                             // col
-                        }
-                        body.color = (c.RANDOM_COLORS) ? ran.choose([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) : 11; // red
+                        } else body.color = (c.RANDOM_COLORS) ? ran.choose([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) : 11; // red
                     }
                     }
                     // Decide what to do about colors when sending updates and stuff
-                    player.teamColor = (!c.RANDOM_COLORS && room.gameMode === 'ffa') ? 10 : body.color; // blue
+                    player.teamColor = (!c.RANDOM_COLORS && room.gameMode === 'ffa' && !socket.group) ? 10 : body.color; // blue
                     // Set up the targeting structure
                     player.target = {
                         x: 0,
@@ -1483,7 +1483,7 @@ const sockets = (() => {
                 let readlb;
                 // Util
                 let getBarColor = entry => {
-                    if (c.GROUPS) return 11;
+                    if (c.GROUPS && entry.isPlayer) return entry.color;
                     switch (entry.team) {
                         case -100:
                             return entry.color
@@ -1579,8 +1579,13 @@ const sockets = (() => {
                     return all
                 });
                 let teamIDs = [1, 2, 3, 4];
-                if (c.GROUPS)
-                    for (let i = 0; i < 100; i++) teamIDs.push(i + 5);
+                if (c.GROUPS) {
+                    for (let i = 1; i < 100; i ++) teamIDs[i - 1] = i;
+                    /*for (let i = 0; i < global.activeGroups.length; i ++) {
+                        teamIDs[global.activeGroups[i].teamID - 1] = global.activeGroups[i].teamID;
+                        console.log(teamIDs);
+                    }*/
+                }
                 let minimapTeams = teamIDs.map(team => new Delta(3, () => {
                     let all = []
                     for (let my of entities)
@@ -1589,9 +1594,9 @@ const sockets = (() => {
                             data: [
                                 util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
                                 util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
-                                my.color,
+                                my.color
                             ]
-                        })
+                        });
                     return all
                 }))
                 let leaderboard = new Delta(6, () => {
@@ -1660,7 +1665,7 @@ const sockets = (() => {
                     let leaderboardUpdate = leaderboard.update()
                     for (let socket of subscribers) {
                         if (!socket.status.hasSpawned) continue
-                        let team = minimapTeamUpdates[socket.player.team - 1]
+                        let team = minimapTeamUpdates[socket.player.team - 1];
                         if (socket.status.needsNewBroadcast) {
                             socket.talk('b', ...minimapUpdate.reset, ...(team ? team.reset : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
                             socket.status.needsNewBroadcast = false

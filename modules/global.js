@@ -69,6 +69,7 @@ const requires = [
     "./physics/collisionFunctions.js", // The actual collision functions that make the game work.
     "./network/security/security.js", // Ava i STG I WILLL STOPPP UUUUUUUUUUUU
     "./network/tokenGenerator.js", // Public token generator
+    "./gamemodes/groups.js", // Duos/Trios/Squads
     "./network/sockets.js", // The networking that helps players interact with the game.
     "./network/webServer.js", // The networking that actually hosts the server.
     "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.
@@ -81,7 +82,6 @@ const requires = [
     "./gamemodes/infection.js", // Infection mode
     "./gamemodes/survival.js", // Survival mode
     "./gamemodes/gamemodeLoop.js", // The gamemode loop.
-    "./gamemodes/groups.js", // Duos/Trios/Squads
     "./gamemodes/tag.js", // Tag
     "./gamemodes/closeArena.js", // Arena Closing mechanics
     "./debug/antibot.js", // Antibot :DDD

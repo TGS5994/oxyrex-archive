@@ -9,23 +9,21 @@ goog.require('goog.structs.QuadTree');
 let activeGroups = [];
 const getID = () => {
     let i = 0;
-    for (let i = 0; i < 1e3; i++) {
-        if (!activeGroups.find(e => e.teamID === i)) return i;
+    while (i < 100) {
+        const id = Math.random() * 100 | 0;
+        if (!activeGroups.find(e => e.teamID === id)) return id;
+        i ++;
     }
-    return -Number(Math.random().toString().replace("0.", ""));
+    return Number(Math.random().toString().replace("0.", ""));
 };
 class Group {
-    constructor(size) {
+    constructor(size, key = -1) {
         this.members = [];
         this.size = size;
-        this.private = false;
         this.teamID = getID();
+        this.color = (100 + (this.teamID % 85)) | 0;
         activeGroups.push(this);
         console.log("New group created.");
-    }
-    setPrivate() {
-        if (this.private) this.private = false;
-        else this.private = Math.random().toString().replace("0.", "");
     }
     addMember(socket) {
         if (this.members.length === this.size) return false;
