@@ -1102,7 +1102,7 @@ class Entity {
         if (this.settings.reloadToAcceleration) this.topSpeed /= Math.sqrt(this.skill.acl);
         this.health.set((((this.settings.healthWithLevel) ? 2 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
         this.health.resist = 1 - 1 / Math.max(1, this.RESIST + this.skill.brst);
-        this.shield.set((((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * this.skill.rgn));
+        this.shield.set((((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * (this.skill.rgn * 6)));
         this.damage = this.DAMAGE * (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk);;
         this.penetration = this.PENETRATION + 1.5 * ((this.settings.hitsOwnType === 'everything' ? this.skill.lancer.pen : this.skill.brst) + 0.8 * (this.skill.atk - 1));
         if (!this.settings.dieAtRange || !this.range) {
@@ -1250,6 +1250,10 @@ class Entity {
             case "grower":
                 this.SIZE += 0.8;
     			this.damp = 0.02;
+                break;
+			case "flare":
+                this.SIZE += 0.8;
+    			this.damp = -0.01;
                 break;
             case 'glide':
                 this.maxSpeed = this.topSpeed;
