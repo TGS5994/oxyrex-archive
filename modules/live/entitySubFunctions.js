@@ -28,7 +28,7 @@ const skcnv = {
     mob: 9,
 };
 const levelers = [];
-for (let i = 0; i < 45; i ++) levelers.push(((i / 45) * 60 + 1) | 0);
+for (let i = 3; i < 45; i ++) levelers.push(((i / 45) * 60 + 1) | 0);
 const botBuilds = [
     [9, 9, 9, 9, 9, 0, 0, 0, 0, 0],
     [8, 8, 8, 8, 8, 0, 0, 0, 0, 5],
@@ -145,7 +145,7 @@ class Skill {
         this.hlt = c.GLASS_HEALTH_FACTOR * apply(1.75 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.hlt]);
         this.mob = apply(.9, attrib[skcnv.mob]);
         this.rgn = apply(25, attrib[skcnv.rgn]);
-        this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt] + attrib[skcnv.rgn]);
+        this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt]);
         this.lancer = {
             pen: apply(3, attrib[skcnv.pen]),
             str: apply(3, attrib[skcnv.str]),
@@ -279,13 +279,13 @@ class HealthType {
         }
     }
     regenerate(boost = false) {
-        if (Date.now() - this.lastDamage < 10000) return;
+        if (Date.now() - this.lastDamage < 3000) return;
         boost /= 2;
         let cons = 5;
         switch (this.type) {
             case 'static':
                 if (this.amount >= this.max || !this.amount) break;
-                this.amount += cons * (this.max / 10 / 60 / 2.5 + boost);
+                this.amount += (cons / 5) * (this.max / 10 / 60 / 2.5 + (boost * 2.5));
                 break;
             case 'dynamic':
                 let r = util.clamp(this.amount / this.max, 0, 1);
@@ -295,7 +295,7 @@ class HealthType {
                 if (r === 1) {
                     this.amount = this.max;
                 } else {
-                    this.amount += cons * (this.regen * Math.exp(-50 * Math.pow(Math.sqrt(0.5 * r) - 0.4, 2)) / 3 + r * this.max / 10 / 15 + boost);
+                    this.amount += (cons / 2) * ((this.regen * 5) * Math.exp(-50 * Math.pow(Math.sqrt(0.5 * r) - 0.4, 2)) / 5 + r * (this.max / 1.5) / 10 / 15 + boost);
                 }
                 break;
         }
