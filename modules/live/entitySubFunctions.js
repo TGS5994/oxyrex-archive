@@ -28,7 +28,7 @@ const skcnv = {
     mob: 9,
 };
 const levelers = [];
-for (let i = 0; i < 42; i ++) levelers.push(((i / 42) * 60 + 1) | 0);
+for (let i = 0; i < 45; i ++) levelers.push(((i / 45) * 60 + 1) | 0);
 const botBuilds = [
     [9, 9, 9, 9, 9, 0, 0, 0, 0, 0],
     [8, 8, 8, 8, 8, 0, 0, 0, 0, 5],
