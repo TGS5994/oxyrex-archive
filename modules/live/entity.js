@@ -61,7 +61,7 @@ class Gun {
             }
             this.onShoot = (info.PROPERTIES.ON_SHOOT == null) ? null : info.PROPERTIES.ON_SHOOT;
             this.autofire = (info.PROPERTIES.AUTOFIRE == null) ? false : info.PROPERTIES.AUTOFIRE;
-			this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
+			      this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
             this.altFire = (info.PROPERTIES.ALT_FIRE == null) ? false : info.PROPERTIES.ALT_FIRE;
             this.settings = (info.PROPERTIES.SHOOT_SETTINGS == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS;
             this.settings2 = (info.PROPERTIES.SHOOT_SETTINGS2 == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS2;
@@ -460,7 +460,7 @@ class Gun {
             PENETRATION: Math.max(1, shoot.pen * sk.pen),
             RANGE: shoot.range / Math.sqrt(sk.spd),
             DENSITY: shoot.density * sk.pen * sk.pen / sizeFactor,
-            PUSHABILITY: 1 / sk.pen,
+            PUSHABILITY: 1 * sk.pen,
             HETERO: 3 - 2.8 * sk.ghost,
         };
         // Special cases
