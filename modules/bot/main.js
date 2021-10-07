@@ -71,7 +71,7 @@ async function messageEvent(message) {
 bot.on("message", messageEvent);
 bot.on("error", console.log);
 bot.logRecord = function(data) {
-    const channel = bot.channels.cache.get("89579397786058674");
+    const channel = bot.channels.cache.get("895793977868058674");
     console.log(channel);
     if (channel) {
         const embed = new Discord.MessageEmbed()
@@ -87,6 +87,9 @@ bot.logRecord = function(data) {
             }, {
                 name: "Final Score",
                 value: data.score
+            }, {
+                name: "Tank",
+                value: data.tank
             }, {
                 name: "Total Kills round(Kills + (Assists / 2) + (Bosses * 2)",
                 value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2))
