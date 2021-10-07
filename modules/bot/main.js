@@ -86,7 +86,7 @@ bot.logRecord = function(data) {
                 value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A"
             }, {
                 name: "Final Score",
-                value: data.score
+                value: global.util.formatLargeNumber(data.score)
             }, {
                 name: "Tank",
                 value: data.tank
@@ -104,7 +104,7 @@ bot.logRecord = function(data) {
                 value: data.bosses
             }, {
                 name: "Time Alive",
-                value: data.timeAlive
+                value: global.util.timeForHumans(data.timeAlive)
             })
             .setFooter("Powered by Discord.js :moan_daddy:", "https://i.imgur.com/wSTFkRM.png");
         channel.send(embed);
