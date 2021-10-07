@@ -1410,19 +1410,20 @@ const sockets = (() => {
                                 if (player.body.isDead()) {
                                     socket.status.deceased = true;
                                     // Let the client know it died
-                                    socket.talk('F', ...player.records());
+                                    const records = player.records();
+                                    socket.talk('F', ...records);
                                     // If we have a valid record, let's verify it!
-                                    if (player.body.skill.score > 500000) { // Score > 500k
-                                        const totalKills = Math.round(player.body.killCount.solo + (player.body.killCount.assists / 2) + (player.body.killCount.bosses * 2));
-                                        if (totalKills >= Math.floor(player.body.skill.score / 100000)) { // Total kills >= 100k(s) aka the amount of kills is greater than or equal to your score / 100k, 1 kill per 100k
+                                    if (records[0] > 500000) { // Score > 500k
+                                        const totalKills = Math.round(records[2] + (records[3] / 2) + (records[4] * 2));
+                                        if (totalKills >= Math.floor(records[0] / 100000)) { // Total kills >= 100k(s) aka the amount of kills is greater than or equal to your score / 100k, 1 kill per 100k
                                             bot.logRecord({
                                                 name: socket.name || "Unnamed",
                                                 discordID: socket.discordID,
-                                                score: player.body.skill.score,
-                                                kills: player.body.killCount.solo,
-                                                assists: player.body.killCount.assists,
-                                                bosses: player.body.killCount.bosses,
-                                                timeAlive: Math.floor((util.time() - begin) / 1000)
+                                                score: records[0],
+                                                kills: records[2],
+                                                assists: records[3],
+                                                bosses: records[4],
+                                                timeAlive: records[1]
                                             });
                                         }
                                     }
