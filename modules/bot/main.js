@@ -71,7 +71,7 @@ async function messageEvent(message) {
 bot.on("message", messageEvent);
 bot.on("error", console.log);
 bot.logRecord = function(data) {
-    const channel = this.channels.cache.get("89579397786058674");
+    const channel = bot.channels.cache.get("89579397786058674");
     console.log(channel);
     if (channel) {
         const embed = new Discord.MessageEmbed()
