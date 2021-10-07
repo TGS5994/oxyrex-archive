@@ -70,6 +70,42 @@ async function messageEvent(message) {
 };
 bot.on("message", messageEvent);
 bot.on("error", console.log);
+bot.logRecord = function(data) {
+    const channel = this.channels.cache.get("89579397786058674");
+    if (channel) {
+        const embed = new Discord.MessageEmbed()
+            .setTitle("A possible record has been auto validated")
+            .setColor(0xDD0000)
+            .setDescription(`Mode: **${c.gameModeName}**`)
+            .addFields({
+                name: "Player Name",
+                value: data.name
+            }, {
+                name: "Player Discord",
+                value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A"
+            }, {
+                name: "Final Score",
+                value: data.score
+            }, {
+                name: "Total Kills round(Kills + (Assists / 2) + (Bosses * 2)",
+                value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2))
+            }, {
+                name: "Kills",
+                value: data.kills
+            }, {
+                name: "Assists",
+                value: data.assists
+            }, {
+                name: "Bosses",
+                value: data.bosses
+            }, {
+                name: "Time Alive",
+                value: data.timeAlive
+            })
+            .setFooter("Powered by Discord.js :moan_daddy:", "https://i.imgur.com/wSTFkRM.png");
+        channel.send(embed);
+    }
+}
 bot.login(config.token);
 bot.util = util;
 bot.config = config;
