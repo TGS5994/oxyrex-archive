@@ -1419,6 +1419,7 @@ const sockets = (() => {
                                             bot.logRecord({
                                                 name: socket.name || "Unnamed",
                                                 discordID: socket.discordID,
+                                                tank: player.body.label,
                                                 score: records[0],
                                                 kills: records[2],
                                                 assists: records[3],
