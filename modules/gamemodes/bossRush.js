@@ -154,7 +154,7 @@ const bossRush = (function() {
                 type = type.sort(() => 0.5 - Math.random());
             }
         }
-        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].sort(() => 0.5 - Math.random()).forEach(celestial => waves.push([celestial]));
+        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].sort(() => 0.5 - Math.random()).forEach(celestial => output.push([celestial]));
         return output;
     })();
     let index = 0;
