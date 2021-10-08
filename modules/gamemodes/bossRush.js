@@ -147,13 +147,14 @@ const bossRush = (function() {
         for (let type of types) {
             for (let i = 0; i < 3; i ++) {
                 let wave = [];
-                for (let j = 0; j < 2 + Math.random() * 4; j ++) {
+                for (let j = 0; j < 2 + Math.random() * 3; j ++) {
                     wave.push(type[j]);
                 }
                 output.push(wave);
                 type = type.sort(() => 0.5 - Math.random());
             }
         }
+        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].sort(() => 0.5 - Math.random()).forEach(celestial => waves.push([celestial]));
         return output;
     })();
     let index = 0;
