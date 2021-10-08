@@ -147,7 +147,7 @@ const bossRush = (function() {
         for (let type of types) {
             for (let i = 0; i < 3; i ++) {
                 let wave = [];
-                for (let j = 0; j < 2 + Math.random() * 3; j ++) {
+                for (let j = 0; j < 2; j ++) {
                     wave.push(type[j]);
                 }
                 output.push(wave);
@@ -179,7 +179,7 @@ const bossRush = (function() {
                 }
             }
         }
-        for (let i = 0; i < 2; i ++) {
+        for (let i = 0; i < 1; i ++) {
             let n = new Entity(room.randomType("nest"));
             n.define(ran.choose(escorts));
             n.team = -100;
