@@ -200,7 +200,7 @@ const bossRush = (function() {
         o.onDead = function() {
             if (o.team === -100) {
                 spawn(loc, -1, type);
-                room.setType("dom1", loc);
+                room.setType("bas1", loc);
                 sockets.broadcast("A dominator has been captured by BLUE!");
             } else {
                 spawn(loc, -100, type);
