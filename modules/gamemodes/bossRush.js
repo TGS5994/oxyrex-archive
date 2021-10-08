@@ -186,6 +186,33 @@ const bossRush = (function() {
         }
         sockets.broadcast("Wave " + (index + 1) + " has arrived!");
     }
+    let spawn = (loc, team, type = false) => {
+        type = type ? type : Class.destroyerDominator;
+        let o = new Entity(loc);
+        o.define(type);
+        o.team = team;
+        o.color = [10, 11, 12, 15][-team - 1] || 3;
+        o.skill.score = 111069;
+        o.name = "Dominator";
+        o.SIZE = c.WIDTH / c.X_GRID / 10;
+        o.isDominator = true;
+        o.controllers = [new io_nearestDifferentMaster(o), new io_spinWhenIdle(o)];
+        o.onDead = function() {
+            if (o.team === -100) {
+                spawn(loc, -1, type);
+                room.setType("dom1", loc);
+                sockets.broadcast("A dominator has been captured by BLUE!");
+            } else {
+                spawn(loc, -100, type);
+                room.setType("dom0", loc);
+                sockets.broadcast("A dominator has been captured by the bosses!");
+            }
+        }
+    }
+    function init() {
+        for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator]));
+        console.log("Boss rush initialized.");
+    }
     return function() {
         let time = 60;
         function recursive() {
