@@ -685,8 +685,8 @@ const sockets = (() => {
                                         y: body.y + body.control.target.y
                                     };
                                     let o = new Entity(loc);
-                                    if (socket.spawnEntity.FOOD) {
-                                        socket.spawnEntity.BODY.ACCELERATION = 0.015 / (socket.spawnEntity.FOOD.LEVEL + 1);
+                                    if (socket.spawnEntity.FOOD || socket.spawnEntity.TYPE === "food") {
+                                        socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
                                     }
                                     o.define(socket.spawnEntity);
                                     o.team = -100;
