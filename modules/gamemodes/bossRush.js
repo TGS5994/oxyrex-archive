@@ -209,15 +209,15 @@ const bossRush = (function() {
             }
         }
     }
-    for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator]));
-    console.log("Boss rush initialized.");
     return function() {
         let time = 60;
+        for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator]));
+        console.log("Boss rush initialized.");
         function recursive() {
             time -= 5;
             sockets.broadcast(time + " seconds until the first wave!");
-            if (time > 0) setTimeout(recursive, 5000);
-            else spawnWave();
+            if (time > 0) return setTimeout(recursive, 5000);
+            spawnWave();
         }
         recursive();
     }
