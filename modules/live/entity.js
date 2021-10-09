@@ -454,7 +454,7 @@ class Gun {
         // Defaults
         let out = {
             SPEED: shoot.maxSpeed * sk.spd,
-            HEALTH: shoot.health * sk.str,
+            HEALTH: shoot.health * sk.str ,
             RESIST: shoot.resist + sk.rst,
             DAMAGE: shoot.damage * sk.dam,
             PENETRATION: Math.max(1, shoot.pen * sk.pen),
