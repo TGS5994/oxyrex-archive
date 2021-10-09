@@ -485,6 +485,7 @@ const maintainloop = (() => {
         if (room.gameMode === "tdm") o.team = -team;
         o.skill.score = 59210;
         o.isBot = true;
+        o.nameColor = "#C80000";
         /*if (c.GROUPS) {
             let master = {
                 player: {
