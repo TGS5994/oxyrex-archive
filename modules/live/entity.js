@@ -1592,6 +1592,9 @@ class Entity {
             if (c.KILL_RACE && (this.isPlayer || this.isBot)) {
                 killRace.getKillData(this);
             }
+            if (c.HIDE_AND_SEEK && (this.isPlayer || this.isBot)) {
+                hideAndSeek.getKillData(this);
+            }
             if (this.fragEntities) {
                 for (let i = 0; i < this.fragEntities.length; i ++) {
                     let o = new Entity({

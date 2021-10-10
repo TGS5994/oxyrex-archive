@@ -469,8 +469,12 @@ const maintainloop = (() => {
     };*/
 
     function spawnBot(TEAM = null) {
-        let set = ran.choose(botSets);
         let team = TEAM ? TEAM : getTeam();
+        let set = (team == 2 ? {
+            startClass: "landmine",
+            build: [12, 0, 0, 0, 0, 12, 12, 12, 12, 12],
+            ai: "hideBot"
+        } : ran.choose(botSets));
         const botName = ran.chooseBotName();
         let color = [10, 11, 12, 15][team - 1];
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);

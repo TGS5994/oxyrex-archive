@@ -407,7 +407,7 @@ class io_avoid extends IO {
             x: this.body.x,
             y: this.body.y
         }, function(test, sqrdst) {
-            return (test.master.id !== masterId && (test.type === 'bullet' || test.type === 'drone' || test.type === 'swarm' || test.type === 'trap' || test.type === 'block') && sqrdst < range);
+            return (test.master.id !== masterId && (test.type === "tank" || test.type === 'bullet' || test.type === 'drone' || test.type === 'swarm' || test.type === 'trap' || test.type === 'block') && sqrdst < range);
         });
         // Aim at that target
         if (this.avoid != null) {

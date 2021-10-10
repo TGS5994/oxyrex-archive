@@ -818,7 +818,7 @@ const sockets = (() => {
                     let body = player.body;
                     if (body.underControl) {
                         body.giveUp(player, body.isDominator ? "" : undefined);
-                        socket.talk("m", "You are no longer controling the mothership.");
+                        socket.talk("m", "You are no longer controling the entity.");
                         return 1;
                     }
                     if (c.MOTHERSHIP_LOOP) {
@@ -1177,13 +1177,18 @@ const sockets = (() => {
                     let body = new Entity(loc);
                     body.protect();
                     body.isPlayer = true;
-                    body.define(survival.started ? Class.observer : Class.basic); // Start as a basic tank
+                    body.define((c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
                     body.name = name; // Define the name
                     if (c.SURVIVAL && !survival.started) {
                         survival.players.push(body);
                         body.onDead = () => survival.removePlayer(body);
                         body.godmode = true;
                     }
+                    body.invulnTimeout = setTimeout(function makeVulnerable() {
+                        body.invuln = false;
+                        body.sendMessage("Your invulnerability has expired.");
+                        clearTimeout(body.invulnTimeout);
+                    }, 180000);
                     // Dev hax
                     {
                         const beta = c.TOKENS.find(r => r[0] === socket.key);
@@ -1409,6 +1414,7 @@ const sockets = (() => {
                                 // But I just died...
                                 if (player.body.isDead()) {
                                     socket.status.deceased = true;
+                                    clearTimeout(body.invulnTimeout);
                                     // Let the client know it died
                                     const records = player.records();
                                     socket.talk('F', ...records);
@@ -1581,7 +1587,7 @@ const sockets = (() => {
                 let minimapAll = new Delta(7, () => {
                     let all = []
                     for (let my of entities)
-                        if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership) all.push({
+                        if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership || my.showsOnMap) all.push({
                             id: my.id,
                             data: [
                                 (my.type === 'wall' || my.isMothership) ? my.shape === 4 ? 2 : 1 : 0,
@@ -1618,16 +1624,16 @@ const sockets = (() => {
                 }))
                 let leaderboard = new Delta(6, () => {
                     let list = [];
-                    if (c.TAG || c.KILL_RACE) {
+                    if (c.TAG || c.SOCCER || c.KILL_RACE || c.HIDE_AND_SEEK) {
                         for (let i = 0; i < c.TEAMS; i++) {
                             let teamNames = ["BLUE", "RED", "GREEN", "PURPLE"];
                             let teamColors = [10, 11, 12, 15];
                             list.push({
                                 id: i,
                                 skill: {
-                                    score: (c.KILL_RACE && typeof killRace === "object") ? killRace.data[i] : 0
+                                    score: c.SOCCER ? soccer.scoreboard[i] : (c.KILL_RACE && typeof killRace === "object") ? killRace.data[i] : (c.HIDE_AND_SEEK && typeof hideAndSeek === "object") ? hideAndSeek.data[i] : 0
                                 },
-                                index: Class[c.TAG ? "tagMode" : "killRace"].index,
+                                index: Class[c.TAG ? "tagMode" : c.SOCCER ? "soccerScoreboard" : c.HIDE_AND_SEEK ? "hideAndSeek" : "killRace"].index,
                                 name: teamNames[i],
                                 color: teamColors[i],
                                 nameColor: "#FFFFFF",
@@ -1635,7 +1641,7 @@ const sockets = (() => {
                             });
                         }
                     }
-                    if (!c.KILL_RACE) loopThrough(entities, function(instance) {
+                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER) loopThrough(entities, function(instance) {
                         if (c.MOTHERSHIP_LOOP) {
                             if (instance.isMothership) list.push(instance);
                         } else if (c.TAG) {

@@ -27,7 +27,7 @@ const killRace = (function() {
         if (gameWon) return;
         sockets.broadcast(teamNames[teamID] + " scored!");
         data[teamID] ++;
-        if (data[teamID] >= 25) {
+        if (data[teamID] >= 50) {
             gameWon = true;
             sockets.broadcast(teamNames[teamID] + " has won!");
             setTimeout(closeArena, 2500);

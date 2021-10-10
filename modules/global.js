@@ -70,11 +70,13 @@ const requires = [
     "./network/security/security.js", // Ava i STG I WILLL STOPPP UUUUUUUUUUUU
     "./network/tokenGenerator.js", // Public token generator
     "./gamemodes/groups.js", // Duos/Trios/Squads
+    "./gamemodes/soccer.js", // Soccer
     "./network/sockets.js", // The networking that helps players interact with the game.
     "./network/webServer.js", // The networking that actually hosts the server.
     "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.
     "./debug/speedLoop.js", // The speed check loop lmao.
     "./gamemodes/killRace.js", // Kill Race
+    "./gamemodes/hideAndSeek.js", // Kill Race
     "./gamemodes/bossRush.js", // Boss Rush
     "./gamemodes/maze.js", // Maze
     "./gamemodes/mothership.js", // The mothership mode

@@ -15,6 +15,7 @@ const gamemodeLoop = (function() {
   if (c.DOMINATOR_LOOP) for (let loc of room.dom0) dominatorLoop.spawn(loc, -100);
   if (c.INFECTION_LOOP) initInfectionLoop();
   if (c.SURVIVAL) survival.init();
+  if (c.SOCCER) soccer.init();
   let logger = new LagLogger();
   return function() {
     logger.set();
