@@ -11,9 +11,9 @@ const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Maze Domination", "
 const gamemode = "Carrier Battle";//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "Carrier Battle": {
-        MODE: "tdm",
-        TEAMS: 2,
-        CARRIER_CHANCE: "rhein"
+        CARRIER_CHANCE: ["rhein", "wesser", "maxImmelmann"],
+        WIDTH: 10000,
+        HEIGHT: 10000
     },
     "FFA": {}, // "defaults" is already FFA.
     "Open TDM": {
