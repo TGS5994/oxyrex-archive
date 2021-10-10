@@ -1233,12 +1233,6 @@ const sockets = (() => {
                         body.onDead = () => survival.removePlayer(body);
                         body.godmode = true;
                     }
-                    body.invulnTimeout = setTimeout(function makeVulnerable() {
-                        if (!body.invuln) return;
-                        body.invuln = false;
-                        body.sendMessage("Your invulnerability has expired.");
-                        clearTimeout(body.invulnTimeout);
-                    }, 180000);
                     // Dev hax
                     {
                         const beta = c.TOKENS.find(r => r[0] === socket.key);
@@ -1464,7 +1458,6 @@ const sockets = (() => {
                                 // But I just died...
                                 if (player.body.isDead()) {
                                     socket.status.deceased = true;
-                                    clearTimeout(player.body.invulnTimeout);
                                     // Let the client know it died
                                     const records = player.records();
                                     socket.talk('F', ...records);

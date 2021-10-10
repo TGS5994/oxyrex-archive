@@ -791,6 +791,7 @@ class Entity {
         }
         if (set.LAYER != null) this.layerID = set.LAYER;
         if (set.ALWAYS_ACTIVE != null) this.alwaysActive = set.ALWAYS_ACTIVE;
+        if (set.CARRIER_TALK_DATA != null && this.socket) this.socket.talk("cv", ...set.CARRIER_TALK_DATA.flat());
         if (set.index != null) {
             this.index = set.index;
         }
