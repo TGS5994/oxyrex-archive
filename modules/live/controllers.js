@@ -124,6 +124,23 @@ class io_mapTargetToGoal extends IO {
         }
     }
 }
+class io_plane extends IO {
+    constructor(b) {
+        super(b);
+    }
+    think(input) {
+        if (this.body.master.master.controllingSquadron && this.body.master.master.control.target) {
+            input.target = this.body.master.master.control.target;
+            return {
+                goal: {
+                    x: input.target.x + this.body.x,
+                    y: input.target.y + this.body.y,
+                },
+                power: 1
+            }
+        }
+    }
+}
 class io_boomerang extends IO {
     constructor(b) {
         super(b);
@@ -972,5 +989,6 @@ module.exports = {
     io_spinWhenIdle,
     io_multiboxClone,
     io_taurusPortal,
-    io_spinMissile
+    io_spinMissile,
+    io_plane
 };

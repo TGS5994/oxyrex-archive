@@ -793,6 +793,55 @@ const sockets = (() => {
                         }
                     }
                 } break;
+                case "cv": {
+                    if (m.length !== 1 || typeof m[0] !== "number") {
+                        socket.kick("Invalid CV request.");
+                        return 1;
+                    }
+                    if (player.body && !player.body.isCarrier) {
+                        switch (m[0]) {
+                            case 0: { // Relinquish Squadron
+                                player.body.controllingSquadron = false;
+                                const squadron = player.body.guns.find(gun => gun.launchSquadron && gun.children.length);
+                                if (squadron) {
+                                    for (const child of squadron.children) {
+                                        child.kill();
+                                    }
+                                }
+                            } break;
+                            case 1: { // launch Dive / Skip Bombers
+                                const gun = player.body.guns.find(r => r.launchSquadron === 1);
+                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                    gun.coolDown.time = Date.now();
+                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
+                                    player.body.controllingSquadron = true;
+                                }
+                            } break;
+                            case 2: { // launch Torpedo Bombers
+                                const gun = player.body.guns.find(r => r.launchSquadron === 2);
+                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                    gun.coolDown.time = Date.now();
+                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
+                                    player.body.controllingSquadron = true;
+                                }
+                            } break;
+                            case 3: { // launch Rocket Attack Planes
+                                const gun = player.body.guns.find(r => r.launchSquadron === 3);
+                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                    gun.coolDown.time = Date.now();
+                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
+                                    player.body.controllingSquadron = true;
+                                }
+                            } break;
+                        }
+                    }
+                } break;
                 case "A": {
                     if (player.body != null) return 1;
                     let possible = entities.map(entry => {

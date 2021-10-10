@@ -143,7 +143,7 @@ const gameloop = (() => {
                 my.physics();
                 logs.physics.mark();
             }
-            if (my.activation.check()) {
+            if (my.activation.check() || my.isPlayer) {
                 logs.entities.tally();
                 // Think about my actions.
                 logs.life.set();
@@ -470,7 +470,7 @@ const maintainloop = (() => {
 
     function spawnBot(TEAM = null) {
         let team = TEAM ? TEAM : getTeam();
-        let set = (team == 2 ? {
+        let set = ((c.HIDE_AND_SEEK && team == 2) ? {
             startClass: "landmine",
             build: [12, 0, 0, 0, 0, 12, 12, 12, 12, 12],
             ai: "hideBot"

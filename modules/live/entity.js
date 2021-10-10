@@ -27,6 +27,11 @@ class Gun {
         this.color = 16;
         this.skin = 0;
         this.canShoot = false;
+        this.launchSquadron = +info.LAUNCH_SQUADRON;
+        this.coolDown = {
+            time: 0,
+            max: +info.COOLDOWN
+        };
         if (info.PROPERTIES != null && info.PROPERTIES.TYPE != null) {
             this.canShoot = true;
             this.label = (info.PROPERTIES.LABEL == null) ? '' : info.PROPERTIES.LABEL;
@@ -61,7 +66,7 @@ class Gun {
             }
             this.onShoot = (info.PROPERTIES.ON_SHOOT == null) ? null : info.PROPERTIES.ON_SHOOT;
             this.autofire = (info.PROPERTIES.AUTOFIRE == null) ? false : info.PROPERTIES.AUTOFIRE;
-			      this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
+			this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
             this.altFire = (info.PROPERTIES.ALT_FIRE == null) ? false : info.PROPERTIES.ALT_FIRE;
             this.settings = (info.PROPERTIES.SHOOT_SETTINGS == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS;
             this.settings2 = (info.PROPERTIES.SHOOT_SETTINGS2 == null) ? [] : info.PROPERTIES.SHOOT_SETTINGS2;
@@ -215,7 +220,8 @@ class Gun {
             }
         }
     }
-    fire(gx, gy, sk) {
+    fire(gx, gy, sk, carrier = false) {
+        if (this.launchSquadron && !carrier) return;
         // Recoil
         this.lastShot.time = util.time();
         this.lastShot.power = 3 * Math.log(Math.sqrt(sk.spd) + this.trueRecoil + 1) + 1;
@@ -326,6 +332,9 @@ class Gun {
     }
     onShootFunction() {
         switch (this.onShoot) {
+            case "die": {
+                this.body.kill();
+            } break;
             case "hitScan":
             case "hitScan1":
             case "hitScan2":
@@ -554,7 +563,7 @@ class Entity {
                         this.addToGrid();
                         timer = 15;
                         active = views.some(v => v.check(this, 0.6));
-                        if (!active && (this.type === "drone" || this.isBot)) active = true;
+                        if (!active && (this.type === "drone" || this.isBot || this.alwaysActive)) active = true;
                     }
                 },
                 check: () => {
@@ -712,12 +721,13 @@ class Entity {
                 if (this.shield.max) this.shield.regenerate();
                 if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);
                 // Get bounds
-                const width = this.width ? this.realSize * this.width : this.realSize;
-                const height = this.height ? this.realSize * this.height : this.realSize;
-                let x1 = Math.min(this.x, this.x + this.velocity.x + this.accel.x) - width - 5;
-                let y1 = Math.min(this.y, this.y + this.velocity.y + this.accel.y) - height - 5;
-                let x2 = Math.max(this.x, this.x + this.velocity.x + this.accel.x) + width + 5;
-                let y2 = Math.max(this.y, this.y + this.velocity.y + this.accel.y) + height + 5;
+                const width = (this.width ? this.realSize * this.width : this.realSize);
+                const height = (this.height ? this.realSize * this.height : this.realSize);
+                let x1 = (Math.min(this.x, this.x + this.velocity.x + this.accel.x) - width - 5);
+                let y1 = (Math.min(this.y, this.y + this.velocity.y + this.accel.y) - height - 5);
+                let x2 = (Math.max(this.x, this.x + this.velocity.x + this.accel.x) + width + 5);
+                let y2 = (Math.max(this.y, this.y + this.velocity.y + this.accel.y) + height + 5);
+                //if (this.type === "wall") console.log(x1, x2, y1, y2, width, height, cos, sin, this.facing);
                 // Size check
                 let size = getLongestEdge(x1, y1, x2, y1);
                 let sizeDiff = savedSize / size;
@@ -780,6 +790,7 @@ class Entity {
             }
         }
         if (set.LAYER != null) this.layerID = set.LAYER;
+        if (set.ALWAYS_ACTIVE != null) this.alwaysActive = set.ALWAYS_ACTIVE;
         if (set.index != null) {
             this.index = set.index;
         }
@@ -792,6 +803,7 @@ class Entity {
         if (set.TYPE != null) {
             this.type = set.TYPE;
         }
+        if (set.IS_PLANE != null) this.isPlane = set.IS_PLANE;
         if (set.SHAPE != null) {
             this.shape = typeof set.SHAPE === 'number' ? set.SHAPE : 0
             this.shapeData = set.SHAPE;
@@ -1191,6 +1203,28 @@ class Entity {
                 out.cx += (this.fov * Math.cos(this.facing)) / 4;
                 out.cy += (this.fov * Math.sin(this.facing)) / 4;
                 this.cameraShiftFacing = [out.cx, out.cy];
+            }
+        }
+        if (this.controllingSquadron) {
+            const squadron = this.guns.find(gun => gun.launchSquadron && gun.children.length);
+            if (squadron) {
+                let x = 0, y = 0;
+                for (const child of squadron.children) {
+                    x += child.x;
+                    y += child.y;
+                }
+                x /= squadron.children.length;
+                y /= squadron.children.length;
+                out.cx = x;
+                out.cy = y;
+                this.lastCameraPos = [x, y];
+                this.cameraLingerTime = 35;
+            } else {
+                this.cameraLingerTime --;
+                const [x, y] = this.lastCameraPos;
+                out.cx = x;
+                out.cy = y;
+                if (this.cameraLingerTime <= 0) this.controllingSquadron = false;
             }
         }
         return out;
