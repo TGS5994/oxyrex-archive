@@ -37,7 +37,7 @@ const hideAndSeek = (function() {
         }
         setTimeout(interval, 30000);
     }
-    setTimeout(interval, 30000);
+    if (c.HIDE_AND_SEEK) setTimeout(interval, 30000);
     return {
         getKillData,
         data

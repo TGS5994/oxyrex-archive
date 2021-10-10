@@ -1,6 +1,6 @@
 let soccer = {
     scoreboard: [0, 0],
-    timer: 5,
+    timer: 10,
     spawnBall: function() {
         let o = new Entity({
             x: room.width / 2,
