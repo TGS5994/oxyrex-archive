@@ -1414,7 +1414,7 @@ const sockets = (() => {
                                 // But I just died...
                                 if (player.body.isDead()) {
                                     socket.status.deceased = true;
-                                    clearTimeout(body.invulnTimeout);
+                                    clearTimeout(player.body.invulnTimeout);
                                     // Let the client know it died
                                     const records = player.records();
                                     socket.talk('F', ...records);
