@@ -1234,6 +1234,7 @@ const sockets = (() => {
                         body.godmode = true;
                     }
                     body.invulnTimeout = setTimeout(function makeVulnerable() {
+                        if (!body.invuln) return;
                         body.invuln = false;
                         body.sendMessage("Your invulnerability has expired.");
                         clearTimeout(body.invulnTimeout);
