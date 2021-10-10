@@ -137,7 +137,7 @@ const bossRush = (function() {
     const escorts = [Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx];
     const waves = (function() {
         let output = [];
-        /*const types = [
+        const types = [
             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer],
             [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade],
             [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4, Class.eggBossTier1, Class.eggBossTier2]
@@ -154,8 +154,7 @@ const bossRush = (function() {
                 type = type.sort(() => 0.5 - Math.random());
             }
         }
-        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].forEach(celestial => output.push([celestial]));*/
-        [Class.oceanusCelestial, Class.raCelestial, Class.thorCelestial].forEach(entity => output.push([entity]));
+        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].forEach(celestial => output.push([celestial]));
         return output;
     })();
     let index = 0;
