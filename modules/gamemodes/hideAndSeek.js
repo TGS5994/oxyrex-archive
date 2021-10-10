@@ -17,7 +17,7 @@ const hideAndSeek = (function() {
             if (killer.team === -1 && killer.team !== instance.team) {
                 data[0] ++;
                 sockets.broadcast("The Seekers gained a point!");
-                if (data[0] >= 25) {
+                if (data[0] >= 25 && !gameWon) {
                     sockets.broadcast("The Seekers have won!");
                     setTimeout(closeArena, 2500);
                     gameWon = true;

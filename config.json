@@ -70,7 +70,7 @@
     "INFECTION_LOOP": false,
     "SURVIVAL": false,
     "KILL_RACE": false,
-    "HIDE_AND_SEEK": true,
+    "HIDE_AND_SEEK": false,
     "SOCCER": false,
     "TOKENS": [
         ["TOKEN_DEV_9YAghpcBdTXMHK12_DEV_TOKEN", "889989767557693580", "$000000", 2, "Oblivion#3940"],
