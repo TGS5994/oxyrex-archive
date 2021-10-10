@@ -73,41 +73,43 @@ bot.on("error", console.log);
 bot.logRecord = function(data) {
     const channel = bot.channels.cache.get("895793977868058674");
     console.log(channel);
-    if (channel) {
-        const embed = new Discord.MessageEmbed()
-            .setTitle("A possible record has been auto validated")
-            .setColor(0xDD0000)
-            .setDescription(`Mode: **${c.gameModeName}**`)
-            .addFields({
-                name: "Player Name",
-                value: data.name
-            }, {
-                name: "Player Discord",
-                value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A"
-            }, {
-                name: "Final Score",
-                value: global.util.formatLargeNumber(data.score)
-            }, {
-                name: "Tank",
-                value: data.tank
-            }, {
-                name: "Total Kills round(Kills + (Assists / 2) + (Bosses * 2)",
-                value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2))
-            }, {
-                name: "Kills",
-                value: data.kills
-            }, {
-                name: "Assists",
-                value: data.assists
-            }, {
-                name: "Bosses",
-                value: data.bosses
-            }, {
-                name: "Time Alive",
-                value: global.util.timeForHumans(data.timeAlive)
-            })
-            .setFooter("Powered by Discord.js :moan_daddy:", "https://i.imgur.com/wSTFkRM.png");
-        channel.send(embed);
+    for (const channel of ["895793977868058674", "884601275092729946"].map(id => bot.channels.cache.get(id))) {
+        if (channel) {
+            const embed = new Discord.MessageEmbed()
+                .setTitle("A possible record has been auto validated")
+                .setColor(0xDD0000)
+                .setDescription(`Mode: **${c.gameModeName}**`)
+                .addFields({
+                    name: "Player Name",
+                    value: data.name
+                }, {
+                    name: "Player Discord",
+                    value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A"
+                }, {
+                    name: "Final Score",
+                    value: global.util.formatLargeNumber(data.score)
+                }, {
+                    name: "Tank",
+                    value: data.tank
+                }, {
+                    name: "Total Kills round(Kills + (Assists / 2) + (Bosses * 2)",
+                    value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2))
+                }, {
+                    name: "Kills",
+                    value: data.kills
+                }, {
+                    name: "Assists",
+                    value: data.assists
+                }, {
+                    name: "Bosses",
+                    value: data.bosses
+                }, {
+                    name: "Time Alive",
+                    value: global.util.timeForHumans(data.timeAlive)
+                })
+                .setFooter("Powered by Discord.js :moan_daddy:", "https://i.imgur.com/wSTFkRM.png");
+            channel.send(embed);
+        }
     }
 }
 bot.login(config.token);
