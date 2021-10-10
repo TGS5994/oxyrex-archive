@@ -1224,9 +1224,10 @@ const sockets = (() => {
                     socket.rememberedTeam = player.team;
                     // Create and bind a body for the player host
                     let body = new Entity(loc);
+                    body.socket = socket;
                     body.protect();
                     body.isPlayer = true;
-                    body.define((c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
+                    body.define((typeof c.CARRIER_CHANCE === "string" && Math.random() > .9) ? Class[c.CARRIER_CHANCE] : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
                     body.name = name; // Define the name
                     if (c.SURVIVAL && !survival.started) {
                         survival.players.push(body);
@@ -1255,7 +1256,6 @@ const sockets = (() => {
                     socket.spectateEntity = null;
                     body.invuln = true; // Make it safe
                     player.body = body;
-                    body.socket = socket;
                     // Decide how to color and team the body
                     switch (room.gameMode) {
                         case "tdm": {

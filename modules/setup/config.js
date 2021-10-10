@@ -8,11 +8,12 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Maze Domination", "Mothership", "Tag", "Maze", "Maze 2TDM", "Maze 4TDM", "Kill Race", "Boss Rush", "Soccer", "Hide and Seek"];
-const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];
+const gamemode = "Carrier Battle";//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
-    "1TDM": {
+    "Carrier Battle": {
         MODE: "tdm",
-        TEAMS: 1
+        TEAMS: 2,
+        CARRIER_CHANCE: "rhein"
     },
     "FFA": {}, // "defaults" is already FFA.
     "Open TDM": {
