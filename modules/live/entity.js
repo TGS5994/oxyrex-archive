@@ -805,6 +805,7 @@ class Entity {
             this.type = set.TYPE;
         }
         if (set.IS_PLANE != null) this.isPlane = set.IS_PLANE;
+        if (set.TARGET_PLANES != null) this.settings.targetPlanes = set.TARGET_PLANES;
         if (set.SHAPE != null) {
             this.shape = typeof set.SHAPE === 'number' ? set.SHAPE : 0
             this.shapeData = set.SHAPE;

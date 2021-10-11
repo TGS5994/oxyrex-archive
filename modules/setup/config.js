@@ -11,7 +11,7 @@ const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Maze Domination", "
 const gamemode = "Carrier Battle";//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "Carrier Battle": {
-        CARRIER_CHANCE: ["rhein", "wesser", "maxImmelmann"],
+        CARRIER_CHANCE: ["rhein", "wesser", "augustVonParceval", "maxImmelmann"],
         WIDTH: 10000,
         HEIGHT: 10000
     },

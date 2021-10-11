@@ -325,7 +325,7 @@ class io_nearestDifferentMaster extends IO {
     }
     checkEntity(e, m, mm, range) {
         // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
-        const validType = this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'));
+        const validType = this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'));
         if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && (this.body.seeInvisable || e.alpha > 0.25) && validType && e.dangerValue > 0) {
             if (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range) {
                 if (!this.body.aiSettings.blind || (Math.abs(e.x - mm.x) < range && Math.abs(e.y - mm.y) < range)) {
