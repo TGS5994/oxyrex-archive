@@ -493,7 +493,11 @@ const maintainloop = (() => {
 
     function spawnBot(TEAM = null) {
         let team = TEAM ? TEAM : getTeam();
-        let set = ((c.HIDE_AND_SEEK && team == 2) ? {
+        let set = ((typeof c.CARRIER_CHANCE === "object" && Math.random() > .95) ? {
+            startClass: "alexanderNevsky",
+            build: [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+            ai: "bot"
+        } : (c.HIDE_AND_SEEK && team == 2) ? {
             startClass: "landmine",
             build: [12, 0, 0, 0, 0, 12, 12, 12, 12, 12],
             ai: "hideBot"
