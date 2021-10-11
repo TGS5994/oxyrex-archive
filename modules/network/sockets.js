@@ -1227,7 +1227,7 @@ const sockets = (() => {
                     body.socket = socket;
                     body.protect();
                     body.isPlayer = true;
-                    body.define((typeof c.CARRIER_CHANCE === "object") ? Class[ran.choose(c.CARRIER_CHANCE)] : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
+                    body.define((typeof c.CARRIER_CHANCE === "object") ? Class.aircraftCarriers : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
                     body.name = name; // Define the name
                     if (c.SURVIVAL && !survival.started) {
                         survival.players.push(body);

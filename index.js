@@ -206,7 +206,7 @@ const maintainloop = (() => {
     function placeRoids() {
         if (typeof c.CARRIER_CHANCE === "object") {
             const entityClass = ran.choose([Class.babyObstacle, Class.obstacle]);
-            for (let i = 0; i < 150; i ++) {
+            for (let i = 0; i < 75; i ++) {
                 let x = 0;
                 let position;
                 do {
@@ -220,6 +220,7 @@ const maintainloop = (() => {
                 let o = new Entity(position);
                 o.define(entityClass);
                 o.team = -101;
+                o.SIZE *= (1 + Math.random());
                 o.facing = ran.randomAngle();
                 o.protect();
                 o.life();
