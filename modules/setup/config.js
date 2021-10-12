@@ -13,7 +13,8 @@ const gamemodes = {
     "Carrier Battle": {
         CARRIER_CHANCE: ["rhein", "wesser", "augustVonParceval", "maxImmelmann"],
         WIDTH: 10000,
-        HEIGHT: 10000
+        HEIGHT: 10000,
+        FOOD_AMOUNT: 0
     },
     "FFA": {}, // "defaults" is already FFA.
     "Open TDM": {
