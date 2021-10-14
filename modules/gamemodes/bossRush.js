@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 /*function generateWaves() {
-    let bosses = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4].sort(() => 0.5 - Math.random());
+    let bosses = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4].sort(() => 0.5 - Math.random());
     let waves = [];
     for (let i = 0; i < 4; i++) {
         let wave = [];
@@ -139,7 +139,7 @@ const bossRush = (function() {
         let output = [];
         const types = [
             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer],
-            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.trapeFighter, Class.deltrablade],
+            [Class.eliteSkimmer, Class.palisade, Class.summoner],
             [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggPrinceTier3, Class.eggPrinceTier4, Class.eggBossTier1, Class.eggBossTier2]
         ];
         types.push(types.flat());
