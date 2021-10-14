@@ -349,12 +349,6 @@ const maintainloop = (() => {
                         break;
                     case 2:
                         choice = [
-                            [Class.deltrablade, Class.trapeFighter], 1 + (Math.random() * 2 | 0), 'a', 'norm'
-                        ];
-                        sockets.broadcast("Don't get Distracted...");
-                        break;
-                    case 3:
-                        choice = [
                             [Class.fallenOverlord], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("Many sought the day they'd return, but not in this way...");
@@ -440,8 +434,8 @@ const maintainloop = (() => {
             chance: 0.8,
             sentryChance: 0.95,
             nestDefenderChance: 0.999,
-            crashers: [Class.crasher, Class.grouper, Class.fragment, Class.triBlade, Class.crusher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.visDestructia],
+            crashers: [Class.crasher, Class.grouper, Class.fragment],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap],
             nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
         };
         function getType() {
