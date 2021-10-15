@@ -260,7 +260,7 @@ class io_onlyAcceptInArc extends IO {
     }
     think(input) {
         if (input.target && this.body.firingArc != null) {
-            if (Math.abs(util.angleDifference(Math.atan2(input.target.y, input.target.x), this.body.firingArc[0])) >= this.body.firingArc[1]) {
+            if (Math.abs(util.angleDifference(this.body.facing/*Math.atan2(input.target.y, input.target.x)*/, this.body.firingArc[0])) >= this.body.firingArc[1]) {
                 return {
                     fire: false,
                     alt: false,
