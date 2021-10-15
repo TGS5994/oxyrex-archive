@@ -171,7 +171,7 @@ const sockets = (() => {
             let entity = entities.find(entry => entry.id === +message[1]);
             if (entity) socket.executeEntity = entity;
             else socket.executeEntity = null;
-            socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : player.body));
+            socket.talk("Q", "info", flattenEntity(socket.executeEntity ? socket.executeEntity : body));
         }
     }, {
         permissions: "spawnEntity",
