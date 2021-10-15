@@ -434,7 +434,7 @@ const maintainloop = (() => {
             chance: 0.8,
             sentryChance: 0.95,
             nestDefenderChance: 0.999,
-            crashers: [Class.crasher, Class.grouper, Class.fragment],
+            crashers: [Class.crasher],
             sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap],
             nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
         };
