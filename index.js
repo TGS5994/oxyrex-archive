@@ -334,7 +334,7 @@ const maintainloop = (() => {
                 util.log('[SPAWN] Preparing to spawn...');
                 timer = 0;
                 let choice = [];
-                switch (ran.chooseChance(1, 1, 1, 1)) {
+                switch (ran.chooseChance(1, 1, 1)) {
                     case 0:
                         choice = [
                             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1 + (Math.random() * 2 | 0), 'a', 'nest'
