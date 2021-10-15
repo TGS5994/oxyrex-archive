@@ -260,7 +260,23 @@ class io_onlyAcceptInArc extends IO {
     }
     think(input) {
         if (input.target && this.body.firingArc != null) {
-            if (Math.abs(util.angleDifference(this.body.facing/*Math.atan2(input.target.y, input.target.x)*/, this.body.firingArc[0])) >= this.body.firingArc[1]) {
+            if (Math.abs(util.angleDifference(Math.atan2(input.target.y, input.target.x), this.body.firingArc[0])) >= this.body.firingArc[1]) {
+                return {
+                    fire: false,
+                    alt: false,
+                    main: false,
+                };
+            }
+        }
+    }
+}
+class io_onlyFireWhenInRange extends IO {
+    constructor(body) {
+        super(body);
+    }
+    think(input) {
+        if (input.target && this.body.firingArc != null) {
+            if (Math.abs(util.angleDifference(Math.atan2(input.target.y, input.target.x), this.body.facing)) >= Math.PI / 25) {
                 return {
                     fire: false,
                     alt: false,
@@ -990,5 +1006,6 @@ module.exports = {
     io_multiboxClone,
     io_taurusPortal,
     io_spinMissile,
-    io_plane
+    io_plane,
+    io_onlyFireWhenInRange
 };
