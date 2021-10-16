@@ -817,6 +817,7 @@ const sockets = (() => {
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
                                     for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
                                     player.body.controllingSquadron = true;
+                                    player.body.sendMessage("Right click to fire.");
                                 }
                             } break;
                             case 2: { // launch Torpedo Bombers
@@ -827,6 +828,7 @@ const sockets = (() => {
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
                                     for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
                                     player.body.controllingSquadron = true;
+                                    player.body.sendMessage("Right click to fire.");
                                 }
                             } break;
                             case 3: { // launch Rocket Attack Planes
@@ -837,6 +839,18 @@ const sockets = (() => {
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
                                     for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
                                     player.body.controllingSquadron = true;
+                                    player.body.sendMessage("Right click to fire.");
+                                }
+                            } break;
+                            case 4: { // launch Fighter Patrol
+                                const gun = player.body.guns.find(r => r.launchSquadron === 4);
+                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                    gun.coolDown.time = Date.now();
+                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
+                                    player.body.controllingSquadron = true;
+                                    player.body.sendMessage("Left click to fire.");
                                 }
                             } break;
                         }

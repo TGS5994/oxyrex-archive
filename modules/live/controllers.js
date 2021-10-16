@@ -276,7 +276,7 @@ class io_onlyFireWhenInRange extends IO {
     }
     think(input) {
         if (input.target && this.body.firingArc != null) {
-            if (Math.abs(util.angleDifference(Math.atan2(input.target.y, input.target.x), this.body.facing)) >= Math.PI / 25) {
+            if (Math.abs(util.angleDifference(Math.atan2(input.target.y, input.target.x), this.body.facing)) >= .025) {
                 return {
                     fire: false
                 };
