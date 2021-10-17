@@ -8,12 +8,12 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", "Maze Domination", "Mothership", "Tag", "Maze", "Maze 2TDM", "Maze 4TDM", "Kill Race", "Boss Rush", "Soccer", "Hide and Seek"];
-const gamemode = "Carrier Battle";//gameModeTable[(Math.random() * gameModeTable.length | 0)];//gameModeTable[(Math.random() * gameModeTable.length | 0)];
+const gamemode = "Naval Battle";//gameModeTable[(Math.random() * gameModeTable.length | 0)];//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
-    "Carrier Battle": {
-        CARRIER_CHANCE: ["rhein", "wesser", "augustVonParceval", "maxImmelmann"],
-        WIDTH: 10000,
-        HEIGHT: 10000,
+    "Naval Battle": {
+        NAVAL_SHIPS: true,
+        WIDTH: 7500,
+        HEIGHT: 7500,
         FOOD_AMOUNT: 0
     },
     "FFA": {}, // "defaults" is already FFA.
@@ -377,7 +377,7 @@ const mode = gamemodes[gamemode];
 let output = {};
 for (let key in defaults) {
     output[key] = defaults[key];
-    if (mode[key]) output[key] = mode[key];
+    if (mode[key] != null) output[key] = mode[key];
 }
 output.gameModeName = gamemode;
 if (["Tag", "Domination", "Mothership"].includes(gamemode)) output.gameModeName = `${output.TEAMS} TDM ${gamemode}`;

@@ -1241,7 +1241,7 @@ const sockets = (() => {
                     body.socket = socket;
                     body.protect();
                     body.isPlayer = true;
-                    body.define((typeof c.CARRIER_CHANCE === "object") ? Class.navalShips : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
+                    body.define(c.NAVAL_SHIPS ? Class.navalShips : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
                     body.name = name; // Define the name
                     if (c.SURVIVAL && !survival.started) {
                         survival.players.push(body);

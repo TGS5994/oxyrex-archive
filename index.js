@@ -204,29 +204,6 @@ setTimeout(closeArena, 60000 * 240); // Restart every 2 hours
 const maintainloop = (() => {
     // Place obstacles
     function placeRoids() {
-        if (typeof c.CARRIER_CHANCE === "object") {
-            const entityClass = ran.choose([Class.babyObstacle, Class.obstacle]);
-            for (let i = 0; i < 75; i ++) {
-                let x = 0;
-                let position;
-                do {
-                    position = room.randomType("norm");
-                    x++;
-                    if (x > 200) {
-                        util.warn("Could not place some roids.");
-                        return 0;
-                    }
-                } while (dirtyCheck(position, 10 + entityClass.SIZE));
-                let o = new Entity(position);
-                o.define(entityClass);
-                o.team = -101;
-                o.SIZE *= (1 + Math.random());
-                o.facing = ran.randomAngle();
-                o.protect();
-                o.life();
-            }
-            return;
-        }
         function placeRoid(type, entityClass) {
             let x = 0;
             let position;
@@ -484,12 +461,18 @@ const maintainloop = (() => {
             o.team = -100;
         }
     };*/
-
+    function getBuild() {
+        const output = [];
+        for (let i = 0; i < 10; i ++) {
+            output.push(Math.random() * 10 | 0);
+        }
+        return output;
+    }
     function spawnBot(TEAM = null) {
         let team = TEAM ? TEAM : getTeam();
-        let set = ((typeof c.CARRIER_CHANCE === "object" && Math.random() > .95) ? {
-            startClass: "alexanderNevsky",
-            build: [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+        let set = (c.NAVAL_SHIPS ? {
+            startClass: ran.choose(["alexanderNevsky", "yamato"]),
+            build: getBuild(),
             ai: "bot"
         } : (c.HIDE_AND_SEEK && team == 2) ? {
             startClass: "landmine",
