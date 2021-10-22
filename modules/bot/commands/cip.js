@@ -19,7 +19,7 @@ module.exports = {
             ips.push(socket.ip);
         }
         util.info(message, `The IPs are ${ips[0] === ips[1] ? "" : "not"} the same.`);
-        util.log(bot, "command", `<!@${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
+        util.log(bot, "command", `<@!${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
     },
     description: "Compares the IPs between two users.",
     usage: "cip <id> <id>"
