@@ -77,7 +77,7 @@ function checkPermissions(message) {
         }
     }
     if (output === "BLACKLISTED") output = -1;
-    return output;
+    return +output;
 };
 
 module.exports = {
