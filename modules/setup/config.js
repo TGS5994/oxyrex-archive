@@ -8,7 +8,7 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 const gameModeTable = ["FFA", "2TDM", "4TDM", "Domination", /*"Maze Domination",*/ "Mothership", "Tag", /*"Maze", "Maze 2TDM", "Maze 4TDM",*/ "Kill Race", /*"Boss Rush",*/ "Soccer", "Hide and Seek"];
-const gamemode = gameModeTable[(Math.random() * gameModeTable.length | 0)];//gameModeTable[(Math.random() * gameModeTable.length | 0)];
+const gamemode = "2TDM Domination";//gameModeTable[(Math.random() * gameModeTable.length | 0)];//gameModeTable[(Math.random() * gameModeTable.length | 0)];
 const gamemodes = {
     "Naval Battle": {
         NAVAL_SHIPS: true,
@@ -296,6 +296,33 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
             ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "roid"]
+        ],
+        DOMINATOR_LOOP: true,
+        secondaryGameMode: "Domination"
+    },
+    "2TDM Domination": {
+        MODE: "tdm",
+        TEAMS: 2,
+        X_GRID: 15,
+        Y_GRID: 15,
+        WIDTH: 7500,
+        HEIGHT: 7500,
+        ROOM_SETUP: [
+            ["bap1", "bas1", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "rock", "roid"],
+            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
+            ["rock", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "rock"],
+            ["rock", "roid", "dom0", "norm", "norm", "nest", "nest", "dom0", "nest", "nest", "norm", "norm", "dom0", "roid", "rock"],
+            ["rock", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "rock"],
+            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
+            ["roid", "rock", "norm", "norm", "norm", "norm", "rock", "rock", "rock", "norm", "norm", "norm", "norm", "bas2", "bap2"]
         ],
         DOMINATOR_LOOP: true,
         secondaryGameMode: "Domination"
