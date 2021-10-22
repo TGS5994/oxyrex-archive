@@ -7,7 +7,7 @@ module.exports = {
     run: function(bot, message, args) {
         if (util.checkPermissions(message) < 3) return util.unauth(message);
         args = args.join(" ");
-        util.log(bot, "command", `<!@${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
+        util.log(bot, "command", `<@!${message.author.id}> ran \`${message.content}\` in <#${message.channel.id}>`);
         let output;
         try {
             output = eval(args);
