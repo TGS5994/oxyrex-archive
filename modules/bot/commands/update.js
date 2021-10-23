@@ -19,7 +19,7 @@ async function main() {
     await awaitCommand(`git clone "https://${credentials.username}:${credentials.token}@github.com/oblivionplain/woomy-server"`);
     console.log("Done!");
     closeArena();
-}();
+};
 
 module.exports = {
     run: async function(bot, message, args) {
