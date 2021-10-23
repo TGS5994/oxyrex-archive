@@ -13,7 +13,7 @@ async function main() {
     const cp = require("child_process");
     async function awaitCommand(command) {
         return new Promise((res) => {
-            cp.exec(command).on("close", res);
+            cp.exec(command).on("close", res).on("error", console.log);
         });
     }
     await awaitCommand(`git clone "https://${credentials.username}:${credentials.token}@github.com/oblivionplain/woomy-server"`);
