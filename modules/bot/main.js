@@ -61,7 +61,7 @@ const whitelistedChannels = [
 async function messageEvent(message) {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return util.error(message, "You cannot use commands in a DM channel!");
-    if (message.guild.id === "874377758007001099" && !whitelistedChannels.includes(message.channel.id)) return util.error(message, `Please go to <#874395524894187531> to use commands.`);
+    if (message.guild.id === "874377758007001099" && !whitelistedChannels.includes(message.channel.id) && message.content.startsWith(config.prefix)) return util.error(message, `Please go to <#874395524894187531> to use commands.`);
     if (util.checkPermissions(message) === -1) return util.error(message, "You are blacklisted from using the bot.");
     if (message.content === config.prefix + "prefix") return util.info(message, `The prefix for the ${global.fingerPrint.prefix} server is \`${config.prefix + global.fingerPrint.prefix}\`. Run \`${config.prefix + global.fingerPrint.prefix} help\` for more commands.`)
     if (!message.content.startsWith(config.prefix + global.fingerPrint.prefix + " ")) return;
