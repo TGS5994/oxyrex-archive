@@ -7,6 +7,18 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 // Global Utilities Requires
+
+global.fingerPrint = (function() {
+    const heroku = process.argv.some(arg => arg.includes("heroku"));
+    const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
+    const localhost = !heroku && !digitalOcean;
+    return {
+        heroku,
+        digitalOcean,
+        localhost
+    }
+})();
+
 global.c = require("./setup/config.js").output;
 global.ran = require(".././lib/random.js");
 global.util = require(".././lib/util.js");
