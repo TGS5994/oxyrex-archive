@@ -8,7 +8,7 @@ const bot = new Discord.Client();
 bot.database = require("./database.js");
 // When our bot is online, we set it's activity.
 bot.on("ready", async function() {
-    bot.user.setActivity(`for commands (${config.prefix})`, {
+    bot.user.setActivity(`for commands (${config.prefix}prefix)`, {
         type: "WATCHING"
     });
     // Now we log that we started up in our logs channel.
@@ -42,7 +42,7 @@ commands.help = (function() {
         let command = commands[name];
         fields.push({
             name: name,
-            value: `Description: **${command.description}**\nUsage: \`${config.prefix + command.usage}\``
+            value: `Description: **${command.description}**\nUsage: \`${`${config.prefix}${global.fingerPrint.prefix} ${command.usage}`}\``
         });
     }
     return {
@@ -51,7 +51,7 @@ commands.help = (function() {
             message.channel.send(embed);
         },
         description: "Lists commands.",
-        usage: config.prefix + "help"
+        usage: config.prefix + global.fingerPrint.prefix + " help"
     }
 })();
 const whitelistedChannels = [
@@ -59,13 +59,15 @@ const whitelistedChannels = [
     "876435248903229532" // Beta Tester Chat
 ];
 async function messageEvent(message) {
-    if (!message.content.startsWith(config.prefix)) return;
     if (message.author.bot) return;
     if (message.channel.type === "dm") return util.error(message, "You cannot use commands in a DM channel!");
     if (message.guild.id === "874377758007001099" && !whitelistedChannels.includes(message.channel.id)) return util.error(message, `Please go to <#874395524894187531> to use commands.`);
     if (util.checkPermissions(message) === -1) return util.error(message, "You are blacklisted from using the bot.");
+    if (message.content === config.prefix + "prefix") return util.info(message, `The prefix for the ${global.fingerPrint.prefix} server is \`${config.prefix + global.fingerPrint.prefix}\`. Run \`${config.prefix + global.fingerPrint.prefix} help\` for more commands.`)
+    if (!message.content.startsWith(config.prefix + global.fingerPrint.prefix + " ")) return;
+    message.content = message.content.replace(config.prefix + global.fingerPrint.prefix + " ", "");
     let args = message.content.split(" ");
-    let command = args.shift().slice(config.prefix.length).toLowerCase();
+    let command = args.shift().toLowerCase();
     if (commands[command]) return commands[command].run(bot, message, args);
     util.error(message, "That command doesn't exist!");
 };
