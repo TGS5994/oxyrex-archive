@@ -16,6 +16,7 @@ async function main() {
             cp.exec(command).on("close", res).on("error", console.log);
         });
     }
+    await awaitCommand("cd ../");
     await awaitCommand(`git clone "https://${credentials.username}:${credentials.token}@github.com/oblivionplain/woomy-server"`);
     console.log("Done!");
     closeArena();
