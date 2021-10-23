@@ -27,7 +27,7 @@ const room = {
     }) < c.WIDTH / 2 : location => location.x >= 0 && location.x <= c.WIDTH && location.y >= 0 && location.y <= c.HEIGHT,
     topPlayerID: -1,
     cellTypes: (function() {
-        let output = ["nest", "norm", "rock", "roid", "port", "wall"];
+        let output = ["nest", "norm", "rock", "roid", "port", "wall", "door"];
         for (let i = 1; i < 5; i++) output.push("bas" + i), output.push("bap" + i);
         for (let i = 0; i < c.ROOM_SETUP.length; i++)
             for (let j = 0; j < c.ROOM_SETUP[i].length; j++)

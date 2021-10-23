@@ -254,6 +254,78 @@ const maintainloop = (() => {
         o.protect();
         o.life();
     };
+    const doors = [];
+    const buttons = [];
+    function makeDoor(loc, team = -101) {
+        const door = new Entity(loc);
+        door.define(Class.mazeWall);
+        door.team = -101;
+        door.SIZE = (room.width / room.xgrid) / 2;
+        door.protect();
+        door.life();
+        doors.push(door);
+        const doorID = doors.length;
+        door.onDead = function() {
+            for (const button of buttons) {
+                if (button.doorID === doorID) {
+                    button.ignoreButtonKill = 2;
+                    button.kill();
+                }
+            }
+        }
+    }
+    function makeButton(loc, open, doorID) {
+        const button = new Entity(loc);
+        button.define(Class.button);
+        button.pushability = button.PUSHABILITY = 0;
+        button.team = -101;
+        button.doorID = doorID;
+        button.color = open ? 12 : 11;
+        button.onDead = function() {
+            if (!button.ignoreButtonKill) {
+                const door = doors[button.doorID];
+                if (open) {
+                    door.alpha = 0.2;
+                    door.passive = true;
+                } else {
+                    door.alpha = 1;
+                    door.passive = false;
+                }
+                for (const other of buttons) {
+                    if (button !== other && button.doorID === other.doorID) {
+                        other.ignoreButtonKill = true;
+                        other.kill();
+                    }
+                }
+            }
+            if (button.ignoreButtonKill !== 2) {
+                makeButton(loc, !open, doorID);
+            }
+        }
+        buttons.push(button);
+    }
+    for (const loc of room.door) {
+        makeDoor(loc);
+        let buttonLocs = [{
+            x: loc.x + (room.width / room.xgrid),
+            y: loc.y
+        }, {
+            x: loc.x - (room.width / room.xgrid),
+            y: loc.y
+        }, {
+            x: loc.x,
+            y: loc.y + (room.height / room.ygrid)
+        }, {
+            x: loc.x,
+            y: loc.y - (room.height / room.ygrid)
+        }];
+        buttonLocs = buttonLocs.filter(function(entry) {
+            return ["norm", "nest"].includes(room.setup[Math.floor((entry.y * room.ygrid) / room.height)][Math.floor((entry.x * room.xgrid) / room.width)]);
+        });
+        for (const loc of buttonLocs) {
+            makeButton(loc, 1, doors.length - 1);
+        }
+    }
     for (let loc of room["wall"]) spawnWall(loc);
     // Spawning functions
     let spawnBosses = (() => {

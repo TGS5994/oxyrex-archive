@@ -86,7 +86,6 @@ function generateMaze(size) {
             console.log("Done!");
             break;
         }
-        //start in a preexisting path and make a random path branching from it
         for (let i = 0; i < 1000; i++) {
             let direction = Math.floor(Math.random() * 4);
             let [x, y] = randomPosition(false);
