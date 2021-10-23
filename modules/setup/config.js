@@ -10,7 +10,7 @@ const defaults = require("../../config.json");
 if (global.fingerPrint.digitalOcean) {
     defaults.WIDTH = 6750;
     defaults.HEIGHT = 6750;
-    defaults.maxPlayers = 30;
+    defaults.maxPlayers = 20;
 }
 
 function getBaseShuffling(teams) {
@@ -30,7 +30,7 @@ function id(i, level = true) {
     }
 }
 
-const gamemode = "TDM";
+const gamemode = Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
