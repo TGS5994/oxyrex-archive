@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const fs = require("fs");
-const blockerDB = require("./blocker.js");
+/*const blockerDB = require("./blocker.js");
 const parseIPv4 = ip => {
     let [a, b, c, d] = ip.split(".").map(r => parseInt(r, 10));
     return (a << 24) | (b << 16) | (c << 8) | d;
@@ -44,7 +44,7 @@ const getASN = IPv4 => {
             ipOut = parseIPv4(IPv4) >>> (32 - mask);
         return ipOut - dbOut;
     })].asn;
-};
+};*/
 let securityDatabase = {
     bans: [],
     blackList: []
@@ -64,6 +64,9 @@ Object.keys(securityDatabase).forEach(key => {
 
 const verifySocket = (function() {
     const getIP = require("forwarded-for");
+    const IPManager = requier("./IPManager.js");
+    const manager = new IPManager();
+    manager.whiteList("72.10.96.30"); // My school
     const validOrigins = ["woomy.surge.sh"];
     function checkHeaders(headers) {
         const origin = headers.origin.replace("http://", "").replace("https://", "").replace("/", "");
@@ -87,7 +90,7 @@ const verifySocket = (function() {
         }
         return [1];
     }
-    function checkIP(socket, request, bypassVPNBlocker) {
+    async function checkIP(socket, request, bypassVPNBlocker) {
         let ipAddress;
         try {
             ipAddress = getIP(request, request.headers).ip.split(":").pop()
@@ -96,11 +99,12 @@ const verifySocket = (function() {
             return [0, "Invalid IP"];
         }
         if (ipAddress == null) return [0, "Attempting to spawn with a null IP adress."];
-        if ((binarySearch(IPv4BadASNBlocks, ({ ip, mask, asn }) => {
+        if (await manager.checkIsVPN(ipAddress)) return [0, "VPN/Proxy Detected. Please disable it and try again."];
+        /*if ((binarySearch(IPv4BadASNBlocks, ({ ip, mask, asn }) => {
             let dbOut = ip >>> (32 - mask),
                 ipOut = parseIPv4(ipAddress) >>> (32 - mask);
             return ipOut - dbOut;
-        }) >= 0 || blockerDB.torIPs.includes(ipAddress)) && !bypassVPNBlocker) return [0, "VPN detected. Please disable it and try again."];
+        }) >= 0 || blockerDB.torIPs.includes(ipAddress)) && !bypassVPNBlocker) return [0, "VPN detected. Please disable it and try again."];*/
         let same = 0;
         for (let socket of sockets.clients)
             if (socket.ip === ipAddress) same++;
@@ -112,10 +116,10 @@ const verifySocket = (function() {
         if (sockets.clients.length >= c.maxPlayers) return [0, `The max player limit for this server (${c.MAX_PLAYERS}) has been reached. Please try a different server or come back later.`];
         return [1, ipAddress];
     }
-    return function(socket, request, bypassVPNBlocker = false) {
+    return async function(socket, request, bypassVPNBlocker = false) {
         const headerCheck = checkHeaders(request.headers);
         if (headerCheck[0] === 0) return headerCheck;
-        return checkIP(socket, request, bypassVPNBlocker);
+        return await checkIP(socket, request, bypassVPNBlocker);
     }
 })();
 
