@@ -297,7 +297,6 @@ const sockets = (() => {
                             socket.kick('Duplicate player spawn attempt.');
                             return 1;
                         }
-                        socket.talk('w', true)
                         if (m.length === 1) {
                             let key = m[0];
                             socket.key = key;
@@ -312,6 +311,7 @@ const sockets = (() => {
                             socket.terminate();
                             return 1;
                         }
+                        socket.talk('w', true);
                         socket.ip = myIP[1];
                         socket.backlogData.ip = socket.ip;
                         socket.verified = true;
