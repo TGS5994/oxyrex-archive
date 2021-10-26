@@ -9,7 +9,17 @@ class IPManager {
     constructor() {
         this.bannedIPs = [];
         this.knownVPNIPs = [];
+        this.whitelist = [];
         this.blockList = new net.BlockList();
+    }
+    whitelistIP(ip) { // whitelistIP("127.0.0.1") or whitelistIP({ foo: 1, bar: 2, ip: "127.0.0.1" })
+        if (typeof ip === "string") {
+            this.whitelist.push(ip);
+        } else if (typeof ip === "object" && typeof ip.ip === "string") {
+            this.whitelist.push(ip);
+        } else {
+            throw new Error("Invalid IP specified, IP must be a string or an object with the 'ip' property as a string.");
+        }
     }
     ban(ip) { // ban("127.0.0.1") or ban({ foo: 1, bar: 2, ip: "127.0.0.1" })
         if (typeof ip === "string") {
@@ -56,6 +66,10 @@ class IPManager {
         saveToLog: true
     }) {
         return new Promise((resolve, reject) => {
+            if (this.whitelist.includes(ip)) {
+                resolve(false);
+                return;
+            }
             if (this.blockList.check(ip) || this.knownVPNIPs.includes(ip)) {
                 resolve(true);
                 return;
