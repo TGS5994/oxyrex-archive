@@ -66,8 +66,9 @@ const verifySocket = (function() {
     const getIP = require("forwarded-for");
     const IPManager = require("./IPManager.js");
     const manager = new IPManager();
-    manager.whitelistIP("72.10.96.30"); // My school
-    manager.whitelistIP("104.225.189.8"); // School v2
+    // Whitelisted IPs - These IPs bypass the VPN detector - Put what they are and who whitelisted them next to the whitelist function
+    manager.whitelistIP("72.10.96.30"); // My school - Oblivion
+    manager.whitelistIP("104.225.189.8"); // My school - Oblivion
     const validOrigins = ["woomy.surge.sh"];
     function checkHeaders(headers) {
         const origin = headers.origin.replace("http://", "").replace("https://", "").replace("/", "");
