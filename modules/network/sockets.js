@@ -268,7 +268,7 @@ const sockets = (() => {
                 if (log) bot.util.log(bot, "kick", `${socket.name} was banned for \`${reason}\` IP: ||${socket.ip}||`);
             }
             // Handle incoming messages
-            function incoming(message, socket) {
+            async function incoming(message, socket) {
                 // Only accept binary
                 if (!(message instanceof ArrayBuffer)) {
                     socket.kick('Non-binary packet.');
@@ -303,7 +303,7 @@ const sockets = (() => {
                             socket.key = key;
                         }
                         let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
-                        const myIP = checkIP(socket, socket.connection, level > 1);
+                        const myIP = await checkIP(socket, socket.connection, level > 1);
                         if (myIP[0] === 0) {
                             socket.lastWords("w", false, myIP[1]);
                             socket.send(protocol.encode(["setMessage", myIP[1]]), {
