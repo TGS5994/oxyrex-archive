@@ -304,6 +304,7 @@ const sockets = (() => {
                         let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
                         const myIP = await checkIP(socket, socket.connection, level > 1);
                         if (myIP[0] === 0) {
+                            bot.util.log(bot, "player", "Socket failed verification. Error: " + myIP[1]);
                             socket.lastWords("w", false, myIP[1]);
                             socket.send(protocol.encode(["setMessage", myIP[1]]), {
                                 binary: true
