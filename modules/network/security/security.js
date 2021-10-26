@@ -66,7 +66,8 @@ const verifySocket = (function() {
     const getIP = require("forwarded-for");
     const IPManager = require("./IPManager.js");
     const manager = new IPManager();
-    //manager.whiteList("72.10.96.30"); // My school
+    manager.whitelistIP("72.10.96.30"); // My school
+    manager.whitelistIP("104.225.189.8"); // School v2
     const validOrigins = ["woomy.surge.sh"];
     function checkHeaders(headers) {
         const origin = headers.origin.replace("http://", "").replace("https://", "").replace("/", "");
