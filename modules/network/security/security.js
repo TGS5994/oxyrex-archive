@@ -119,7 +119,7 @@ const verifySocket = (function() {
     return async function(socket, request, bypassVPNBlocker = false) {
         const headerCheck = checkHeaders(request.headers);
         if (headerCheck[0] === 0) return headerCheck;
-        return checkIP(socket, request, bypassVPNBlocker);
+        return await checkIP(socket, request, bypassVPNBlocker);
     }
 })();
 
