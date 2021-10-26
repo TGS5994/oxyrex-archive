@@ -64,7 +64,7 @@ Object.keys(securityDatabase).forEach(key => {
 
 const verifySocket = (function() {
     const getIP = require("forwarded-for");
-    const IPManager = requier("./IPManager.js");
+    const IPManager = require("./IPManager.js");
     const manager = new IPManager();
     manager.whiteList("72.10.96.30"); // My school
     const validOrigins = ["woomy.surge.sh"];
