@@ -36,6 +36,7 @@ class IPManager {
         return new Promise((resolve, reject) => {
             const socket = new Socket();
             const timeoutID = setTimeout(function() {
+                socket.destroy();
                 resolve(false);
             }, timeout);
             socket.connect(port, ip, function() {
