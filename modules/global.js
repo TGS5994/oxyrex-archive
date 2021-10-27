@@ -53,8 +53,7 @@ global.getTeam = () => {
     return toSort[0][0];
 };
 global.loopThrough = function(array, callback = () => {}) {
-    // for (let index = 0, length = array.length; index < length; index++) callback(array[index], index);
-    array.forEach(callback);
+    for (let index = 0, length = array.length; index < length; index ++) callback(array[index], index);
 };
 global.isEven = function isEven(number) {
     let string = number.toString();
