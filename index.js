@@ -188,7 +188,7 @@ const gameloop = (() => {
         purgeEntities();
         room.lastCycle = util.time();
         ticks++;
-        if (isEven(ticks)) {
+        if (true) {
             loopThrough(sockets.players, function(instance) {
                 instance.socket.view.gazeUpon();
                 instance.socket.lastUptime = Infinity;
