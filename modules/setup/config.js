@@ -75,16 +75,16 @@ const gamemodes = {
             X_GRID: 15,
             Y_GRID: 15,
             ROOM_SETUP: map
-        },
-        "Naval Battle": {
-            NAVAL_SHIPS: true,
-            WIDTH: 7500,
-            HEIGHT: 7500,
-            FOOD_AMOUNT: 0,
-            MODE: "tdm",
-            TEAMS: 2
         }
-    })()
+    })(),
+    "Naval Battle": {
+        NAVAL_SHIPS: true,
+        WIDTH: 7500,
+        HEIGHT: 7500,
+        FOOD_AMOUNT: 0,
+        MODE: "tdm",
+        TEAMS: 2
+    }
 };
 const mode = gamemodes[gamemode];
 let output = {};
