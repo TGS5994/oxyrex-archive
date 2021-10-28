@@ -971,6 +971,21 @@ class io_spinMissile extends IO {
         };
     }
 }
+class io_skipBomb extends IO {
+    constructor(body) {
+        super(body);
+        this.step = 0;
+    }
+    think(input) {
+        this.step += .05;
+        const interval = this.step | 0;
+        if (this.step === interval) {
+            this.body.velocity.x *= Math.random() / 4 - .125;
+            this.body.velocity.y *= Math.random() / 4 - .125;
+        }
+        this.body.facing += (interval % 2 === 0 ? .1 : -.1); 
+    }
+}
 module.exports = {
     IO,
     io_doNothing,
@@ -1005,5 +1020,6 @@ module.exports = {
     io_taurusPortal,
     io_spinMissile,
     io_plane,
-    io_onlyFireWhenInRange
+    io_onlyFireWhenInRange,
+    io_skipBomb
 };
