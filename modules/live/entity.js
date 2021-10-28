@@ -1225,7 +1225,7 @@ class Entity {
                 this.cameraLingerTime = 35;
             } else {
                 this.cameraLingerTime --;
-                const [x, y] = this.lastCameraPos;
+                const [x, y] = (this.lastCameraPos || [0, 0]);
                 out.cx = x;
                 out.cy = y;
                 if (this.cameraLingerTime <= 0) this.controllingSquadron = false;
