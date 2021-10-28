@@ -30,7 +30,7 @@ function id(i, level = true) {
     }
 }
 
-const gamemode = Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Naval Battle"; //Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
