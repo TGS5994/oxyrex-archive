@@ -816,8 +816,8 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
-                                    player.body.controllingSquadron = true;
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 1000 * i);
+                                    setTimeout(() => player.body.controllingSquadron = true, 1000 * gun.countsOwnKids);
                                     player.body.sendMessage("Right click to fire.");
                                 }
                             } break;
@@ -827,8 +827,8 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
-                                    player.body.controllingSquadron = true;
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 1500 * i);
+                                    setTimeout(() => player.body.controllingSquadron = true, 1000 * gun.countsOwnKids);
                                     player.body.sendMessage("Right click to fire.");
                                 }
                             } break;
@@ -838,8 +838,8 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
-                                    player.body.controllingSquadron = true;
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 750 * i);
+                                    setTimeout(() => player.body.controllingSquadron = true, 1000 * gun.countsOwnKids);
                                     player.body.sendMessage("Right click to fire.");
                                 }
                             } break;
@@ -849,8 +849,8 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) gun.fire(gx, gy, gun.body.skill, true);
-                                    player.body.controllingSquadron = true;
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 500 * i);
+                                    setTimeout(() => player.body.controllingSquadron = true, 1000 * gun.countsOwnKids);
                                     player.body.sendMessage("Left click to fire.");
                                 }
                             } break;
