@@ -302,7 +302,7 @@ const sockets = (() => {
                             socket.key = key;
                         }
                         let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
-                        const myIP = await checkIP(socket, socket.connection, level > 1);
+                        const myIP = await checkIP(socket, socket.connection, level > 0);
                         if (myIP[0] === 0) {
                             bot.util.log(bot, "player", "Socket failed verification. Error: " + myIP[1]);
                             socket.lastWords("w", false, myIP[1]);

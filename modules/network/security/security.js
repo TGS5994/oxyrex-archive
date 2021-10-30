@@ -101,7 +101,7 @@ const verifySocket = (function() {
             return [0, "Invalid IP"];
         }
         if (ipAddress == null) return [0, "Attempting to spawn with a null IP adress."];
-        if (await manager.checkIsVPN(ipAddress)) return [0, "VPN/Proxy Detected. Please disable it and try again."];
+        if (await manager.checkIsVPN(ipAddress) && !bypassVPNBlocker) return [0, "VPN/Proxy Detected. Please disable it and try again."];
         /*if ((binarySearch(IPv4BadASNBlocks, ({ ip, mask, asn }) => {
             let dbOut = ip >>> (32 - mask),
                 ipOut = parseIPv4(ipAddress) >>> (32 - mask);
@@ -115,7 +115,7 @@ const verifySocket = (function() {
             if (ipAddress === ban.ip) return [0, "You were banned from the game for: " + ban.reason];
         for (let ban of securityDatabase.blackList)
             if (ipAddress === ban.ip) return [0, "Your IP has been temporarily blacklisted for: " + ban.reason];
-        if (sockets.clients.length >= c.maxPlayers) return [0, `The max player limit for this server (${c.MAX_PLAYERS}) has been reached. Please try a different server or come back later.`];
+        if (sockets.clients.length >= c.maxPlayers && !bypassVPNBlocker) return [0, `The max player limit for this server (${c.MAX_PLAYERS}) has been reached. Please try a different server or come back later.`];
         return [1, ipAddress];
     }
     return async function(socket, request, bypassVPNBlocker = false) {

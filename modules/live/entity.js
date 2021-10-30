@@ -1247,6 +1247,7 @@ class Entity {
             this.upgrades = [];
             this.define(saveMe);
             this.sendMessage('You have upgraded to ' + this.label + '.');
+            if (typeof saveMe.TOOLTIP === "string") this.sendMessage("ToolTip: " + saveMe.TOOLTIP);
             let ID = this.id;
             let index = 0;
             while (index < entities.length) {
