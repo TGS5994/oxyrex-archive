@@ -7,6 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const WebSocket = require('ws');
+const fetch = require("node-fetch");
 const sockets = (() => {
     let clients = [],
         players = [],
@@ -289,7 +290,7 @@ const sockets = (() => {
                 socket.resolveResponse(m[0], m);
                 switch (m.shift()) {
                     case 'k': { // key verification
-                        if (m.length > 1) {
+                        if (m.length > 2) {
                             socket.kick('Ill-sized key request.');
                             return 1;
                         }
@@ -297,7 +298,7 @@ const sockets = (() => {
                             socket.kick('Duplicate player spawn attempt.');
                             return 1;
                         }
-                        if (m.length === 1) {
+                        if (m.length === 2) {
                             let key = m[0];
                             socket.key = key;
                         }
@@ -331,11 +332,21 @@ const sockets = (() => {
                             socket.terminate();
                             return 1;
                         }
-                        socket.talk('w', true);
                         socket.ip = myIP[1];
                         socket.backlogData.ip = socket.ip;
-                        socket.verified = true;
-                        bot.util.log(bot, "player", "Socket verified.");
+                        let captchaToken = m[1];
+                        if (captchaToken === "a&") return socket.ban("Invalid reCAPTCHA token.");
+                        const recaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=6LfmsvkcAAAAAKk6uXMkHmW0mmg9LVo9pTT4UI9j&response=${m[1]}`;
+                        fetch(recaptchaURL, {
+                            method: "POST"
+                        }).then(res => res.json()).then(json => {
+                            if (!json.success) return socket.kick("Bad reCAPTCHA request.");
+                            if (json.score < 0.4) return socket.ban("Bad reCAPTCHA request.");
+                            if (json.score < 0.75) return socket.kick("Bad reCAPTCHA request.");
+                            socket.verified = true;
+                            socket.talk('w', true);
+                            util.log("Socket verified.");
+                        }).catch(error => socket.ban("Invalid reCAPTCHA request."));
                     }
                     break;
                 case 's': { // spawn request
