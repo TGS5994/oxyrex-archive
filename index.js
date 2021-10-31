@@ -729,7 +729,7 @@ const maintainloop = (() => {
                 spawnShape({
                     x: location.x + Math.cos(angle) * (Math.random() * 50),
                     y: location.y + Math.sin(angle) * (Math.random() * 50)
-                }, +(Math.random() > 0.9999));
+                }, +(Math.random() > 0.999));
             }
         }
         function spawnDistributedFood() {
@@ -737,7 +737,7 @@ const maintainloop = (() => {
             do {
                 location = room.random();
             } while (room.isIn("nest", location));
-            spawnShape(location, +(Math.random() > 0.9999));
+            spawnShape(location, +(Math.random() > 0.999));
         }
         function spawnNestFood() {
             let shape = spawnShape(room.randomType("nest"), 2);
