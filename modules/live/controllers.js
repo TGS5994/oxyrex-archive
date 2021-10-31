@@ -302,8 +302,10 @@ class io_nearestDifferentMaster extends IO {
             mm = {
                 x: this.body.master.master.x,
                 y: this.body.master.master.y,
-            },
-            mostDangerous = 0,
+                fov: this.body.master.master.fov
+            };
+        if (this.body.aiSettings.blind) range = mm.fov / 2;
+        let mostDangerous = 0,
             sqrRange = range * range,
             keepTarget = false;
         // Filter through everybody...
@@ -313,7 +315,7 @@ class io_nearestDifferentMaster extends IO {
         out = out.map((e) => {
             // Only look at those within range and arc (more expensive, so we only do it on the few)
             let yaboi = false;
-            if ((this.body.x - e.x) * (this.body.x - e.x) + (this.body.y - e.y) * (this.body.y - e.y) < sqrRange) {
+            if (this.body.aiSettings.blind || ((this.body.x - e.x) * (this.body.x - e.x) + (this.body.y - e.y) * (this.body.y - e.y) < sqrRange)) {
                 if (this.body.firingArc == null || this.body.aiSettings.view360) {
                     yaboi = true;
                 } else if (Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) yaboi = true;
@@ -341,15 +343,13 @@ class io_nearestDifferentMaster extends IO {
         // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
         const validType = this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'));
         if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && (this.body.seeInvisable || e.alpha > 0.25) && validType && e.dangerValue > 0) {
-            if (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range) {
-                if (!this.body.aiSettings.blind || (Math.abs(e.x - mm.x) < range && Math.abs(e.y - mm.y) < range)) {
-                    if (this.body.isDominator) {
-                        if (!e.isDominator) {
-                            return e;
-                        }
-                    } else {
+            if ((this.body.aiSettings.blind ? (util.getDistance(e, mm) < mm.fov / 2) : (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range))) {
+                if (this.body.isDominator) {
+                    if (!e.isDominator) {
                         return e;
                     }
+                } else {
+                    return e;
                 }
             }
         }
@@ -382,7 +382,14 @@ class io_nearestDifferentMaster extends IO {
             }
         }
         // Think damn hard
-        if (this.tick++ > 15 * roomSpeed) {
+        if (this.body.aiSettings.blind && this.targetLock != null) { // Always run if we rely on the control center for instructions
+            const e = this.targetLock;
+            const mm = this.body.master.master;
+            if (util.getDistance(e, mm) > mm.fov / 2) { // Range limiting effects
+                this.targetLock = null;
+            }
+        }
+        if (this.tick ++ > 15 * roomSpeed) {
             this.tick = 0;
             this.validTargets = this.buildList(range);
             // Ditch our old target if it's invalid
@@ -983,7 +990,7 @@ class io_skipBomb extends IO {
             this.body.velocity.x *= Math.random() / 4 - .125;
             this.body.velocity.y *= Math.random() / 4 - .125;
         }
-        this.body.facing += (interval % 2 === 0 ? .1 : -.1); 
+        this.body.facing += (interval % 2 === 0 ? .1 : -.1);
     }
 }
 module.exports = {

@@ -13,6 +13,8 @@
     "runSpeed": 1.5,
     "maxHeartbeatInterval": 1000000,
     "verbose": true,
+    "REQUIRE_TOKENS": false,
+    "DO_BASE_DAMAGE": true,
     "WIDTH": 5000,
     "HEIGHT": 5000,
     "MODE": "ffa",

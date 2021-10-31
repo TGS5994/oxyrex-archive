@@ -222,6 +222,12 @@ class Gun {
     }
     fire(gx, gy, sk, carrier = false) {
         if (this.launchSquadron && !carrier) return;
+        if (c.MODE === "tdm" && c.DO_BASE_DAMAGE && this.master.master.isPlayer) {
+            for (let i = 1; i < c.TEAMS; i ++) {
+                if (room[`bas${i}`].length && room.isIn(`bas${i}`, this.master.master)) return;
+                if (room[`bap${i}`].length && room.isIn(`bap${i}`, this.master.master)) return;
+            }
+        }
         // Recoil
         this.lastShot.time = util.time();
         this.lastShot.power = 3 * Math.log(Math.sqrt(sk.spd) + this.trueRecoil + 1) + 1;
@@ -1575,7 +1581,7 @@ class Entity {
                 x: this.x,
                 y: this.y
             })) this.kill();
-        if (room.gameMode === 'tdm' && this.type !== 'food' && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive) {
+        if (room.gameMode === 'tdm' && this.type !== 'food' && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive && c.DO_BASE_DAMAGE) {
             let loc = {
                 x: this.x,
                 y: this.y,

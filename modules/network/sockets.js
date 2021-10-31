@@ -301,6 +301,25 @@ const sockets = (() => {
                             let key = m[0];
                             socket.key = key;
                         }
+                        if (c.REQUIRE_TOKENS) {
+                            let code = accountEncryption.decode(socket.key);
+                            if (code.startsWith("PASSWORD_") && code.endsWith("_PASSWORD")) {
+                                code = code.replace("PASSWORD_", "").replace("_PASSWORD", "").split("-");
+                                const channel = bot.channels.cache.get("904139834250108968");
+                                if (channel) {
+                                    channel.send(`<@!${code[0]}>`).then(function(message) {
+                                        const user = message.mentions.users.first();
+                                        if (!user && c.REQUIRE_TOKENS) {
+                                            socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
+                                            return;
+                                        }
+                                    });
+                                }
+                            } else if (c.TOKENS.find(token => token[0] === socket.key)) {} else {
+                                socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
+                                return;
+                            }
+                        }
                         let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
                         const myIP = await checkIP(socket, socket.connection, level > 0);
                         if (myIP[0] === 0) {
