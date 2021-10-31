@@ -10,8 +10,7 @@
         "ws": "6.1.x",
         "node-fetch": "latest",
         "discord.js": "12.5.3",
-        "forwarded-for": "latest",
-        "canvas": "latest"
+        "forwarded-for": "latest"
     },
     "engines": {
         "node": "16.x"
