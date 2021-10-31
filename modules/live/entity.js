@@ -223,7 +223,7 @@ class Gun {
     fire(gx, gy, sk, carrier = false) {
         if (this.launchSquadron && !carrier) return;
         if (c.MODE === "tdm" && c.DO_BASE_DAMAGE && this.master.master.isPlayer) {
-            for (let i = 1; i < c.TEAMS; i ++) {
+            for (let i = 1; i <= c.TEAMS; i ++) {
                 if (room[`bas${i}`].length && room.isIn(`bas${i}`, this.master.master)) return;
                 if (room[`bap${i}`].length && room.isIn(`bap${i}`, this.master.master)) return;
             }
