@@ -708,7 +708,7 @@ const maintainloop = (() => {
         }];
         function spawnShape(location, type = 0) {
             let o = new Entity(location);
-            type = types[type]();
+            type = (type === 1 && c.SPAWN_PUMPKINS) ? Class.pumpkin : types[type]();
             o.define(type);
             o.define({
                 BODY: {
@@ -729,7 +729,7 @@ const maintainloop = (() => {
                 spawnShape({
                     x: location.x + Math.cos(angle) * (Math.random() * 50),
                     y: location.y + Math.sin(angle) * (Math.random() * 50)
-                }, +(Math.random() > 0.999));
+                }, +(Math.random() > 0.9999));
             }
         }
         function spawnDistributedFood() {
@@ -737,7 +737,7 @@ const maintainloop = (() => {
             do {
                 location = room.random();
             } while (room.isIn("nest", location));
-            spawnShape(location, +(Math.random() > 0.99999));
+            spawnShape(location, +(Math.random() > 0.9999));
         }
         function spawnNestFood() {
             let shape = spawnShape(room.randomType("nest"), 2);

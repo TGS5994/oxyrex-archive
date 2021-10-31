@@ -1685,6 +1685,13 @@ class Entity {
                         });
                         instance.sendMessage("Achievement get: " + "Big Game Hunter");
                     }
+                    if (this.label === "Pumpkin" && c.SPAWN_PUMPKINS) {
+                        bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                            id: instance.socket.discordID,
+                            achievement: "Trick-Or-Treat|||Hunt a Pumpkin."
+                        });
+                        instance.sendMessage("Achievement get: Trick-Or-Treat");
+                    }
                     if (this.type === "miniboss") {
                         bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
                             id: instance.socket.discordID,

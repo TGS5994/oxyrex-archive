@@ -21,6 +21,7 @@
     "TEAMS": 4,
     "RANDOM_COLORS": false,
     "ARENA_TYPE": "rect",
+    "SPAWN_PUMPKINS": true,
     "BANNED_CHARACTER_REGEX": "/[\uFDFD\u200E\u0000]/gi",
     "ROOM_SETUP": [
         ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm"],
