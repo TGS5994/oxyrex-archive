@@ -8,7 +8,7 @@
     "dependencies": {
         "google-closure-library": "20180506.0.0",
         "ws": "6.1.x",
-        "node-fetch": "latest",
+        "node-fetch": "2.6.1",
         "discord.js": "12.5.3",
         "forwarded-for": "latest"
     },
