@@ -1,0 +1,55 @@
+Definitions tutorials
+
+Spawn entities on death:
+    Special properties:
+        - BROADCAST_MESSAGE: "string" // Message when the entity dies
+        - FRAG_ENTITIES: ["exportName", "exportName"] // Entities spawn when the entity dies (Must be the EXPORT NAME, not exports.basic, just "basic")
+    Example:
+        exports.sentryFragBoss = makeAuto({
+            PARENT: [exports.elite],
+            LABEL: "Mega Sentry",
+            TURRTES: (function() {
+                const output = [];
+                const sentryNames = ["sentrySwarm", "sentryGun", "sentryTrap"];
+                for (let i = 0; i < 3; i ++) {
+                    output.push({
+                        POSITION: [8, 8, 0, 360 / 3 * i + 60, 0, 1],
+                        TYPE: exports[sentryNames[i]]
+                    });
+                }
+                return output;
+            })(),
+            // SPAWN ENTITIES ON DEATH
+            BROADCAST_MESSAGE: "The Mega Sentry may have fallen, but the battle is not yet over...",
+            FRAG_ENTITIES: ["sentrySwarm", "sentryGun", "sentryTrap"]
+            // END SPAWN ENTITIES ON DEATH
+        }, "Mega Sentry", {
+            type: exports.director,
+            color: 5
+        });
+
+Special guns:
+    Special properties:
+        - COLOR: 10 // The color INDEX that changes the color of the gun
+        - SKIN: 2 // THE ID of the gun shape
+    Example:
+        exports.flamethrowerMK2 = {
+            PARENT: [exports.genericTank],
+            LABEL: "Flamethrower MK2",
+            DANGER: 7,
+            BODY: {
+                SPEED: base.SPEED * .9,
+                ACCELERATION: base.ACCELERATION * .9
+            },
+            GUNS: [{
+                POSITION: [20, 10, 1.2, 0, 0, 0, 0],
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.basic, g.mach, g.flamethrower, g.pound]),
+                    TYPE: exports.bullet,
+                    // SPECIAL GUNS
+                    SKIN: 1,
+                    COLOR: 9
+                    // END SPECIAL GUNS
+                }
+            }]
+        };
