@@ -513,11 +513,33 @@ class Gun {
         return out;
     }
 }
+function rgbToHexSub(rgb) {
+    let hex = Number(rgb).toString(16);
+    if (hex.length < 2) {
+        hex = "0" + hex;
+    }
+    return hex;
+}
+function rgbToHex(r, g, b) {
+    return `#${rgbToHexSub(r)}${rgbToHexSub(g)}${rgbToHexSub(b)}`;
+}
 let entitiesIdLog = 0;
 class Entity {
     constructor(position, master = this) {
         this.isGhost = false;
         this.nameColor = "#FFFFFF";
+        this.nameColorRGB = {
+            r: 0,
+            g: 0,
+            b: 0
+        };
+        this.nameColorTransition = {
+            r: 0,
+            g: 0,
+            b: 0,
+            colors: [],
+            index: 0
+        };
         this.killEntity = this;
         this.killCount = {
             solo: 0,
@@ -750,6 +772,26 @@ class Entity {
                     this.removeFromGrid();
                     this.addToGrid();
                     savedSize = data.size;
+                }
+                // Update name color if it should
+                if (this.nameColorTransition.colors.length) {
+                    const target = this.nameColorTransition.colors[this.nameColorTransition.index];
+                    if (this.nameColorTransition.r < target.r) this.nameColorTransition.r += 1;
+                    if (this.nameColorTransition.r > target.r) this.nameColorTransition.r -= 1;
+                    if (this.nameColorTransition.g < target.g) this.nameColorTransition.g += 1;
+                    if (this.nameColorTransition.g > target.g) this.nameColorTransition.g -= 1;
+                    if (this.nameColorTransition.b < target.b) this.nameColorTransition.b += 1;
+                    if (this.nameColorTransition.b > target.b) this.nameColorTransition.b -= 1;
+                    const { r, g, b } = this.nameColorTransition;
+                    this.nameColor = rgbToHex(r, g, b);
+                    for (const hex of this.nameColorTransition.colors) {
+                        if (this.nameColor === hex) {
+                            this.nameColorTransition.index = this.nameColorTransition.indexOf(hex) + 1;
+                            if (this.nameColorTransition.index >= this.nameColorTransition.colors.length) {
+                                this.nameColorTransition.index --;
+                            }
+                        }
+                    }
                 }
             };
             return () => {
