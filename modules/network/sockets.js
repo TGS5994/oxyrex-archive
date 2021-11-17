@@ -45,8 +45,9 @@ const sockets = (() => {
         output["Score"] = entity.skill.score;
         output["ID"] = entity.id;
         let returnValue = "";
-        for (let key in output)
+        for (let key in output) {
             returnValue += `<br/>  - ${key}: ${output[key]}`;
+        }
         return returnValue;
     };
     const terminalCommands = [{
@@ -120,15 +121,15 @@ const sockets = (() => {
                 socket.talk("Q", "info", "Please specify a valid stat name.");
                 return 1;
             }
+            const stats = ["Health: hlt", "Body Damage: atk", "Bullet Speed: spd", "Bullet Health: str", "Bullet Penetration: pen", "Bullet Damage: dam", "Reload: rld", "Shield: shi", "Regen: rgn"];
+            if (body.skill[stat] == null || stat === "list") {
+                socket.talk("Q", "error", "That stat does not exist.");
+                socket.talk("Q", "info", "Stats:\n-" + stats.join("<br/>-"));
+                return 1;
+            }
             const value = message[2];
             if (typeof value !== "number" || isNaN(value) || !Number.isFinite(value)) {
                 socket.talk("Q", "info", "Invalid value! Please use a finite integer.");
-                return 1;
-            }
-            const stats = ["Health: hlt", "Body Damage: atk", "Bullet Speed: spd", "Bullet Health: str", "Bullet Penetration: pen", "Bullet Damage: dam", "Reload: rld", "Shield: shi", "Regen: rgn"];
-            if (body.skill[stat] == null) {
-                socket.talk("Q", "error", "That stat does not exist.");
-                socket.talk("Q", "info", "Stats:\n-" + stats.join("<br/>-"));
                 return 1;
             }
             body.skill[stat] = value;
