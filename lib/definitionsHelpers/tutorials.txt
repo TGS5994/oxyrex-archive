@@ -3,7 +3,7 @@ Definitions tutorials
 Spawn entities on death:
     Special properties:
         - BROADCAST_MESSAGE: "string" // Message when the entity dies
-        - FRAG_ENTITIES: ["exportName", "exportName"] // Entities spawn when the entity dies (Must be the EXPORT NAME, not exports.basic, just "basic")
+        - FRAG_SPAWNS: ["exportName", "exportName"] // Entities spawn when the entity dies (Must be the EXPORT NAME, not exports.basic, just "basic")
     Example:
         exports.sentryFragBoss = makeAuto({
             PARENT: [exports.elite],
@@ -21,7 +21,7 @@ Spawn entities on death:
             })(),
             // SPAWN ENTITIES ON DEATH
             BROADCAST_MESSAGE: "The Mega Sentry may have fallen, but the battle is not yet over...",
-            FRAG_ENTITIES: ["sentrySwarm", "sentryGun", "sentryTrap"]
+            FRAG_SPAWNS: ["sentrySwarm", "sentryGun", "sentryTrap"]
             // END SPAWN ENTITIES ON DEATH
         }, "Mega Sentry", {
             type: exports.director,
