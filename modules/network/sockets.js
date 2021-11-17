@@ -20,6 +20,22 @@ const sockets = (() => {
             backlog.push(this);
         }
     }
+    class AwaitingResponse {
+        constructor(socket, options, callback) {
+            this.packetID = options.packet;
+            this.timeout = setTimeout(() => {
+                socket.kick("Did not respond to the required packet.");
+                console.log(socket.name, "Didn't respond to a required packet.");
+            }, options.timeout);
+            this.callback = callback;
+        }
+        resolve(id, packet) {
+            if (id === this.packetID) {
+                clearTimeout(this.timeout);
+                this.callback(packet);
+            }
+        }
+    }
     let id = 0;
     let flattenEntity = entity => {
         let output = Object();
