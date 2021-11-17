@@ -386,13 +386,13 @@ const maintainloop = (() => {
                 switch (ran.chooseChance(1, 1, 1)) {
                     case 0:
                         choice = [
-                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer], 1 + (Math.random() * 2 | 0), 'a', 'nest'
+                            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss], 1 + (Math.random() * 2 | 0), 'a', 'nest'
                         ];
                         sockets.broadcast("A stirring in the distance...");
                         break;
                     case 1:
                         choice = [
-                            [Class.summoner, Class.eliteSkimmer, Class.palisade, Class.atrium], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                            [Class.summoner, Class.eliteSkimmer, Class.palisade, Class.atrium, Class.guardian, Class.greenGuardian], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("A strange trembling...");
                         break;
@@ -484,7 +484,7 @@ const maintainloop = (() => {
             sentryChance: 0.95,
             nestDefenderChance: 0.999,
             crashers: [Class.crasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm, Class.sentryOmission],
             nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
         };
         function getType() {
