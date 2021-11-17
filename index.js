@@ -392,7 +392,7 @@ const maintainloop = (() => {
                         break;
                     case 1:
                         choice = [
-                            [Class.summoner, Class.eliteSkimmer, Class.palisade], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                            [Class.summoner, Class.eliteSkimmer, Class.palisade, Class.atrium], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("A strange trembling...");
                         break;
@@ -484,7 +484,7 @@ const maintainloop = (() => {
             sentryChance: 0.95,
             nestDefenderChance: 0.999,
             crashers: [Class.crasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm],
             nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
         };
         function getType() {
