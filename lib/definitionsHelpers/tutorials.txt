@@ -53,3 +53,44 @@ Special guns:
                 }
             }]
         };
+
+Automated guns:
+    Skills needed:
+        - Understanding of "for" loops
+        - Understanding of arrays, and the "push" method
+        - Understanding of the % operator
+        - Understanding of basic JS math
+    Notes based on skills:
+        - Inside the for loop, you can reference "i" - the index - to do some math based on the index.
+        - In the example, we modify the lendth of each gun. It is 12 plus 20 * (i / 16). (i / 16) is going to return a decimal of how far we are. (8 / 16) => .5
+        - To determine the angle of the guns, we use 360 / 16 * i. Breaking this down, 360 is the full circle. Dividing it by the total amount of guns (16) gives us the angle space between each gun. Multiplying it by i lets us get the proper angle.
+        - To do delay, we use the % operator. In i % 4, we take I and do modulus division with it. (Getting the remainder) 5 % 4 would be 1. Multiplying this by .25 lets us make proper delay for guns based on four separate ticks.
+    Example:
+        exports.hexadecaTank = {
+            PARENT: [exports.genericTank],
+            LABEL: "Hexadeca Tank",
+            DANGER: 8,
+            BODY: {
+                SPEED: base.SPEED * .9,
+                ACCELERATION: base.ACCELERATION * .9
+            },
+            // AUTOMATED GUNS
+            GUNS: (function() {
+                // Create a list to return
+                const output = [];
+                // Loop 16 times
+                for (let i = 0; i < 16; i ++) {
+                    // Push a gun object to the output list
+                    output.push({
+                        POSITION: [12 + (i / 16 * 20), 8, 1, 0, 0, 360 / 16 * i, (i % 4) * .25],
+                        PROPERTIES: {
+                            SHOOT_SETTINGS: combineStats([g.bullet, g.flank, g.flank]),
+                            TYPE: exports.bullet
+                        }
+                    });
+                    // Return the guns out
+                    return output;
+                }
+            })()
+            // END AUTOMATED GUNS
+        };
