@@ -45,8 +45,8 @@ function setup(options = {}) {
         ey: Math.round(options.height / 2 - options.nestHeight / 2) + options.nestHeight
     };
     function testIsNest(x, y) {
-        if (x >= nest.sx && nest <= nest.ex) {
-            if (y >= nest.sy && nest <= nest.ey) {
+        if (x >= nest.sx && x <= nest.ex) {
+            if (y >= nest.sy && y <= nest.ey) {
                 return true;
             }
         }
