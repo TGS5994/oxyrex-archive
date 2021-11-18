@@ -63,7 +63,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Soccer";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Open TDM";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
