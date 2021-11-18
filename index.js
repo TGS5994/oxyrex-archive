@@ -678,7 +678,7 @@ const maintainloop = (() => {
             spawnBosses(census);
             spawnSanctuaries(census);
             // Bots
-            if (bots.length + views.length < Math.ceil(c.maxPlayers / 3) && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+            if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
             // Remove dead ones
             bots = bots.filter(e => {
                 return !e.isDead();
@@ -691,8 +691,8 @@ const maintainloop = (() => {
                 }
                 if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
                     o.upgrade(Math.floor(Math.random() * o.upgrades.length));
-                    if (Math.random() > .95) {
-                        o.doneBotUpgrading = true;
+                    if (Math.random() > .9) {
+                        o.botDoneUpgrading = true;
                     }
                 }
             });
