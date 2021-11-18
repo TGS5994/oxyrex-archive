@@ -63,7 +63,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Hide and Seek";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Soccer";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -137,6 +137,27 @@ const gamemodes = {
         }),
         HIDE_AND_SEEK: true,
         secondaryGameMode: "hideAndSeek"
+    },
+    "Soccer": {
+        MODE: "tdm",
+        TEAMS: 2,
+        SOCCER: true,
+        WIDTH: 6500,
+        HEIGHT: 6500 * .75,
+        X_GRID: 12,
+        Y_GRID: 9,
+        ROOM_SETUP: [
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["bas1", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "bas2"],
+            ["bas1", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "bas2"],
+            ["bas1", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "bas2"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
+        ],
+        secondaryGameMode: "soccer"
     },
     "Naval Battle": {
         NAVAL_SHIPS: true,
