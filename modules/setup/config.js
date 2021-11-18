@@ -33,16 +33,16 @@ function id(i, level = true) {
 function setup(options = {}) {
     if (options.width == null) options.width = defaults.X_GRID;
     if (options.height == null) options.height = defaults.Y_GRID;
-    if (options.nestWidth == null) options.nestWidth = Math.round(defaults.X_GRID / 4);
-    if (options.nestHeight == null) options.nestHeight = Math.round(defaults.Y_GRID / 4);
+    if (options.nestWidth == null) options.nestWidth = Math.floor(defaults.X_GRID / 4);
+    if (options.nestHeight == null) options.nestHeight = Math.floor(defaults.Y_GRID / 4);
     if (options.rockScatter == null) options.rockScatter = .15;
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
     const nest = {
-        sx: Math.round(options.width / 2 - options.nestWidth / 2),
-        sy: Math.round(options.height / 2 - options.nestHeight / 2),
-        ex: Math.round(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
-        ey: Math.round(options.height / 2 - options.nestHeight / 2) + options.nestHeight
+        sx: Math.floor(options.width / 2 - options.nestWidth / 2),
+        sy: Math.floor(options.height / 2 - options.nestHeight / 2),
+        ex: Math.floor(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
+        ey: Math.floor(options.height / 2 - options.nestHeight / 2) + options.nestHeight
     };
     function testIsNest(x, y) {
         if (x >= nest.sx && x <= nest.ex) {
