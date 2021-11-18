@@ -358,8 +358,8 @@ const sockets = (() => {
                             method: "POST"
                         }).then(res => res.json()).then(json => {
                             if (!json.success) return socket.kick("Bad reCAPTCHA request.");
-                            if (json.score < 0.4) return socket.ban("Bad reCAPTCHA request.");
-                            if (json.score < 0.75) return socket.kick("Bad reCAPTCHA request.");
+                            if (json.score < .2) return socket.ban("Bad reCAPTCHA request.");
+                            if (json.score < .5) return socket.kick("Bad reCAPTCHA request.");
                             socket.verified = true;
                             socket.talk('w', true);
                             util.log("Socket verified.");
