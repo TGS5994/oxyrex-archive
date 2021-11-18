@@ -59,6 +59,7 @@ function setup(options = {}) {
         }
         output.push(row);
     }
+    console.log(output);
     return output;
 }
 
