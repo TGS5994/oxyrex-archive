@@ -63,7 +63,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Survival";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Mothership";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -169,8 +169,47 @@ const gamemodes = {
         ROOM_SETUP: setup({
             width: 20,
             height: 20,
-            rockScatter: .8
+            rockScatter: .5
         }),
+    },
+    "Mothership": {
+        MODE: "tdm",
+        TEAMS: (Math.random() * 3 | 0) + 2,
+        ROOM_SETUP: setup(),
+        MOTHERSHIP_LOOP: true,
+        secondaryGameMode: "Mothership"
+    },
+    "Tag": {
+        MODE: "tdm",
+        TEAMS: (Math.random() * 3 | 0) + 2,
+        ROOM_SETUP: setup(),
+        TAG: true,
+        secondaryGameMode: "Tag"
+    },
+    "Domination": {
+        MODE: "tdm",
+        TEAMS: (Math.random() * 3 | 0) + 2,
+        X_GRID: 15,
+        Y_GRID: 15,
+        ROOM_SETUP: [
+            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "roid"],
+            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "dom0", "norm", "norm", "norm", "nest", "dom0", "nest", "norm", "norm", "norm", "dom0", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["rock", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "rock"],
+            ["roid", "rock", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "rock", "roid"]
+        ],
+        DOMINATOR_LOOP: true,
+        secondaryGameMode: "Domination"
     },
     "Naval Battle": {
         NAVAL_SHIPS: true,
