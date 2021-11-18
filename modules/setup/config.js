@@ -130,7 +130,11 @@ const gamemodes = {
         MAZE: 32,
         X_GRID: 16,
         Y_GRID: 16,
-        ROOM_SETUP: setup({ rockScatter: 0 }),
+        ROOM_SETUP: setup({
+            width: 16,
+            height: 16,
+            rockScatter: 0
+        }),
         HIDE_AND_SEEK: true,
         secondaryGameMode: "hideAndSeek"
     },
