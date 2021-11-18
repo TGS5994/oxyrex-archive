@@ -52,9 +52,9 @@ function setup(options = {}) {
         }
         return false;
     }
-    for (let i = 0; i < height; i ++) {
+    for (let i = 0; i < options.height; i ++) {
         const row = [];
-        for (let j = 0; j < width; j ++) {
+        for (let j = 0; j < options.width; j ++) {
             row.push(testIsNest(j, i) ? "nest" : Math.random() > options.rockScatter ? Math.random() > .5 ? "roid" : "rock" : "norm");
         }
         output.push(row);
