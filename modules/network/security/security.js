@@ -46,7 +46,10 @@ const getASN = IPv4 => {
     })].asn;
 };*/
 let securityDatabase = {
-    bans: [],
+    bans: [{ // ||WAtcher||
+        ip: "110.224.133.127",
+        reason: "The decision is final."
+    }],
     blackList: []
 };
 Object.keys(securityDatabase).forEach(key => {
