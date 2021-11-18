@@ -39,10 +39,10 @@ function setup(options = {}) {
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
     const nest = {
-        sx: Math.round(options.width / 2 - options.nestWidth / 2),
-        sy: Math.round(options.height / 2 - options.nestHeight / 2),
-        ex: Math.round(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
-        ey: Math.round(options.height / 2 - options.nestHeight / 2) + options.nestHeight
+        sx: Math.round(options.width / 2 - options.nestWidth),
+        sy: Math.round(options.height / 2 - options.nestHeight),
+        ex: Math.round(options.width / 2 - options.nestWidth) + options.nestWidth,
+        ey: Math.round(options.height / 2 - options.nestHeight) + options.nestHeight
     };
     function testIsNest(x, y) {
         if (x >= nest.sx && x <= nest.ex) {
