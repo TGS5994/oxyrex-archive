@@ -159,6 +159,19 @@ const gamemodes = {
         ],
         secondaryGameMode: "soccer"
     },
+    "Survival": {
+        SURVIVAL: true,
+        BOTS: -1,
+        WIDTH: 7500,
+        HEIGHT: 7500,
+        X_GRID: 20,
+        Y_GRID: 20,
+        ROOM_SETUP: setup({
+            width: 20,
+            height: 20,
+            rockScatter: .8
+        }),
+    },
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
