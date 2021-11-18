@@ -678,18 +678,23 @@ const maintainloop = (() => {
             spawnBosses(census);
             spawnSanctuaries(census);
             // Bots
-            if (bots.length + views.length < c.maxPlayers && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+            if (bots.length + views.length < Math.ceil(c.maxPlayers / 3) && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
             // Remove dead ones
             bots = bots.filter(e => {
                 return !e.isDead();
             });
             // Slowly upgrade them
             loopThrough(bots, function(o) {
-                if (o.skill.level < 45) {
+                if (o.skill.level < 60) {
                     o.skill.score += 35;
                     o.skill.maintain();
                 }
-                if (o.upgrades.length && Math.random() > 0.5) o.upgrade(Math.floor(Math.random() * o.upgrades.length));
+                if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
+                    o.upgrade(Math.floor(Math.random() * o.upgrades.length));
+                    if (Math.random() > .95) {
+                        o.doneBotUpgrading = true;
+                    }
+                }
             });
         };
     })();
