@@ -63,7 +63,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Open TDM";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Kill Race";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -114,6 +114,25 @@ const gamemodes = {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 3 | 0),
         ROOM_SETUP: setup()
+    },
+    "Kill Race": {
+        MODE: "tdm",
+        TEAMS: 2 + (Math.random() * 3 | 0),
+        ROOM_SETUP: setup(),
+        KILL_RACE: true,
+        secondaryGameMode: "killRace"
+    },
+    "Hide and Seek": {
+        MODE: "tdm",
+        TEAMS: 2,
+        WIDTH: 7500,
+        HEIGHT: 7500,
+        MAZE: 32,
+        X_GRID: 16,
+        Y_GRID: 16,
+        ROOM_SETUP: setup({ rockScatter: 0 }),
+        HIDE_AND_SEEK: true,
+        secondaryGameMode: "hideAndSeek"
     },
     "Naval Battle": {
         NAVAL_SHIPS: true,
