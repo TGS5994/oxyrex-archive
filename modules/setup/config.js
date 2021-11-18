@@ -30,7 +30,39 @@ function id(i, level = true) {
     }
 }
 
-const gamemode = Math.random() > .75 ? "FFA" : "TDM";
+function setup(options = {}) {
+    if (options.width == null) options.width = defaults.X_GRID;
+    if (options.height == null) options.height = defaults.Y_GRID;
+    if (options.nestWidth == null) options.nestWidth = Math.round(defaults.X_GRID / 4);
+    if (options.nestHeight == null) options.nestHeight = Math.round(defaults.Y_GRID / 4);
+    if (options.rockScatter == null) options.rockScatter = .15;
+    options.rockScatter = 1 - options.rockScatter;
+    const output = [];
+    const nest = {
+        sx: Math.round(options.width / 2 - options.nestWidth / 2),
+        sy: Math.round(options.height / 2 - options.nestHeight / 2),
+        ex: Math.round(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
+        ey: Math.round(options.height / 2 - options.nestHeight / 2) + options.nestHeight
+    };
+    function testIsNest(x, y) {
+        if (x >= nest.sx && nest <= nest.ex) {
+            if (y >= nest.sy && nest <= nest.ey) {
+                return true;
+            }
+        }
+        return false;
+    }
+    for (let i = 0; i < height; i ++) {
+        const row = [];
+        for (let j = 0; j < width; j ++) {
+            row.push(testIsNest(j, i) ? "nest" : Math.random() > options.rockScatter ? Math.random() > .5 ? "roid" : "rock" : "norm");
+        }
+        output.push(row);
+    }
+    return output;
+}
+
+const gamemode = "Open TDM";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -77,6 +109,11 @@ const gamemodes = {
             ROOM_SETUP: map
         }
     })(),
+    "Open TDM": {
+        MODE: "tdm",
+        TEAMS: 2 + (Math.random() * 3 | 0),
+        ROOM_SETUP: setup()
+    },
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
