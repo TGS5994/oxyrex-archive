@@ -288,7 +288,9 @@ const choiceTable = {
     "Space": 1
 };
 
-const mode = gamemodes["Space"];
+const gamemode = "Space";
+
+const mode = gamemodes[gamemode];
 let output = {};
 for (let key in defaults) {
     output[key] = defaults[key];
