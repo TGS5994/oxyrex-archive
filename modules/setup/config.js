@@ -59,7 +59,6 @@ function setup(options = {}) {
         }
         output.push(row);
     }
-    console.log(output);
     return output;
 }
 
@@ -194,7 +193,10 @@ const gamemodes = {
         ROOM_SETUP: (function() {
             let width = 15,
                 height = 15;
-            const output = setup(width, height);
+            const output = setup({
+                width: width,
+                height: height
+            });
             const mapType = 1;//Math.random() * 3 | 0;
             const bases = getBaseShuffling(teams);
             width --;
