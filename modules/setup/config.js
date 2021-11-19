@@ -63,7 +63,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Mothership";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Tag";////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
