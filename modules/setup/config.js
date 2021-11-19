@@ -190,8 +190,8 @@ const gamemodes = {
     },
     "Domination": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
-        let width = 15,
-            height = 15;
+        let width = 14,
+            height = 14;
         return {
             MODE: "tdm",
             TEAMS: teams,
