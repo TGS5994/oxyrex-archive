@@ -288,7 +288,19 @@ const choiceTable = {
     "Space": 1
 };
 
-const gamemode = "Space";
+const gamemode = (function() {
+    const table = [];
+    for (const key in choiceTable) {
+        if (gamemodes[key]) {
+            for (let i = 0; i < choiceTable[key]; i ++) {
+                table.push(key);
+            }
+        } else {
+            throw new ReferenceError(key + " isn't a valid gamemode!");
+        }
+    }
+    return table[Math.floor(Math.random() * table.length)];
+})();
 
 const mode = gamemodes[gamemode];
 let output = {};
