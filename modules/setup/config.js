@@ -45,8 +45,8 @@ function setup(options = {}) {
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
     const nest = {
-        sx: oddify(Math.floor(options.width / 2 - options.nestWidth / 2), -1),
-        sy: oddify(Math.floor(options.height / 2 - options.nestHeight / 2), -1),
+        sx: oddify(Math.floor(options.width / 2 - options.nestWidth / 2), -1 * ((options.width / 2) % 2 === 0)),
+        sy: oddify(Math.floor(options.height / 2 - options.nestHeight / 2), -1 * ((options.width / 2) % 2 === 0)),
         ex: Math.floor(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
         ey: Math.floor(options.height / 2 - options.nestHeight / 2) + options.nestHeight
     };
@@ -315,7 +315,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return table[Math.floor(Math.random() * table.length)];
+    return "Domination";//table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
