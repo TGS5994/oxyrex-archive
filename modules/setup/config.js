@@ -202,11 +202,24 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = Math.round(Math.random()) + width % 2;
+                const mapType = Math.round(Math.random());// + width % 2;
                 const bases = getBaseShuffling(teams);
                 width--;
                 height--;
                 switch (mapType) {
+                    case 0: {
+                        const majorWidth = Math.floor(width / 2);
+                        const minorWidth = Math.floor(width / 6 );
+                        const majorHeight = Math.floor(height / 2);
+                        const minorHeight = Math.floor(height / 6);
+                        output[minorHeight][majorWidth] = "dom0";
+                        output[height - minorHeight][majorWidth] = "dom0";
+                        output[majorHeight][minorWidth] = "dom0";
+                        output[majorHeight][width - minorWidth] = "dom0";
+                        if (width % 2) {
+                            output[majorHeight][majorWidth] = "dom0";
+                        }
+                    } break;
                     case 1: {
                         output[0][0] = id(bases[0], 0);
                         output[0][1] = output[1][0] = id(bases[0], 1);
