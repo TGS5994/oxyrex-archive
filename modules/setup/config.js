@@ -35,8 +35,8 @@ function id(i, level = true, norm = false) {
 function setup(options = {}) {
     if (options.width == null) options.width = defaults.X_GRID;
     if (options.height == null) options.height = defaults.Y_GRID;
-    if (options.nestWidth == null) options.nestWidth = Math.floor(defaults.X_GRID / 4);
-    if (options.nestHeight == null) options.nestHeight = Math.floor(defaults.Y_GRID / 4);
+    if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4);
+    if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4);
     if (options.rockScatter == null) options.rockScatter = .15;
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
