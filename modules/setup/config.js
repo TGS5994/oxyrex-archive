@@ -216,14 +216,15 @@ const gamemodes = {
                         output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
                         output[height][0] = id(bases[3], 0);
                         output[height][1] = output[height - 1][0] = id(bases[3], 1);
-                        const halfWidth = Math.floor(width / 2) + 1;
-                        const thirdWidth = Math.floor(width / 3);
-                        const halfHeight = Math.floor(height / 2) + 1;
-                        const thirdHeight = Math.floor(height / 3);
-                        output[thirdHeight][halfWidth] = "dom0";
-                        output[height - thirdHeight][halfWidth] = "dom0";
-                        output[halfHeight][thirdWidth] = "dom0";
-                        output[halfHeight][width - thirdWidth] = "dom0";
+                        const majorWidth = Math.floor(width / 2);
+                        const minorWidth = Math.floor(width / 4.5);
+                        const majorHeight = Math.floor(height / 2);
+                        const minorHeight = Math.floor(height / 4.5);
+                        output[minorHeight][majorWidth] = "dom0";
+                        output[height - minorHeight][majorWidth] = "dom0";
+                        output[majorHeight][minorWidth] = "dom0";
+                        output[majorHeight][width - minorWidth] = "dom0";
+                        output[majorHeight][majorWidth] = "dom0";
                     }
                     break;
                 }
