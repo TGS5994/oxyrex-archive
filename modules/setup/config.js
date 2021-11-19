@@ -203,6 +203,7 @@ const gamemodes = {
                     height: height
                 });
                 const mapType = Math.round(Math.random());// + width % 2;
+                console.log(mapType, teams);
                 const bases = getBaseShuffling(teams);
                 width--;
                 height--;
