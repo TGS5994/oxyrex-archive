@@ -35,8 +35,8 @@ function id(i, level = true, norm = false) {
 function setup(options = {}) {
     if (options.width == null) options.width = defaults.X_GRID;
     if (options.height == null) options.height = defaults.Y_GRID;
-    if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4);
-    if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4);
+    if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4) + (options.width % 2);
+    if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4) + (options.height % 2);
     if (options.rockScatter == null) options.rockScatter = .15;
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
@@ -190,8 +190,8 @@ const gamemodes = {
     },
     "Domination": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
-        let width = 14,
-            height = 14;
+        let width = 15,
+            height = 15;
         return {
             MODE: "tdm",
             TEAMS: teams,
