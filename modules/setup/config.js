@@ -209,12 +209,12 @@ const gamemodes = {
                 const bases = getBaseShuffling(teams);
                 width --;
                 height --;
+                const majorWidth = Math.floor(width / 2);
+                const minorWidth = Math.floor(width / 6);
+                const majorHeight = Math.floor(height / 2);
+                const minorHeight = Math.floor(height / 6);
                 switch (mapType) {
                     case 0: {
-                        const majorWidth = Math.floor(width / 2);
-                        const minorWidth = Math.floor(width / 6 );
-                        const majorHeight = Math.floor(height / 2);
-                        const minorHeight = Math.floor(height / 6);
                         output[minorHeight][majorWidth] = "dom0";
                         output[height - minorHeight][majorWidth] = "dom0";
                         output[majorHeight][minorWidth] = "dom0";
@@ -232,10 +232,6 @@ const gamemodes = {
                         output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
                         output[height][0] = id(bases[3], 0);
                         output[height][1] = output[height - 1][0] = id(bases[3], 1);
-                        const majorWidth = Math.floor(width / 2);
-                        const minorWidth = Math.floor(width / 6 );
-                        const majorHeight = Math.floor(height / 2);
-                        const minorHeight = Math.floor(height / 6);
                         output[minorHeight][majorWidth] = "dom0";
                         output[height - minorHeight][majorWidth] = "dom0";
                         output[majorHeight][minorWidth] = "dom0";
@@ -319,7 +315,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return "Boss Rush";//table[Math.floor(Math.random() * table.length)];
+    return table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
