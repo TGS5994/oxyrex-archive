@@ -221,7 +221,7 @@ const gamemodes = {
                 }
                 return output;
             })(),
-            DOMINATOR_LOOP: true,
+            DOMINATOR_LOOP: false,
             secondaryGameMode: "Domination"
         };
     })(),
