@@ -202,7 +202,7 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = 1; //Math.random() * 3 | 0;
+                const mapType = Math.round(Math.random()) + width % 2;
                 const bases = getBaseShuffling(teams);
                 width--;
                 height--;
@@ -217,9 +217,9 @@ const gamemodes = {
                         output[height][0] = id(bases[3], 0);
                         output[height][1] = output[height - 1][0] = id(bases[3], 1);
                         const majorWidth = Math.floor(width / 2);
-                        const minorWidth = Math.floor(width / 4.5);
+                        const minorWidth = Math.floor(width / 6 );
                         const majorHeight = Math.floor(height / 2);
-                        const minorHeight = Math.floor(height / 4.5);
+                        const minorHeight = Math.floor(height / 6);
                         output[minorHeight][majorWidth] = "dom0";
                         output[height - minorHeight][majorWidth] = "dom0";
                         output[majorHeight][minorWidth] = "dom0";
