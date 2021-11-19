@@ -15,10 +15,12 @@ if (global.fingerPrint.digitalOcean) {
 
 function getBaseShuffling(teams) {
     const output = [];
-    for (let i = 1; i < 5; i ++) {
+    for (let i = 1; i < 5; i++) {
         output.push(i > teams ? 0 : i);
     }
-    return output.sort(function() { return .5 - Math.random(); });
+    return output.sort(function() {
+        return .5 - Math.random();
+    });
 }
 
 function id(i, level = true, norm = false) {
@@ -44,6 +46,7 @@ function setup(options = {}) {
         ex: Math.floor(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
         ey: Math.floor(options.height / 2 - options.nestHeight / 2) + options.nestHeight
     };
+
     function testIsNest(x, y) {
         if (x >= nest.sx && x <= nest.ex) {
             if (y >= nest.sy && y <= nest.ey) {
@@ -52,9 +55,9 @@ function setup(options = {}) {
         }
         return false;
     }
-    for (let i = 0; i < options.height; i ++) {
+    for (let i = 0; i < options.height; i++) {
         const row = [];
-        for (let j = 0; j < options.width; j ++) {
+        for (let j = 0; j < options.width; j++) {
             row.push(testIsNest(j, i) ? "nest" : Math.random() > options.rockScatter ? Math.random() > .5 ? "roid" : "rock" : "norm");
         }
         output.push(row);
@@ -62,7 +65,7 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Domination";////Math.random() > .75 ? "FFA" : "TDM";
+const gamemode = "Domination"; ////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -185,39 +188,43 @@ const gamemodes = {
         TAG: true,
         secondaryGameMode: "Tag"
     },
-    "Domination": {
-        MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
-        X_GRID: 15,
-        Y_GRID: 15,
-        ROOM_SETUP: (function() {
-            let width = 15,
-                height = 15;
-            const output = setup({
-                width: width,
-                height: height
-            });
-            const mapType = 1;//Math.random() * 3 | 0;
-            const bases = getBaseShuffling(teams);
-            width --;
-            height --;
-            switch (mapType) {
-                case 1: {
-                    output[0][0] = id(bases[0], 0);
-                    output[0][1] = output[1][0] = id(bases[0], 1);
-                    output[0][width] = id(bases[1], 0);
-                    output[0][width - 1] = output[1][width] = id(bases[1], 1);
-                    output[height][width] = id(bases[2], 0);
-                    output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
-                    output[height][0] = id(bases[3], 0);
-                    output[height][1] = output[height - 1][0] = id(bases[3], 1);
-                } break;
-            }
-            return output;
-        })(),
-        DOMINATOR_LOOP: true,
-        secondaryGameMode: "Domination"
-    },
+    "Domination": (function() {
+        const teams = (Math.random() * 3 | 0) + 2;
+        let width = 15,
+            height = 15;
+        return {
+            MODE: "tdm",
+            TEAMS: teams,
+            X_GRID: width,
+            Y_GRID: height,
+            ROOM_SETUP: (function() {
+                const output = setup({
+                    width: width,
+                    height: height
+                });
+                const mapType = 1; //Math.random() * 3 | 0;
+                const bases = getBaseShuffling(teams);
+                width--;
+                height--;
+                switch (mapType) {
+                    case 1: {
+                        output[0][0] = id(bases[0], 0);
+                        output[0][1] = output[1][0] = id(bases[0], 1);
+                        output[0][width] = id(bases[1], 0);
+                        output[0][width - 1] = output[1][width] = id(bases[1], 1);
+                        output[height][width] = id(bases[2], 0);
+                        output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
+                        output[height][0] = id(bases[3], 0);
+                        output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                    }
+                    break;
+                }
+                return output;
+            })(),
+            DOMINATOR_LOOP: true,
+            secondaryGameMode: "Domination"
+        };
+    })(),
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
