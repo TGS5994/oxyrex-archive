@@ -37,7 +37,7 @@ function setup(options = {}) {
     if (options.height == null) options.height = defaults.Y_GRID;
     if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4) + (options.width % 2);
     if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4) + (options.height % 2);
-    if (options.rockScatter == null) options.rockScatter = .15;
+    if (options.rockScatter == null) options.rockScatter = .175;
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
     const nest = {
@@ -216,6 +216,14 @@ const gamemodes = {
                         output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
                         output[height][0] = id(bases[3], 0);
                         output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                        const halfWidth = Math.floor(width / 2) + 1;
+                        const thirdWidth = Math.floor(width / 3);
+                        const halfHeight = Math.floor(height / 2) + 1;
+                        const thirdHeight = Math.floor(height / 3);
+                        output[thirdHeight][halfWidth] = "dom0";
+                        output[height - thirdHeight][halfWidth] = "dom0";
+                        output[halfHeight][thirdWidth] = "dom0";
+                        output[halfHeight][width - thirdWidth] = "dom0";
                     }
                     break;
                 }
