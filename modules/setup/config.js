@@ -203,10 +203,9 @@ const gamemodes = {
                     height: height
                 });
                 const mapType = Math.round(Math.random());// + width % 2; // For alt map type
-                console.log(mapType, teams);
                 const bases = getBaseShuffling(teams);
-                width--;
-                height--;
+                width --;
+                height --;
                 switch (mapType) {
                     case 0: {
                         const majorWidth = Math.floor(width / 2);
@@ -265,7 +264,10 @@ for (let key in defaults) {
 }
 output.gameModeName = gamemode;
 if (gamemode.includes("TDM")) {
-    output.gameModeName = `${output.TEAMS} ${gamemode}`;
+    output.gameModeName = output.gameModeName.replace("TDM", output.TEAMS + " TDM");
+}
+if (["Kill Race", "Mothership", "Tag", "Domination"].includes(gamemode)) {
+    otuput.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
 module.exports = {
     output
