@@ -1328,7 +1328,7 @@ class Entity {
             a = this.acceleration / roomSpeed;
         if (c.SPACE_PHYSICS) {
             this.maxSpeed = this.topSpeed;
-            this.damp = 100;
+            this.damp = 50;
         }
         switch (this.motionType) {
             case "grow":
@@ -1517,7 +1517,7 @@ class Entity {
         nullVector(this.accel);
         // Apply motion
         this.stepRemaining = 1;
-        if (c.SPACE_PHYSICS) this.stepRemaining = 2;
+        if (c.SPACE_PHYSICS) this.stepRemaining = 1.6;
         this.x += this.stepRemaining * this.velocity.x / roomSpeed;
         this.y += this.stepRemaining * this.velocity.y / roomSpeed;
     }
