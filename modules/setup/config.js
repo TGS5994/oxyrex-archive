@@ -202,7 +202,7 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = Math.round(Math.random());// + width % 2;
+                const mapType = Math.round(Math.random());// + width % 2; // For alt map type
                 console.log(mapType, teams);
                 const bases = getBaseShuffling(teams);
                 width--;
@@ -217,7 +217,7 @@ const gamemodes = {
                         output[height - minorHeight][majorWidth] = "dom0";
                         output[majorHeight][minorWidth] = "dom0";
                         output[majorHeight][width - minorWidth] = "dom0";
-                        if (width % 2) {
+                        if ((width + 1) % 2) {
                             output[majorHeight][majorWidth] = "dom0";
                         }
                     } break;
@@ -244,7 +244,7 @@ const gamemodes = {
                 }
                 return output;
             })(),
-            DOMINATOR_LOOP: false,
+            DOMINATOR_LOOP: true,
             secondaryGameMode: "Domination"
         };
     })(),
