@@ -593,25 +593,12 @@ const maintainloop = (() => {
         }, 3000 + (Math.floor(Math.random() * 7000)));
         return o;
     };
-    /*if (c.SPACE_MODE) {
-        console.log("Spawned moon.");
-        let o = new Entity({
-            x: room.width / 2,
-            y: room.height / 2
-        });
-        o.define(Class.moon);
-        o.team = -101;
-        o.SIZE = room.width / 10;
-        o.protect();
-        o.life();
-        room.blackHoles.push(o);
-    }*/
     if (c.SPACE_MODE) {
         {
             let o = new Entity(room.random());
             o.define(Class.moon);
             o.team = -101;
-            o.SIZE = room.width / 12.5;
+            o.SIZE = room.width / 15;
             o.protect();
             o.life();
         }
@@ -631,7 +618,7 @@ const maintainloop = (() => {
                 o.life();
             }
         }
-        for (const loc of room.nest) ring(loc.x, loc.y, room.width / room.xgrid / room.xgrid, 2, 3);
+        //for (const loc of room.nest) ring(loc.x, loc.y, room.width / room.xgrid / room.xgrid, 2, 3);
     }
     // The NPC function
     let makenpcs = (() => {
