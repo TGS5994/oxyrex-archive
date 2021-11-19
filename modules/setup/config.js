@@ -267,7 +267,7 @@ if (gamemode.includes("TDM")) {
     output.gameModeName = output.gameModeName.replace("TDM", output.TEAMS + " TDM");
 }
 if (["Kill Race", "Mothership", "Tag", "Domination"].includes(gamemode)) {
-    otuput.gameModeName = output.TEAMS + " TDM " + gamemode;
+    output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
 module.exports = {
     output
