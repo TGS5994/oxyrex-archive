@@ -65,7 +65,6 @@ function setup(options = {}) {
     return output;
 }
 
-const gamemode = "Domination"; ////Math.random() > .75 ? "FFA" : "TDM";
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
     "TDM": (function() {
@@ -247,6 +246,23 @@ const gamemodes = {
             secondaryGameMode: "Domination"
         };
     })(),
+    "Space": {
+        ARENA_TYPE: "circle",
+        SPACE_MODE: true,
+        WIDTH: 5000,
+        HEIGHT: 5000,
+        X_GRID: 5,
+        Y_GRID: 5,
+        SPACE_PHYSICS: true,
+        ROOM_SETUP: [
+            ["norm", "norm", "roid", "norm", "norm"],
+            ["norm", "rock", "norm", "rock", "norm"],
+            ["roid", "norm", "nest", "norm", "roid"],
+            ["norm", "rock", "norm", "rock", "norm"],
+            ["norm", "norm", "roid", "norm", "norm"],
+        ],
+        secondaryGameMode: "Space"
+    },
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
@@ -256,7 +272,23 @@ const gamemodes = {
         TEAMS: 2
     }
 };
-const mode = gamemodes[gamemode];
+
+const choiceTable = {
+    "FFA": 10,
+    "TDM": 9,
+    "Open TDM": 8,
+    "Kill Race": 4,
+    "Hide and Seek": 2,
+    "Soccer": 6,
+    "Survival": 3,
+    "Mothership": 5,
+    "Tag": 6,
+    "Domination": 7,
+    "Naval Battle": 4,
+    "Space": 1
+};
+
+const mode = gamemodes["Space"];
 let output = {};
 for (let key in defaults) {
     output[key] = defaults[key];
