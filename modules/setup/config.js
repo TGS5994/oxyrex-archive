@@ -32,6 +32,10 @@ function id(i, level = true, norm = false) {
     }
 }
 
+function oddify(number, multiplier = 1) {
+    return number + ((number % 2) * multiplier);
+}
+
 function setup(options = {}) {
     if (options.width == null) options.width = defaults.X_GRID;
     if (options.height == null) options.height = defaults.Y_GRID;
@@ -41,8 +45,8 @@ function setup(options = {}) {
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
     const nest = {
-        sx: Math.floor(options.width / 2 - options.nestWidth / 2),
-        sy: Math.floor(options.height / 2 - options.nestHeight / 2),
+        sx: oddify(Math.floor(options.width / 2 - options.nestWidth / 2), -1),
+        sy: oddify(Math.floor(options.height / 2 - options.nestHeight / 2), -1),
         ex: Math.floor(options.width / 2 - options.nestWidth / 2) + options.nestWidth,
         ey: Math.floor(options.height / 2 - options.nestHeight / 2) + options.nestHeight
     };
