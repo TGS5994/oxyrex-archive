@@ -263,6 +263,21 @@ const gamemodes = {
         ],
         secondaryGameMode: "Space"
     },
+    "Boss Rush": {
+        MODE: "tdm",
+        TEAMS: 1,
+        SPECIAL_BOSS_SPAWNS: true,
+        WIDTH: 5500,
+        HEIGHT: 5500,
+        X_GRID: 18,
+        Y_GRID: 18,
+        ROOM_SETUP: setup({
+            width: 18,
+            height: 18,
+            rockScatter: .225
+        }),
+        secondaryGameMode: "Boss Rush"
+    },
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
@@ -285,6 +300,7 @@ const choiceTable = {
     "Tag": 6,
     "Domination": 7,
     "Naval Battle": 4,
+    "Boss Rush": 6,
     "Space": 1
 };
 
@@ -299,7 +315,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return table[Math.floor(Math.random() * table.length)];
+    return "Boss Rush";//table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
