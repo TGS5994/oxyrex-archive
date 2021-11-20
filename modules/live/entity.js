@@ -1237,7 +1237,7 @@ class Entity {
             alpha: this.alpha,
             facing: this.facing,
             vfacing: this.vfacing,
-            twiggle: this.facingType === 'autospin' || (this.facingType === 'locksFacing' && this.control.alt),
+            twiggle: this.facingType === 'autospin' || this.facingType === 'lucrehulkSpin' || (this.facingType === 'locksFacing' && this.control.alt),
             layer: this.layerID ? this.layerID : (this.bond != null) ? this.bound.layer : (this.type === 'wall') ? 11 : (this.type === 'food') ? 10 : (this.type === 'tank') ? 5 : (this.type === 'crasher') ? 1 : 0,
             color: this.color,
             name: this.nameColor + this.name,
@@ -1442,6 +1442,9 @@ class Entity {
         switch (this.facingType) {
             case 'autospin':
                 this.facing += 0.02 / roomSpeed;
+                break;
+            case 'lucrehulkSpin':
+                this.facing += .005 / roomSpeed;
                 break;
             case 'turnWithSpeed':
                 this.facing += this.velocity.length / 90 * Math.PI / roomSpeed;
