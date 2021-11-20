@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
-let arenaClosers = ["arenaCloser", "twinCloser", "machineCloser", "sniperCloser", "flankCloser", "directorCloser", "pounderCloser", "trapperCloser", "smasherCloser"].map(entry => Class[entry + "AI"]);
+let arenaClosers = ["arenaCloser", "twinCloser", "machineCloser", "sniperCloser", "flankCloser", "directorCloser", "pounderCloser", "trapperCloser", "growerCloser", "pelleterCloser", "propellerCloser", "smasherCloser", "closerCeption", "closer5", "closerCeptionist2"].map(entry => Class[entry + "AI"]);
 function closeArena() {
     if (arenaClosed) return;
     sockets.broadcast("Arena Closed: No players may join!");
