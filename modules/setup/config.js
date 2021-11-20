@@ -315,7 +315,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return "Boss Rush";//table[Math.floor(Math.random() * table.length)];
+    return table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
