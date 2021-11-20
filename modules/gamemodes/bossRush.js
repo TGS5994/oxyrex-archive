@@ -13,7 +13,7 @@ const bossRush = (function() {
         let output = [];
         const types = [
             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss],
-            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic],
+            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.lucrehulk],
             [Class.eggPrinceTier1, Class.eggPrinceTier2, /*Class.eggPrinceTier3, Class.eggPrinceTier4,*/ Class.eggBossTier1, Class.eggBossTier2]
         ];
         types.push(types.flat());
