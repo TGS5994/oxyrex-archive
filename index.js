@@ -406,7 +406,7 @@ const maintainloop = (() => {
                         break;
                     case 2:
                         choice = [
-                            [Class.fallenOverlord], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                            [Class.fallenOverlord, Class.fallenBooster, Class.fallenHybrid], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("Many sought the day they'd return, but not in this way...");
                         break;
