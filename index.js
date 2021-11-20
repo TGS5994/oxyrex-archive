@@ -24,7 +24,7 @@ const gameloop = (() => {
         let instance = collision[0],
             other = collision[1];
         // Check for ghosts...
-        if (other.isGhost && !other.label.includes("Collision")) {
+        if (other.isGhost && other.settings.hitsOwnType !== "everything") {
             util.error('GHOST FOUND');
             util.error(other.label);
             util.error('x: ' + other.x + ' y: ' + other.y);
@@ -37,7 +37,7 @@ const gameloop = (() => {
             }
             return 0;
         }
-        if (instance.isGhost && !instance.label.includes("Collision")) {
+        if (instance.isGhost && instance.settings.hitsOwnType !== "everything") {
             util.error('GHOST FOUND');
             util.error(instance.label);
             util.error('x: ' + instance.x + ' y: ' + instance.y);
@@ -84,6 +84,14 @@ const gameloop = (() => {
                 const entity = instance.label.includes("Collision") ? other : instance;
                 if (entity.label.includes("Collision")) return;
                 advancedcollide(flail, entity, true, false, null);
+            } break;
+            case (instance.settings.hitsOwnType === "everything" || other.settings.hitsOwnType === "everything"): {
+                if (instance.label === "Collision" || other.label === "Collision") return;
+                if (instance.team === other.team || instance.master.id === other.master.id) return;
+                if (instance.isDominator || other.isDominator || instance.isMothership || other.isMothership) return;
+                let shield = instance.settings.hitsOwnType === "everything" ? instance : other,
+                    entity = instance.settings.hitsOwnType === "everything" ? other : instance;
+                firmcollide(shield, entity);
             } break;
             case (instance.team === other.team && (instance.settings.hitsOwnType === "pushOnlyTeam" || other.settings.hitsOwnType === "pushOnlyTeam")): { // Dominator / Mothership collisions
                 if (instance.settings.hitsOwnType === other.settings.hitsOwnType) return;
