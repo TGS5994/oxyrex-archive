@@ -280,7 +280,7 @@ const gamemodes = {
     },
     "Center Control": {
         MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
+        TEAMS: 2,
         WIDTH: 5000,
         HEIGHT: 5000,
         X_GRID: 7,

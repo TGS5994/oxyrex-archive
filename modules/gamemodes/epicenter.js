@@ -41,7 +41,7 @@ const epicenter = (function() {
             return this.data[0].index + 1;
         }
     }
-    const rings = room["dom0"].map(function(loc) {
+    const rings = (room["dom0"] || []).map(function(loc) {
         return {
             locationData: loc,
             control: 0,
@@ -77,9 +77,10 @@ const epicenter = (function() {
         });
         const leaderCount = scoreboard.getWinner(true);
         if (leaderCount != null) {
-            if (leaderCount === 100) {
-                const winnerID = scoreboard.getWinner();
-                sockets.broadcast(winnerID + " has won!");
+            if (leaderCount === 1000) {
+                const winnerID = scoreboard.getWinner() - 1;
+                sockets.broadcast(["BLUE", "RED", "GREEN", "PURPLE"][winnerID] + " has won the game!");
+                setTimeout(closeArena, 2500);
             }
         }
     }

@@ -694,21 +694,56 @@ const maintainloop = (() => {
         };
     })();
     const createFood = (() => {
-        function lootTable(...chances) {
-            const seed = Math.random();
-            for (let i = 0, length = chances.length; i < length; i ++) if (seed > chances[i]) return i;
-            return chances.length - 1;
+        class FoodType {
+            constructor(groupName, types, chances, chance, isNestFood = false) {
+                if (chances[0] === "scale") {
+                    const scale = chances[1];
+                    chances = [];
+                    for (let i = types.length; i > 0; i --) {
+                        chances.push(i ** scale);
+                    }
+                }
+                this.name = groupName;
+                if (types.length !== chances.length) {
+                    throw new RangeError(groupName + ": error with group. Please make sure there is the same number of types as chances.");
+                }
+                this.types = types;
+                this.chances = chances;
+                this.chance = chance;
+                this.isNestFood = isNestFood;
+            }
+            choose() {
+                return this.types[ran.chooseChance(...this.chances)];
+            }
         }
-        const types = [function getNormalShape() {
-            return [Class.egg, Class.square, Class.triangle, Class.pentagon, Class.bigPentagon][ran.chooseChance(25, 20, 14, 7, 1)];
-        }, function getGreenShape() {
-            return [Class.gem, Class.greensquare, Class.greentriangle, Class.greenpentagon][ran.chooseChance(10, 7, 5, 3)];
-        }, function getNestShape() {
-            return [Class.alphaDecagon, Class.alphaNonagon, Class.alphaOctogon, Class.alphaHeptagon, Class.alphaHexagon, Class.greenpentagon, Class.hugePentagon, Class.bigPentagon, Class.pentagon][lootTable(0.999, 0.995, 0.99, 0.95, 0.9, 0.8, 0.6, 0.4, 0)];
-        }];
+        const types = [
+            new FoodType("Normal Food", [
+                Class.egg, Class.square, Class.triangle,
+                Class.pentagon, Class.bigPentagon
+            ], [25, 20, 14, 7, 1], 1000),
+            new FoodType("Rare Food", [
+                Class.gem, Class.greensquare, Class.greentriangle,
+                Class.greenpentagon
+            ], ["scale", 2], 1),
+            new FoodType("Nest Food", [
+                Class.pentagon, Class.bigPentagon, Class.hugePentagon,
+                Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon,
+                Class.alphaNonagon, Class.alphaDecagon, Class.icosagon
+            ], ["scale", 3], 1, true)
+        ];
+        function getFoodType(isNestFood = false) {
+            const possible = [[], []];
+            for (let i = 0; i < types.length; i ++) {
+                if (types[i].isNestFood == isNestFood) {
+                    possible[0].push(i);
+                    possible[1].push(types[i].chance);
+                }
+            }
+            return possible[0][ran.chooseChance(...possible[1])];
+        }
         function spawnShape(location, type = 0) {
             let o = new Entity(location);
-            type = (type === 1 && c.SPAWN_PUMPKINS) ? Class.pumpkin : types[type]();
+            type = types[type].choose();
             o.define(type);
             o.define({
                 BODY: {
@@ -729,7 +764,7 @@ const maintainloop = (() => {
                 spawnShape({
                     x: location.x + Math.cos(angle) * (Math.random() * 50),
                     y: location.y + Math.sin(angle) * (Math.random() * 50)
-                }, +(Math.random() > 0.999));
+                }, getFoodType());
             }
         }
         function spawnDistributedFood() {
@@ -737,10 +772,10 @@ const maintainloop = (() => {
             do {
                 location = room.random();
             } while (room.isIn("nest", location));
-            spawnShape(location, +(Math.random() > 0.999));
+            spawnShape(location, getFoodType());
         }
         function spawnNestFood() {
-            let shape = spawnShape(room.randomType("nest"), 2);
+            let shape = spawnShape(room.randomType("nest"), getFoodType(true));
             shape.isNestFood = true;
         }
         return () => {
