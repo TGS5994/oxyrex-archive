@@ -320,7 +320,8 @@ const choiceTable = {
     "Domination": 7,
     "Naval Battle": 4,
     "Boss Rush": 6,
-    "Space": 1
+    "Space": 1,
+    "Center Control": 5
 };
 
 const gamemode = (function() {
@@ -334,7 +335,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return "Center Control";//table[Math.floor(Math.random() * table.length)];
+    return table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
