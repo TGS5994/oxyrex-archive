@@ -62,7 +62,7 @@ room.random = function() {
     let x = ran.irandom(room.width);
     let y = ran.irandom(room.height);
     if (c.ARENA_TYPE === "circle") {
-        let i = 15;
+        let i = 5;
         do {
             x = ran.irandom(room.width);
             y = ran.irandom(room.height);
@@ -93,7 +93,7 @@ room.randomType = function(type) {
     let selection = room[type][ran.irandom(room[type].length - 1)];
     if (c.ARENA_TYPE === "circle") {
         let loc = JSON.parse(JSON.stringify(selection));
-        let i = 15;
+        let i = 5;
         do {
             loc = {
                 x: ran.irandom(0.5 * room.width / room.xgrid) * ran.choose([-1, 1]) + selection.x,

@@ -278,6 +278,25 @@ const gamemodes = {
         }),
         secondaryGameMode: "Boss Rush"
     },
+    "Center Control": {
+        MODE: "tdm",
+        TEAMS: (Math.random() * 3 | 0) + 2,
+        WIDTH: 5000,
+        HEIGHT: 5000,
+        X_GRID: 7,
+        Y_GRID: 7,
+        ROOM_SETUP: [
+            ["norm", "norm", "roid", "norm", "roid", "norm", "norm"],
+            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
+            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
+            ["norm", "rock", "nest", "dom0", "nest", "rock", "norm"],
+            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
+            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
+            ["norm", "norm", "roid", "norm", "roid", "norm", "norm"],
+        ],
+        EPICENTER: true,
+        secondaryGameMode: "Center Control"
+    },
     "Naval Battle": {
         NAVAL_SHIPS: true,
         WIDTH: 7500,
@@ -315,7 +334,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return table[Math.floor(Math.random() * table.length)];
+    return "Center Control";//table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
@@ -328,7 +347,7 @@ output.gameModeName = gamemode;
 if (gamemode.includes("TDM")) {
     output.gameModeName = output.gameModeName.replace("TDM", output.TEAMS + " TDM");
 }
-if (["Kill Race", "Mothership", "Tag", "Domination"].includes(gamemode)) {
+if (["Kill Race", "Mothership", "Tag", "Domination", "Center Control"].includes(gamemode)) {
     output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
 module.exports = {

@@ -20,6 +20,7 @@ const gamemodeLoop = (function() {
   return function() {
     logger.set();
     if (c.MOTHERSHIP_LOOP) mothershipLoop.loop();
+    if (c.EPICENTER) epicenter.update();
     logger.mark();
     if (logger.totalTime > 100) {
       console.log("Gamemode loop is taking a long time!");

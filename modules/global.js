@@ -96,6 +96,7 @@ const requires = [
     "./gamemodes/domination.js", // The Domination mode
     "./gamemodes/infection.js", // Infection mode
     "./gamemodes/survival.js", // Survival mode
+    "./gamemodes/epicenter.js", // Epicenter mode
     "./gamemodes/gamemodeLoop.js", // The gamemode loop.
     "./gamemodes/tag.js", // Tag
     "./gamemodes/closeArena.js", // Arena Closing mechanics

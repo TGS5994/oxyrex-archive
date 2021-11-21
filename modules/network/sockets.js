@@ -221,6 +221,7 @@ const sockets = (() => {
     terminalCommands.permissions = [
         [], // Normal players
         ["setTeam", "setColor", "getPlayers", "getBots", "broadcast"], // Beta-Testers
+        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast"], // Senior-Testers
         terminalCommands.map(entry => entry.permissions) // Developers
     ];
     terminalCommands.checkPermissions = function(socket, commandID) {
@@ -642,14 +643,14 @@ const sockets = (() => {
                     if (body != null && socket.permissions > 0 && !global.arenaClosed) {
                         switch (m[0]) {
                             case 0: { // Testbed
-                                let tank = ["basic", "betaTanks", "testbed"][socket.permissions];
+                                let tank = ["basic", "betaTester", "seniorTester", "testbed"][socket.permissions];
                                 body.define(Class.resetSkills);
                                 body.define(Class[tank]);
                                 body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
                                 body.sendMessage("Please do not abuse these tanks.");
                             } break;
                             case 1: { // Teleport
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     body.x = body.x + body.control.target.x;
                                     body.y = body.y + body.control.target.y;
                                 }
@@ -663,7 +664,7 @@ const sockets = (() => {
                                 body.sendMessage(`Passive mode ${body.passive ? "enabled" : "disabled"}.`);
                             } break;
                             case 4: { // Godmode
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     body.godmode = !body.godmode;
                                     body.sendMessage(`Godmode ${player.body.godmode ? "enabled" : "disabled"}.`);
                                 }
@@ -696,7 +697,7 @@ const sockets = (() => {
                                 body.sendMessage("Your color has been reset.");
                             } break;
                             case 8: { // Multibox
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     let x = ran.randomRange(-10, 10);
                                     let y = ran.randomRange(-10, 10);
                                     let o = new Entity({
@@ -727,7 +728,7 @@ const sockets = (() => {
                                 }
                             } break;
                             case 9: { // Spawn entity
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     let loc = {
                                         x: body.x + body.control.target.x,
                                         y: body.y + body.control.target.y
@@ -741,7 +742,7 @@ const sockets = (() => {
                                 }
                             } break;
                             case 10: { // Kill entity
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     let loc = {
                                         x: body.x + body.control.target.x,
                                         y: body.y + body.control.target.y
@@ -762,7 +763,7 @@ const sockets = (() => {
                                 }
                             } break;
                             case 11: { // Drag Entity
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     let loc = {
                                         x: body.x + body.control.target.x,
                                         y: body.y + body.control.target.y
@@ -778,7 +779,7 @@ const sockets = (() => {
                                 }
                             } break;
                             case 12: { // Stealth Mode
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     body.stealthMode = !body.stealthMode;
                                     body.settings.leaderboardable = !body.stealthMode;
                                     body.alpha = +!body.stealthMode;
@@ -786,7 +787,7 @@ const sockets = (() => {
                                 }
                             } break;
                             case 13: {
-                                if (socket.permissions === 2) {
+                                if (socket.permissions === 3) {
                                     let loc = {
                                         x: body.x + body.control.target.x,
                                         y: body.y + body.control.target.y
@@ -1729,16 +1730,20 @@ const sockets = (() => {
                 }))
                 let leaderboard = new Delta(6, () => {
                     let list = [];
-                    if (c.TAG || c.SOCCER || c.KILL_RACE || c.HIDE_AND_SEEK) {
+                    if (c.TAG || c.SOCCER || c.KILL_RACE || c.HIDE_AND_SEEK || (c.EPICENTER && typeof epicenter === "object")) {
+                        let epicenterScoreboard;
+                        if (c.EPICENTER) {
+                            epicenterScoreboard = epicenter.getScoreboard();
+                        }
                         for (let i = 0; i < c.TEAMS; i++) {
                             let teamNames = ["BLUE", "RED", "GREEN", "PURPLE"];
                             let teamColors = [10, 11, 12, 15];
                             list.push({
                                 id: i,
                                 skill: {
-                                    score: c.SOCCER ? soccer.scoreboard[i] : (c.KILL_RACE && typeof killRace === "object") ? killRace.data[i] : (c.HIDE_AND_SEEK && typeof hideAndSeek === "object") ? hideAndSeek.data[i] : 0
+                                    score: c.EPICENTER ? epicenterScoreboard.find(thing => thing.index === i).count : c.SOCCER ? soccer.scoreboard[i] : (c.KILL_RACE && typeof killRace === "object") ? killRace.data[i] : (c.HIDE_AND_SEEK && typeof hideAndSeek === "object") ? hideAndSeek.data[i] : 0
                                 },
-                                index: Class[c.TAG ? "tagMode" : c.SOCCER ? "soccerScoreboard" : c.HIDE_AND_SEEK ? "hideAndSeek" : "killRace"].index,
+                                index: Class[c.TAG ? "tagMode" : c.SOCCER ? "soccerScoreboard" : (c.HIDE_AND_SEEK || c.EPICENTER) ? "hideAndSeek" : "killRace"].index,
                                 name: teamNames[i],
                                 color: teamColors[i],
                                 nameColor: "#FFFFFF",
@@ -1746,7 +1751,7 @@ const sockets = (() => {
                             });
                         }
                     }
-                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER) loopThrough(entities, function(instance) {
+                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER && !c.EPICENTER) loopThrough(entities, function(instance) {
                         if (c.MOTHERSHIP_LOOP) {
                             if (instance.isMothership) list.push(instance);
                         } else if (c.TAG) {
