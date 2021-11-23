@@ -335,7 +335,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return table[Math.floor(Math.random() * table.length)];
+    return "Center Control";//table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
