@@ -17,7 +17,9 @@ const epicenter = (function() {
             if (!direct) {
                 index = -index - 1;
             }
-            this.data[this.data.findIndex(entry => entry.index === index)].count ++;
+            const thing = this.data.findIndex(entry => entry.index === index);
+            if (!this.data[thing]) return;
+            this.data[thing].count ++;
         }
         clear() {
             this.data = [];
