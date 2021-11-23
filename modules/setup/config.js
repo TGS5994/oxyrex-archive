@@ -271,11 +271,16 @@ const gamemodes = {
         HEIGHT: 5500,
         X_GRID: 18,
         Y_GRID: 18,
-        ROOM_SETUP: setup({
-            width: 18,
-            height: 18,
-            rockScatter: .225
-        }),
+        ROOM_SETUP: (function() {
+            const output = setup({
+                width: 18,
+                height: 18,
+                rockScatter: .225
+            });
+            output[4][4] = output[4][14] = "bas1";
+            output[14][4] = output[14][14] = "bas1";
+            return output;
+        })(),
         secondaryGameMode: "Boss Rush"
     },
     "Center Control": {
@@ -335,7 +340,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return "Center Control";//table[Math.floor(Math.random() * table.length)];
+    return table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

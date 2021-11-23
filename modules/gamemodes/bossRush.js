@@ -85,7 +85,7 @@ const bossRush = (function() {
     }
     return function() {
         let time = 60;
-        for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator]));
+        for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator, Class.droneDominator, Class.steamrollerDominator, Class.crockettDominator, Class.spawnerDominator, Class.autoDominator]));
         console.log("Boss rush initialized.");
         function recursive() {
             time -= 5;
