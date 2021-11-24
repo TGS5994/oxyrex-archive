@@ -14,6 +14,43 @@ bot.on("ready", async function() {
     // Now we log that we started up in our logs channel.
     bot.active = true;
     util.log(bot, "status", "Discord bot active.");
+    let intervalID = -1;
+    global.updateStatusMessage = async function(closed) {
+        if (closed) {
+            clearInterval(intervalID);
+        }
+        const channel = await bot.channels.fetch("895619392400916560");
+        if (channel) {
+            const statusMessage = await channel.messages.fetch(global.fingerPrint.statusID);
+            if (statusMessage) {
+                const fields = (closed ? [{
+                    name: "Server closed to the public",
+                    value: closed
+                }] : [{
+                    name: "Server Speed:",
+                    value: Math.min(1, global.fps / roomSpeed / 1000 * 30) * 100 + "%"
+                }, {
+                    name: "Players:",
+                    value: views.length
+                }, {
+                    name: "Uptime:",
+                    value: global.util.formatTime(global.util.time())
+                }, {
+                    name: "Last Updated:",
+                    value: new Date()
+                }]);
+                const embed = new Discord.MessageEmbed()
+                    .setTitle(c.gameModeName)
+                    .setColor(0xDD0000)
+                    .setDescription(`URL: http://woomy.surge.sh/#${global.fingerPrint.prefix}`)
+                    .addFields(...fields)
+                    .setFooter('Powered by Discord.js', 'https://i.imgur.com/wSTFkRM.png');
+                statusMessage.edit(embed);
+            }
+        }
+    }
+    setTimeout(global.updateStatusMessage, 3000);
+    intervalID = setInterval(global.updateStatusMessage, 60000 * 3);
 });
 // We use folders for our commands so that it is all simple and split up.
 let commands = {};

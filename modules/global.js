@@ -16,7 +16,8 @@ global.fingerPrint = (function() {
         heroku,
         digitalOcean,
         localhost,
-        prefix: ["va", "ba", "xyz"][heroku ? 0 : digitalOcean ? 1 : 2]
+        prefix: ["va", "ba", "xyz"][heroku ? 0 : digitalOcean ? 1 : 2],
+        statusID: ["913210760765800500", "913210761692725278", "913211414016045056"][heroku ? 0 : digitalOcean ? 1 : 2]
     }
 })();
 

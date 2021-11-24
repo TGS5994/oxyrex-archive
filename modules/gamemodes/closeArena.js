@@ -11,6 +11,7 @@ let arenaClosers = ["arenaCloser", "twinCloser", "machineCloser", "sniperCloser"
 function closeArena() {
     if (arenaClosed) return;
     sockets.broadcast("Arena Closed: No players may join!");
+    global.updateStatusMessage("Arena Closed: No players may join!");
     global.arenaClosed = true;
     for (let i = 0; i < 15; i++) {
         let angle = (Math.PI * 2) / 15 * i;
@@ -33,6 +34,7 @@ function closeArena() {
         clearInterval(loop);
         setTimeout(process.exit, 1500);
     };
+    setTimeout(close, 60000);
     let ticks = 0;
     const loop = setInterval(function checkSurvivors() {
         ticks++;
