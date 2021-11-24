@@ -14,7 +14,7 @@ const bossRush = (function() {
         const types = [
             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss],
             [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.industrian],
-            [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2]
+            [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2]
         ];
         types.push(types.flat());
         types.forEach((type, i) => types[i] = type.sort(() => 0.5 - Math.random()));
@@ -28,7 +28,7 @@ const bossRush = (function() {
                 type = type.sort(() => 0.5 - Math.random());
             }
         }
-        [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4].forEach(type => output.push([type]));
+        [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4, Class.triangleBossTier3].forEach(type => output.push([type]));
         [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.lucrehulk].forEach(celestial => output.push([celestial]));
         return output;
     })();

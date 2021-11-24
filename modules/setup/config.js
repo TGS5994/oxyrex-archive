@@ -277,8 +277,8 @@ const gamemodes = {
                 height: 18,
                 rockScatter: .225
             });
-            output[4][4] = output[4][14] = "bas1";
-            output[14][4] = output[14][14] = "bas1";
+            output[3][3] = output[3][14] = "bas1";
+            output[14][3] = output[14][14] = "bas1";
             return output;
         })(),
         secondaryGameMode: "Boss Rush",
