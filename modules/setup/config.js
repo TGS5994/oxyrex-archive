@@ -281,7 +281,8 @@ const gamemodes = {
             output[14][4] = output[14][14] = "bas1";
             return output;
         })(),
-        secondaryGameMode: "Boss Rush"
+        secondaryGameMode: "Boss Rush",
+        DO_BASE_DAMAGE: false
     },
     "Center Control": {
         MODE: "tdm",
