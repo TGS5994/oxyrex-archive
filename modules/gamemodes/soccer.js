@@ -18,6 +18,12 @@ let soccer = {
                 soccer.scoreboard[0] ++;
                 sockets.broadcast("BLUE Scored!");
             }
+            global.botScoreboard = {
+                "Time Left": soccer.timer + " minutes"
+            };
+            for (let i = 0; i < soccer.scoreboard.length; i ++) {
+                global.botScoreboard[["BLUE", "RED"][i]] = soccer.scoreboard[i] + " Goals";
+            }
             setTimeout(soccer.spawnBall, 1500);
         }
     },
@@ -38,10 +44,22 @@ let soccer = {
                 setTimeout(() => sockets.broadcast("3 Minutes have been added to the clock!"), 1500);
             }
         }
+        global.botScoreboard = {
+            "Time Left": soccer.timer + " minutes"
+        };
+        for (let i = 0; i < soccer.scoreboard.length; i ++) {
+            global.botScoreboard[["BLUE", "RED"][i]] = soccer.scoreboard[i] + " Goals";
+        }
         if (soccer.timer % 2 === 0) sockets.broadcast(soccer.timer + " minutes until the match is over!");
         setTimeout(soccer.update, 60000);
     },
     init: function() {
+        global.botScoreboard = {
+            "Time Left": soccer.timer + " minutes"
+        };
+        for (let i = 0; i < soccer.scoreboard.length; i ++) {
+            global.botScoreboard[["BLUE", "RED"][i]] = soccer.scoreboard[i] + " Goals";
+        }
         soccer.spawnBall();
         setTimeout(soccer.update, 60000);
     }

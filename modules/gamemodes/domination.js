@@ -61,11 +61,25 @@ const dominatorLoop = (function() {
         loopThrough(entities, function(o) {
             if (o.isDominator && o.team !== -101 && dominators[o.team] != null) dominators[o.team]++;
         });
+        global.botScoreboard = {};
+        const names = ["BLUE", "RED", "GREEN", "PURPLE"];
+        for (let i = 0; i < c.TEAMS; i ++) {
+            global.botScoreboard[names[[i]]] = (dominators[-i - 1]) + " Dominator" + (dominators[-i - 1] == 1 ? "" : "s");
+        }
         if (dominators["-1"] === config.neededToWin) winner(0);
         if (dominators["-2"] === config.neededToWin) winner(1);
         if (dominators["-3"] === config.neededToWin) winner(2);
         if (dominators["-4"] === config.neededToWin) winner(3);
     };
+
+    if (c.DOMINATOR_LOOP) {
+        global.botScoreboard = {};
+        const names = ["BLUE", "RED", "GREEN", "PURPLE"];
+        for (let i = 0; i < c.TEAMS; i ++) {
+            global.botScoreboard[names[[i]]] = "0 Dominators";
+        }
+    }
+
     return {
         spawn,
         tally

@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
-function countPlayers() {
+function countPlayers(justForUpdate = false) {
     let teams = [];
     for (let i = 1; i < c.TEAMS + 1; i++) teams.push([-i, 0]);
     let all = 0;
@@ -18,8 +18,14 @@ function countPlayers() {
         teams.find(entry => entry[0] === o.team)[1]++;
         all++;
     }
-    let team = teams.find(entry => entry[1] === all);
-    if (team) winner(-team[0] - 1);
+    global.botScoreboard = {};
+    for (let i = 0; i < c.TEAMS; i ++) {
+        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = teams[i][1] + " Players";
+    }
+    if (!justForUpdate) {
+        let team = teams.find(entry => entry[1] === all);
+        if (team) winner(-team[0] - 1);
+    }
 };
 let won = false;
 
@@ -45,6 +51,15 @@ function tagDeathEvent(instance) {
       sockets.broadcastRoom();
     }*/
     setTimeout(countPlayers, 1000);
+}
+if (c.TAG) {
+    global.botScoreboard = {};
+    for (let i = 0; i < c.TEAMS; i ++) {
+        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = "0 Players";
+    }
+    setInterval(function() {
+        countPlayers(true);
+    }, 10000);
 }
 module.exports = {
     countPlayers,

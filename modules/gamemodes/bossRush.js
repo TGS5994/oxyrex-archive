@@ -41,12 +41,14 @@ const bossRush = (function() {
             return;
         }
         let bosses = wave.length;
+        global.botScoreboard["Bosses Left"] = wave.length;
         for (let boss of wave) {
             let o = new Entity(room.random());
             o.define(boss);
             o.team = -100;
             o.onDead = function() {
                 bosses --;
+                global.botScoreboard["Bosses Left"] = bosses;
                 if (bosses <= 0) {
                     sockets.broadcast("The next wave will begin in 10 seconds.");
                     index ++;
@@ -59,6 +61,7 @@ const bossRush = (function() {
             n.define(ran.choose(escorts));
             n.team = -100;
         }
+        global.botScoreboard.Wave = (index + 1);
         sockets.broadcast("Wave " + (index + 1) + " has arrived!");
     }
     let spawn = (loc, team, type = false) => {
@@ -85,6 +88,10 @@ const bossRush = (function() {
         }
     }
     return function() {
+        global.botScoreboard = {
+            "Wave": 0,
+            "Bosses Left": 0
+        };
         let time = 60;
         for (let loc of room["bas1"]) spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator, Class.droneDominator, Class.steamrollerDominator, Class.crockettDominator, Class.spawnerDominator, Class.autoDominator]));
         console.log("Boss rush initialized.");

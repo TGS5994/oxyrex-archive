@@ -74,12 +74,25 @@ let mothershipLoop = (function() {
             if (entry[2].isDead()) return death(entry);
             return true;
         });
+        global.botScoreboard = {};
+        for (let i = 0; i < aliveNow.length; i ++) {
+            const entry = aliveNow[i][2];
+            if (entry) {
+                global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][-entry.team - 1]] = `${Math.round(entry.health.amount)}/${Math.round(entry.health.max)} Health`;
+            }
+        }
         if (aliveNow.length === 1) {
             teamWon = true;
             setTimeout(winner, 2500, aliveNow[0][1]);
         }
         motherships = aliveNow;
     };
+    if (c.MOTHERSHIP_LOOP) {
+        global.botScoreboard = {};
+        for (let i = 0; i < c.TEAMS; i ++) {
+            global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = Class.mothership.BODY.HEALTH + `/${Class.mothership.BODY.HEALTH} Health`;
+        }
+    }
     return {
         spawn,
         loop,

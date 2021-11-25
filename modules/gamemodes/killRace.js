@@ -27,10 +27,20 @@ const killRace = (function() {
         if (gameWon) return;
         sockets.broadcast(teamNames[teamID] + " scored!");
         data[teamID] ++;
+        global.botScoreboard = {};
+        for (let i = 0; i < c.TEAMS; i ++) {
+            global.botScoreboard[teamNames[i]] = data[i] + "/50 Kills";
+        }
         if (data[teamID] >= 50) {
             gameWon = true;
             sockets.broadcast(teamNames[teamID] + " has won!");
             setTimeout(closeArena, 2500);
+        }
+    }
+    if (c.KILL_RACE) {
+        global.botScoreboard = {};
+        for (let i = 0; i < c.TEAMS; i ++) {
+            global.botScoreboard[teamNames[i]] = data[i] + "/50 Kills";
         }
     }
     return {

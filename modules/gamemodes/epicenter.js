@@ -85,6 +85,12 @@ const epicenter = (function() {
                 setTimeout(closeArena, 2500);
             }
         }
+        global.botScoreboard = {};
+        const epicenterScoreboard = getScoreboard();
+        for (let i = 0; i < c.TEAMS; i ++) {
+            const data = (epicenterScoreboard.find(thing => thing.index === i) || 0).count;
+            global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = data + "/1000 Points";
+        }
     }
     function getScoreboard() {
         return scoreboard.data;

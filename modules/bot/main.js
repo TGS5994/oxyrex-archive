@@ -27,11 +27,8 @@ bot.on("ready", async function() {
                     name: "Server closed to the public",
                     value: closed
                 }] : [{
-                    name: "Server Speed:",
-                    value: Math.min(1, global.fps / roomSpeed / 1000 * 30) * 100 + "%"
-                }, {
                     name: "Players:",
-                    value: views.length
+                    value: `${views.length}/${c.maxPlayers}`
                 }, {
                     name: "Uptime:",
                     value: global.util.formatTime(global.util.time())
@@ -39,6 +36,14 @@ bot.on("ready", async function() {
                     name: "Last Updated:",
                     value: new Date()
                 }]);
+                if (global.botScoreboard && !closed) {
+                    for (const key in global.botScoreboard) {
+                        fields.push({
+                            name: key,
+                            value: global.botScoreboard[key]
+                        });
+                    }
+                }
                 const embed = new Discord.MessageEmbed()
                     .setTitle(c.gameModeName)
                     .setColor(0xDD0000)
@@ -50,7 +55,7 @@ bot.on("ready", async function() {
         }
     }
     setTimeout(global.updateStatusMessage, 3000);
-    intervalID = setInterval(global.updateStatusMessage, 60000 * 3);
+    intervalID = setInterval(global.updateStatusMessage, 30000);
 });
 // We use folders for our commands so that it is all simple and split up.
 let commands = {};
