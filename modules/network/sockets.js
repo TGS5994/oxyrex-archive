@@ -294,7 +294,7 @@ const sockets = (() => {
         }
     }];
     terminalCommands.permissions = [
-        c.SANDBOX ? ["setTeam", "setColor", "setSize", "setSkill", "broadcast", "setBots", "spawnBoss"] : [], // Normal players
+        c.SANDBOX ? ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"] : [], // Normal players
         ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"], // Beta-Testers
         ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"], // Senior-Testers
         terminalCommands.map(entry => entry.permissions) // Developers
@@ -719,7 +719,7 @@ const sockets = (() => {
                         return 1;
                     }
                     let body = player.body;
-                    if (body != null && socket.permissions > (c.SANDBOX ? -1 : 0) && !global.arenaClosed) {
+                    if (body != null && socket.permissions > 0 && !global.arenaClosed) {
                         switch (m[0]) {
                             case 0: { // Testbed
                                 let tank = ["basic", "betaTester", "seniorTester", "testbed"][socket.permissions];
