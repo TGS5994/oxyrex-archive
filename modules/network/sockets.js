@@ -217,11 +217,86 @@ const sockets = (() => {
             sockets.broadcast(socket.name + ": " + say);
             socket.talk("Q", "info", "Message broadcasted.");
         }
+    }, {
+        permissions: "setBots",
+        usage: "setBots [amount (must be a number)]",
+        callback: function(socket, message, body) {
+            if (!c.SANDBOX) {
+                socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
+                return 1;
+            }
+            if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
+                socket.talk("Q", "info", "Invalid amount! Please use a finite integer.");
+                return 1;
+            }
+            const index = global.sandboxRooms.findIndex(({ id }) => id === socket.sandboxId);
+            if (index === -1) {
+                socket.talk("Q", "info", "You aren't in a room!");
+                return 1;
+            }
+            message[1] = Math.abs(Math.floor(message[1]));
+            if (message[1] < 0 || message[1] > 4) {
+                socket.talk("Q", "info", "Bots must be from 0-4");
+                return 1;
+            }
+            global.sandboxRooms[index].botCap = Math.abs(Math.floor(message[1]));
+            socket.talk("Q", "info", "The amount of bots in this sandbox room is now " + global.sandboxRooms[index].botCap);
+        }
+    }, {
+        permissions: "spawnBoss",
+        usage: "spawnBoss [bossExportName (optional, run 'spawnBoss list' to see what bosses you can spawn)]",
+        callback: function(socket, message, body) {
+            if (!c.SANDBOX) {
+                socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
+                return 1;
+            } else if (typeof message[1] !== "string") {
+                socket.talk("Q", "info", "Invalid export.");
+                return 1;
+            }
+            const bossNames = [
+                "eliteDestroyer", "eliteGunner", "eliteSprayer",
+                "eliteSprayer2", "eliteHunter", "eliteSkimmer",
+                "sentryFragBoss", "summoner", "palisade",
+                "atrium", "guardian", "greenGuardian",
+                "quadriatic", "fallenOverlord", "fallenBooster",
+                "fallenHybrid"
+            ];
+            if (message[1] === "list") {
+                socket.talk("Q", "info", bossNames.join(", "));
+                return 1;
+            } else if (bossNames.indexOf(message[1]) === -1) {
+                socket.talk("Q", "info", "Invalid boss export! Run 'spawnBoss list' to see what bosses you can spawn!");
+                return 1;
+            }
+            const index = global.sandboxRooms.findIndex(({ id }) => id === socket.sandboxId);
+            if (index === -1) {
+                socket.talk("Q", "info", "You aren't in a room!");
+                return 1;
+            } else if (global.sandboxRooms[index].boss) {
+                socket.talk("Q", "info", "You can only spawn one boss at a time!");
+                return 1;
+            } {
+                sockets.broadcast("A visitor is coming...");
+                setTimeout(function() {
+                    const o = new Entity(room.random());
+                    o.name = ran.chooseBossName("all", 1)[0];
+                    o.define(Class[message[1]]);
+                    o.team = -100;
+                    o.sandboxId = global.sandboxRooms[index].id;
+                    o.onDead = function() {
+                        global.sandboxRooms[index].boss = false;
+                    }
+                    sockets.broadcast(o.name + " has arrived.");
+                }, 5000);
+                global.sandboxRooms[index].boss = true;
+            }
+            socket.talk("Q", "info", "Spawning boss...");
+        }
     }];
     terminalCommands.permissions = [
-        [], // Normal players
-        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast"], // Beta-Testers
-        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast"], // Senior-Testers
+        c.SANDBOX ? ["setTeam", "setColor", "setSize", "setSkill", "broadcast", "setBots", "spawnBoss"] : [], // Normal players
+        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"], // Beta-Testers
+        ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"], // Senior-Testers
         terminalCommands.map(entry => entry.permissions) // Developers
     ];
     terminalCommands.checkPermissions = function(socket, commandID) {
@@ -644,7 +719,7 @@ const sockets = (() => {
                         return 1;
                     }
                     let body = player.body;
-                    if (body != null && socket.permissions > 0 && !global.arenaClosed) {
+                    if (body != null && socket.permissions > (c.SANDBOX ? -1 : 0) && !global.arenaClosed) {
                         switch (m[0]) {
                             case 0: { // Testbed
                                 let tank = ["basic", "betaTester", "seniorTester", "testbed"][socket.permissions];
@@ -1390,6 +1465,13 @@ const sockets = (() => {
                     socket.status.hasSpawned = true;
                     body.sendMessage('You have spawned! Welcome to the game.');
                     body.sendMessage('You will be invulnerable until you move or shoot.');
+                    if (c.SANDBOX) {
+                        [
+                            "Press CTRL+SHIFT+F to open the terminal! Type 'help' to see what commands you can use",
+                            "You have access to Beta Tester permissions, go to the help menu on the home page to see more info",
+                            "Welcome to sandbox!"
+                        ].forEach(body.sendMessage);
+                    }
                     // Move the client camera
                     socket.talk('c', socket.camera.x, socket.camera.y, socket.camera.fov);
                     return player;

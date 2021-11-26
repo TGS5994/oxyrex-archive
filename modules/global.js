@@ -25,7 +25,7 @@ global.fingerPrint = (function() {
     }
 })();
 
-global.sandboxIds = [];
+global.sandboxRooms = [];
 
 global.c = require("./setup/config.js").output;
 global.ran = require(".././lib/random.js");

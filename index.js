@@ -178,9 +178,9 @@ const gameloop = (() => {
         logs.loops.tally();
         logs.master.set();
         logs.activation.set();
-        global.sandboxIds.forEach(id => {
+        global.sandboxRooms.forEach(({ id }) => {
             if (!entities.some(entry => entry.sandboxId === id)) {
-                global.sandboxIds = global.sandboxIds.filter(entry => entry !== id);
+                global.sandboxRooms = global.sandboxRooms.filter(entry => entry.id !== id);
             }
         });
         loopThrough(entities, entitiesactivationloop);
@@ -510,8 +510,8 @@ const maintainloop = (() => {
             return ran.choose(config.crashers);
         }
         return census => {
-            if (c.SANDBOX && global.sandboxIds.length < 1) {
-                return {};
+            if (c.SANDBOX && global.sandboxRooms.length < 1) {
+                return;
             }
             if (census.crasher < config.max) {
                 for (let i = 0; i < config.max - census.crasher; i ++) {
@@ -526,7 +526,7 @@ const maintainloop = (() => {
                         o.define(getType());
                         o.team = -100;
                         if (c.SANDBOX) {
-                            o.sandboxId = ran.choose(global.sandboxIds);
+                            o.sandboxId = ran.choose(global.sandboxRooms);
                         }
                         if (o.label === "Nest Defender") {
                             nestDefenderSpawned = true;
@@ -697,6 +697,36 @@ const maintainloop = (() => {
                         }
                     }
                 }
+            } else {
+                for (let i = 0; i < global.sandboxRooms.length; i ++) {
+                    let room = global.sandboxRooms[i];
+                    // Remove dead ones
+                    room.bots = room.bots.filter(e => {
+                        return !e.isDead();
+                    });
+                    if (room.bots.length < room.botCap) {
+                        for (let j = room.bots.length; j < room.botCap; j ++) {
+                            if (Math.random() > .5) {
+                                const bot = spawnBot(null);
+                                bot.sandboxId = room.id;
+                                room.bots.push(bot);
+                            }
+                        }
+                    }
+                    // Slowly upgrade them
+                    loopThrough(room.bots, function(o) {
+                        if (o.skill.level < 60) {
+                            o.skill.score += 35;
+                            o.skill.maintain();
+                        }
+                        if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
+                            o.upgrade(Math.floor(Math.random() * o.upgrades.length));
+                            if (Math.random() > .9) {
+                                o.botDoneUpgrading = true;
+                            }
+                        }
+                    });
+                }
             }
             // Remove dead ones
             bots = bots.filter(e => {
@@ -766,7 +796,7 @@ const maintainloop = (() => {
             return possible[0][ran.chooseChance(...possible[1])];
         }
         function spawnShape(location, type = 0) {
-            if (c.SANDBOX && global.sandboxIds.length < 1) {
+            if (c.SANDBOX && global.sandboxRooms.length < 1) {
                 return {};
             }
             let o = new Entity(location);
@@ -780,7 +810,7 @@ const maintainloop = (() => {
             o.facing = ran.randomAngle();
             o.team = -100;
             if (c.SANDBOX) {
-                o.sandboxId = ran.choose(global.sandboxIds);
+                o.sandboxId = ran.choose(global.sandboxRooms);
             }
             return o;
         };

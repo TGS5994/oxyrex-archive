@@ -13,21 +13,41 @@ function closeArena() {
     sockets.broadcast("Arena Closed: No players may join!");
     global.updateStatusMessage("Arena Closed: No players may join!");
     global.arenaClosed = true;
-    for (let i = 0; i < 15; i++) {
-        let angle = (Math.PI * 2) / 15 * i;
-        let o = new Entity({
-            x: room.width / 2 + (room.width * Math.cos(angle)),
-            y: room.height / 2 + (room.height * Math.sin(angle))
+    if (c.SANDBOX) {
+        global.sandboxIds.forEach(id => {
+            for (let i = 0; i < 4; i++) {
+                let angle = (Math.PI * 2) / 4 * i;
+                let o = new Entity({
+                    x: room.width / 2 + (room.width * Math.cos(angle)),
+                    y: room.height / 2 + (room.height * Math.sin(angle))
+                });
+                o.define(ran.choose(arenaClosers));
+                o.color = 3;
+                o.team = -100;
+                o.skill.score = 23650;
+                o.isArenaCloser = true;
+                o.seeInvisable = true;
+                o.alwaysActive = true;
+                o.sandboxId = id;
+                o.name = "Arena Closer";
+            }
         });
-        o.define(ran.choose(arenaClosers));
-        o.color = 3;
-        o.SIZE = 50;
-        o.team = -100;
-        o.skill.score = 23650;
-        o.isArenaCloser = true;
-        o.seeInvisable = true;
-        o.alwaysActive = true;
-        o.name = "Arena Closer";
+    } else {
+        for (let i = 0; i < 15; i++) {
+            let angle = (Math.PI * 2) / 15 * i;
+            let o = new Entity({
+                x: room.width / 2 + (room.width * Math.cos(angle)),
+                y: room.height / 2 + (room.height * Math.sin(angle))
+            });
+            o.define(ran.choose(arenaClosers));
+            o.color = 3;
+            o.team = -100;
+            o.skill.score = 23650;
+            o.isArenaCloser = true;
+            o.seeInvisable = true;
+            o.alwaysActive = true;
+            o.name = "Arena Closer";
+        }
     }
 
     function close() {
