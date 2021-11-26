@@ -26,6 +26,7 @@ function closeArena() {
         o.skill.score = 23650;
         o.isArenaCloser = true;
         o.seeInvisable = true;
+        o.alwaysActive = true;
         o.name = "Arena Closer";
     }
 

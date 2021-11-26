@@ -295,7 +295,7 @@ function reflectCollide(wall, bounce) {
     const height = wall.height ? wall.size * wall.height : wall.size;
     if (bounce.x + bounce.size < wall.x - width || bounce.x - bounce.size > wall.x + width || bounce.y + bounce.size < wall.y - height || bounce.y - bounce.size > wall.y + height) return 0;
     if (wall.intangibility) return 0
-    let bounceBy = bounce.type === 'tank' ? 1.0 : bounce.type === 'miniboss' ? 2.5 : 0.1
+    let bounceBy = bounce.type === 'tank' ? 1 : bounce.type === 'miniboss' ? 2.5 : 0.1;
     let left = bounce.x < wall.x - width;
     let right = bounce.x > wall.x + width;
     let top = bounce.y < wall.y - height;
@@ -304,27 +304,47 @@ function reflectCollide(wall, bounce) {
     let rightExposed = bounce.x + bounce.size > wall.x + width;
     let topExposed = bounce.y - bounce.size < wall.y - height;
     let bottomExposed = bounce.y + bounce.size > wall.y + height;
-    let intersected = true
+    let intersected = true;
     if (left && right) {
-        left = right = false
+        left = right = false;
     }
     if (top && bottom) {
-        top = bottom = false
+        top = bottom = false;
     }
     if (leftExposed && rightExposed) {
-        leftExposed = rightExposed = false
+        leftExposed = rightExposed = false;
     }
     if (topExposed && bottomExposed) {
-        topExposed = bottomExposed = false
+        topExposed = bottomExposed = false;
     }
     if ((left && !top && !bottom) || (leftExposed && !topExposed && !bottomExposed)) {
-        bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy
+        //bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy;
+        if (bounce.accel.x > 0) {
+            bounce.accel.x = 0;
+            bounce.velocity.x = 0;
+        }
+        bounce.x = wall.x - width - bounce.size;
     } else if ((right && !top && !bottom) || (rightExposed && !topExposed && !bottomExposed)) {
-        bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy
+        //bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy;
+        if (bounce.accel.x < 0) {
+            bounce.accel.x = 0;
+            bounce.velocity.x = 0;
+        }
+        bounce.x = wall.x + width + bounce.size;
     } else if ((top && !left && !right) || (topExposed && !leftExposed && !rightExposed)) {
-        bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy
+        //bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy;
+        if (bounce.accel.y > 0) {
+            bounce.accel.y = 0;
+            bounce.velocity.y = 0;
+        }
+        bounce.y = wall.y - height - bounce.size;
     } else if ((bottom && !left && !right) || (bottomExposed && !leftExposed && !rightExposed)) {
-        bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy
+        //bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy;
+        if (bounce.accel.y < 0) {
+            bounce.accel.y = 0;
+            bounce.velocity.y = 0;
+        }
+        bounce.y = wall.y + height + bounce.size;
     } else {
         let x = leftExposed ? -width : rightExposed ? width : 0;
         let y = topExposed ? -wall.size : bottomExposed ? height : 0;
@@ -332,29 +352,49 @@ function reflectCollide(wall, bounce) {
         if (!x || !y) {
             if (bounce.x + bounce.y < wall.x + wall.y) { // top left
                 if (bounce.x - bounce.y < wall.x - wall.y) { // bottom left
-                    bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy
+                    //bounce.accel.x -= (bounce.x + bounce.size - wall.x + width) * bounceBy;
+                    if (bounce.accel.x > 0) {
+                        bounce.accel.x = 0;
+                        bounce.velocity.x = 0;
+                    }
+                    bounce.x = wall.x - width - bounce.size;
                 } else { // top right
-                    bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy
+                    //bounce.accel.y -= (bounce.y + bounce.size - wall.y + height) * bounceBy;
+                    if (bounce.accel.y > 0) {
+                        bounce.accel.y = 0;
+                        bounce.velocity.y = 0;
+                    }
+                    bounce.y = wall.y - height - bounce.size;
                 }
             } else { // bottom right
                 if (bounce.x - bounce.y < wall.x - wall.y) { // bottom left
-                    bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy
+                    //bounce.accel.y -= (bounce.y - bounce.size - wall.y - height) * bounceBy;
+                    if (bounce.accel.y < 0) {
+                        bounce.accel.y = 0;
+                        bounce.velocity.y = 0;
+                    }
+                    bounce.y = wall.y + height + bounce.size;
                 } else { // top right
-                    bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy
+                    //bounce.accel.x -= (bounce.x - bounce.size - wall.x - width) * bounceBy;
+                    if (bounce.accel.x < 0) {
+                        bounce.accel.x = 0;
+                        bounce.velocity.x = 0;
+                    }
+                    bounce.x = wall.x + width + bounce.size;
                 }
             }
         } else if (!(left || right || top || bottom)) {
-            let force = (bounce.size / point.length - 1) * bounceBy / 2
-            bounce.accel.x += point.x * force
-            bounce.accel.y += point.y * force
+            let force = (bounce.size / point.length - 1) * bounceBy / 2;
+            bounce.accel.x += point.x * force;
+            bounce.accel.y += point.y * force;
         } else if (point.isShorterThan(bounce.size)) {
             //let force = (bounce.size - point.length) / point.length * bounceBy
             // once to get collision amount, once to norm
-            let force = (bounce.size / point.length - 1) * bounceBy / 2 // simplified
-            bounce.accel.x -= point.x * force
-            bounce.accel.y -= point.y * force
+            let force = (bounce.size / point.length - 1) * bounceBy / 2; // simplified
+            bounce.accel.x -= point.x * force;
+            bounce.accel.y -= point.y * force;
         } else {
-            intersected = false
+            intersected = false;
         }
     }
     if (intersected) {

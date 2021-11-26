@@ -54,8 +54,10 @@ room.setType = function(type, location) {
     if (!room.isInRoom(location)) return false;
     let a = Math.floor((location.y * room.ygrid) / room.height);
     let b = Math.floor((location.x * room.xgrid) / room.width);
+    const oldType = room.setup[a][b];
     room.setup[a][b] = type;
     room.findType(type);
+    room.findType(oldType);
     sockets.broadcastRoom();
 };
 room.random = function() {

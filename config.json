@@ -40,7 +40,7 @@
     "X_GRID": 12,
     "Y_GRID": 12,
     "DAMAGE_CONSTANT": 0.6,
-    "KNOCKBACK_CONSTANT": 1.25,
+    "KNOCKBACK_CONSTANT": 2,
     "ROOM_BOUND_FORCE": 0.01,
     "FOOD": [0, 0.75, 0.22, 0.1, 0.005, 0, 0, 0, 0, 0, 0, 0],
     "FOOD_NEST": [0, 0.0, 0.0, 0.75, 0.5, 0.3, 0.1, 0.025, 0.005, 0.001],

@@ -562,7 +562,7 @@ const maintainloop = (() => {
         const botName = ran.chooseBotName();
         let color = [10, 11, 12, 15][team - 1];
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);
-        let loc = c.SPECIAL_BOSS_SPAWNS ? room.randomType("nest") : room.randomType("norm");
+        let loc = c.SPECIAL_BOSS_SPAWNS ? ((room["bas1"] && room["bas1"].length) ? room.randomType("bas1") : room.randomType("nest")) : room.randomType("norm");
         let o = new Entity(loc);
         o.color = color;
         o.invuln = true;
@@ -673,7 +673,15 @@ const maintainloop = (() => {
             spawnBosses(census);
             spawnSanctuaries(census);
             // Bots
-            if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed && Math.random() > .75) bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+            if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed) {
+                if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {} else {
+                    for (let i = bots.length + views.length; i < Math.ceil(c.maxPlayers / 2); i ++) {
+                        if (Math.random() > .5) {
+                            bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+                        }
+                    }
+                }
+            }
             // Remove dead ones
             bots = bots.filter(e => {
                 return !e.isDead();

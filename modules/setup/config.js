@@ -269,18 +269,60 @@ const gamemodes = {
         SPECIAL_BOSS_SPAWNS: true,
         WIDTH: 5500,
         HEIGHT: 5500,
-        X_GRID: 18,
-        Y_GRID: 18,
-        ROOM_SETUP: (function() {
-            const output = setup({
-                width: 18,
-                height: 18,
-                rockScatter: .225
-            });
-            output[3][3] = output[3][14] = "bas1";
-            output[14][3] = output[14][14] = "bas1";
-            return output;
-        })(),
+        X_GRID: 16,
+        Y_GRID: 16,
+        MAZE: `
+            --------------------------------
+            -##############################-
+            -#@@@@@@@@@@@@@@@@@@@@@@@@@@@@#-
+            -#####@@@#@@@@@@@@@@@@#@@@#####-
+            -###-----#@@@@@@@@@@@@#-----###-
+            -###-----#@@@@@@@@@@@@#-----###-
+            -#####---##@@@@@@@@@@##---#####-
+            -#####----##@@@@@@@@##----#####-
+            -###-------##@@@@@@##-------###-
+            -###--------#@@@@@@#--------###-
+            --##@@@------------------@@@##--
+            --@##@@@----------------@@@##@--
+            --@@##@@@--------------@@@##@@--
+            --@@@#@@@--------------####@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
+            --@@@######################@@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --------------------------------
+            --------------------------------
+            --------------------------------
+        `,
+        ROOM_SETUP: [
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
+        ],
         secondaryGameMode: "Boss Rush",
         DO_BASE_DAMAGE: false
     },

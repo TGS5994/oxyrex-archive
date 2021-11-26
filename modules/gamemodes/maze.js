@@ -9,15 +9,14 @@ goog.require('goog.structs.QuadTree');
 let locsToAvoid = ["nest", "port", "dom0"];
 for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i), locsToAvoid.push("dom" + i);
 
+function convertMapString(mapString) {
+    const map = mapString.trim().split('\n').map(r => r.trim().split('').map(r => r === '#' ? 1.5 : r === '@'));
+    return Array(map[0].length).fill().map((_, y) => Array(map.length).fill().map((_, x) => map[x][y]));
+}
+
 function generateMaze(size) {
-    const scale = room.width / size;
-    let maze = JSON.parse(JSON.stringify(Array(size).fill(Array(size).fill(true))));
-    for (let i = 0; i < size; i ++) {
-        maze[0][i] = false;
-        maze[size - 1][i] = false;
-        maze[i][0] = false;
-        maze[i][size - 1] = false;
-    }
+    const groupWalls = (typeof size !== "string");
+    let maze;
     function clearRing(ring) {
         for (let i = ring; i < size - ring - 1; i ++) {
             maze[ring][i] = false;
@@ -36,7 +35,20 @@ function generateMaze(size) {
         }
         return [x, y];
     }
-    clearRing(7);
+    if (typeof size === "string") {
+        maze = JSON.parse(JSON.stringify(convertMapString(size)));
+        size = maze.length;
+    } else {
+        maze = JSON.parse(JSON.stringify(Array(size).fill(Array(size).fill(true))));
+        for (let i = 0; i < size; i ++) {
+            maze[0][i] = false;
+            maze[size - 1][i] = false;
+            maze[i][0] = false;
+            maze[i][size - 1] = false;
+        }
+        clearRing(7);
+    }
+    const scale = room.width / size;
     for (let x = 0; x < size; x ++) {
         for (let y = 0; y < size; y ++) {
             for (let loc of locsToAvoid) {
@@ -62,6 +74,7 @@ function generateMaze(size) {
                         const ty = entry === 1 ? y + 1 : entry === 3 ? y - 1 : y;
                         if (tx >= size || ty >= size || tx < 1 || ty < 1) return false;
                         if (!maze[tx][ty]) return false;
+                        if (maze[x][y] == 1.5 || maze[tx][ty] == 1.5) return false;
                         return true;
                     }
                     return false;
@@ -75,6 +88,7 @@ function generateMaze(size) {
             const ty = direction === 1 ? y + 1 : direction === 3 ? y - 1 : y;
             if (tx >= size || ty >= size || tx < 1 || ty < 1) break;
             if (!maze[tx][ty]) break;
+            if (maze[x][y] == 1.5 || maze[tx][ty] == 1.5) break;
             maze[tx][ty] = false;
             eroded++;
             x = tx;
@@ -122,30 +136,32 @@ function generateMaze(size) {
             }
         }
         // Group walls...
-        for (let x = 0; x < size; x ++) {
-            for (let y = 0; y < size; y ++) {
-                if (maze[x][y]) {
-                    {
-                        let i = x + 1;
-                        let size = 1;
-                        while (maze[i][y]) {
-                            maze[i][y] = false;
-                            size ++;
-                            i ++;
-                        }
-                        if (size > 1) {
-                            maze[x][y] = [x + size / 2 - 0.5, y, size, 1];
-                        }
-                    } {
-                        let i = y + 1;
-                        let size = 1;
-                        while (maze[x][i]) {
-                            maze[x][i] = false;
-                            size ++;
-                            i ++;
-                        }
-                        if (size > 1) {
-                            maze[x][y] = [x, y + size / 2 - 0.5, 1, size];
+        if (groupWalls) {
+            for (let x = 0; x < size; x ++) {
+                for (let y = 0; y < size; y ++) {
+                    if (maze[x][y] && maze[x][y] != 1.5) {
+                        {
+                            let i = x + 1;
+                            let size = 1;
+                            while (maze[i][y] && maze[i][y] != 1.5) {
+                                maze[i][y] = false;
+                                size ++;
+                                i ++;
+                            }
+                            if (size > 1) {
+                                maze[x][y] = [x + size / 2 - 0.5, y, size, 1];
+                            }
+                        } {
+                            let i = y + 1;
+                            let size = 1;
+                            while (maze[x][i] && maze[x][i] != 1.5) {
+                                maze[x][i] = false;
+                                size ++;
+                                i ++;
+                            }
+                            if (size > 1) {
+                                maze[x][y] = [x, y + size / 2 - 0.5, 1, size];
+                            }
                         }
                     }
                 }
@@ -199,6 +215,7 @@ function generateMaze(size) {
                         o.height = d.height;
                     }
                     o.team = -101;
+                    o.alwaysActive = true;
                     o.protect();
                     o.life();
                 }

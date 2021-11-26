@@ -375,13 +375,13 @@ const sockets = (() => {
                         socket.kick('Trying to spawn while already alive.');
                         return 1;
                     }
-                    if (m.length !== 2) {
+                    if (m.length > 3) {
                         socket.kick('Ill-sized spawn request.');
                         return 1;
                     }
                     // Get data
                     let name = m[0].replace(c.BANNED_CHARACTERS_REGEX, '');
-                    let needsRoom = m[1];
+                    let needsRoom = m[2];
                     // Verify it
                     if (typeof name != 'string') {
                         socket.kick('Bad spawn request.');
@@ -399,22 +399,22 @@ const sockets = (() => {
                     // Bring to life
                     socket.status.deceased = false;
                     // Define the player.
-                    if (players.indexOf(socket.player) != -1) {
-                        util.remove(players, players.indexOf(socket.player));
-                    }
-                    // Free the old view
-                    if (views.indexOf(socket.view) != -1) {
-                        util.remove(views, views.indexOf(socket.view));
-                        socket.makeView();
-                    }
                     socket.party = m[1];
                     socket.name = name;
                     socket.backlogData.name = name;
-                    socket.player = socket.spawn(name);
+                    if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {
+                        if (needsRoom) {
+                            socket.reallySpawn(true);
+                        } else {
+                            socket.awaitingSpawn = true;
+                        }
+                    } else {
+                        socket.reallySpawn();
+                    }
                     socket.talk('R', room.width, room.height, JSON.stringify(c.ROOM_SETUP), JSON.stringify(util.serverStartTime), roomSpeed, ["rect", "circle"].indexOf(c.ARENA_TYPE));
                     // Log it
-                    util.log('[INFO] ' + (m[0]) + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
-                    bot.util.log(bot, "player", (m[0]) + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
+                    util.log('[INFO] ' + name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
+                    bot.util.log(bot, "player", name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
                 }
                 break;
                 case 'S': { // clock syncing
@@ -1523,7 +1523,9 @@ const sockets = (() => {
                                     socket.status.deceased = true;
                                     // Let the client know it died
                                     const records = player.records();
-                                    socket.talk('F', ...records);
+                                    if (!socket.awaitingSpawn) {
+                                        socket.talk('F', ...records);
+                                    }
                                     // If we have a valid record, let's verify it!
                                     if (records[0] > 500000) { // Score > 500k
                                         const totalKills = Math.round(records[2] + (records[3] / 2) + (records[4] * 2));
@@ -1909,8 +1911,8 @@ const sockets = (() => {
                 })();
                 // Set up the camera
                 socket.camera = {
-                    x: undefined,
-                    y: undefined,
+                    x: room.width / 2,
+                    y: room.height / 2,
                     vx: 0,
                     vy: 0,
                     lastUpdate: util.time(),
@@ -1931,14 +1933,14 @@ const sockets = (() => {
                             binary: true,
                         });
                     }
-                };
+                }
                 socket.lastWords = (...message) => {
                     if (socket.readyState === socket.OPEN) {
                         socket.send(protocol.encode(message), {
                             binary: true,
                         }, () => setTimeout(() => socket.terminate(), 1000));
                     }
-                };
+                }
                 socket.on('message', message => incoming(message, socket));
                 socket.on('close', () => {
                     socket.loops.terminate();
@@ -1949,6 +1951,25 @@ const sockets = (() => {
                     util.error(e);
                 });
                 // Put the player functions in the socket
+                socket.reallySpawn = function(spawnkill) {
+                    if (players.indexOf(socket.player) != -1) {
+                        util.remove(players, players.indexOf(socket.player));
+                    }
+                    // Free the old view
+                    if (views.indexOf(socket.view) != -1) {
+                        util.remove(views, views.indexOf(socket.view));
+                        socket.makeView();
+                    }
+                    socket.awaitingSpawn = false;
+                    socket.player = socket.spawn(socket.name);
+                    if (spawnkill) {
+                        setTimeout(function() {
+                            socket.awaitingSpawn = true;
+                            socket.player.body.sendMessage("Your sanctuaries have been destroyed. You may respawn when one is recontrolled.");
+                            socket.player.body.kill();
+                        }, 500);
+                    }
+                }
                 socket.spawn = name => {
                     return spawn(socket, name);
                 };
