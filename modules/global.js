@@ -9,17 +9,21 @@ goog.require('goog.structs.QuadTree');
 // Global Utilities Requires
 
 global.fingerPrint = (function() {
-    const heroku = process.argv.some(arg => arg.includes("heroku"));
+    const herokuVA = process.argv.some(arg => arg.includes("heroku"));
+    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX == true);
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
-    const localhost = !heroku && !digitalOcean;
+    const localhost = !herokuVA && !herokuWA && !digitalOcean;
     return {
-        heroku,
+        herokuVA,
+        herokuWA,
         digitalOcean,
         localhost,
-        prefix: ["va", "ba", "xyz"][heroku ? 0 : digitalOcean ? 1 : 2],
-        statusID: ["913210760765800500", "913210761692725278", "913211414016045056"][heroku ? 0 : digitalOcean ? 1 : 2]
+        prefix: ["va", "wa", "ba", "xyz"][herokuVA ? 0 : herokuWA ? 1 : digitalOcean ? 2 : 3],
+        statusID: ["913847615106482236", "913847615865634817", "913847618990395423", "913847620085088296"][herokuVA ? 0 : herokuWA ? 1 : digitalOcean ? 2 : 3]
     }
 })();
+
+global.sandboxIds = [];
 
 global.c = require("./setup/config.js").output;
 global.ran = require(".././lib/random.js");

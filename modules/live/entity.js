@@ -560,6 +560,21 @@ class Entity {
             fire: false,
             power: 0,
         };
+        let objectOutput = null;
+        this.__defineSetter__("sandboxId", function set(value) {
+            objectOutput = value;
+            if (!global.sandboxIds.includes(objectOutput)) {
+                global.sandboxIds.push(objectOutput);
+            }
+        });
+        this.__defineGetter__("sandboxId", function get() {
+            return objectOutput;
+        });
+        if (this.master) {
+            if (this.master.sandboxId != null) {
+                this.sandboxId = this.master.sandboxId;
+            }
+        }
         this.isInGrid = false;
         this.removeFromGrid = () => {
             if (this.isInGrid) {

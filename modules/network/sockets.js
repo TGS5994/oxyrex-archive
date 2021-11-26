@@ -316,10 +316,8 @@ const sockets = (() => {
                             socket.kick('Duplicate player spawn attempt.');
                             return 1;
                         }
-                        if (m.length === 2) {
-                            let key = m[0];
-                            socket.key = key;
-                        }
+                        let key = m[0];
+                        socket.key = key;
                         if (c.REQUIRE_TOKENS) {
                             let code = accountEncryption.decode(socket.key);
                             if (code.startsWith("PASSWORD_") && code.endsWith("_PASSWORD")) {
@@ -400,6 +398,12 @@ const sockets = (() => {
                     socket.status.deceased = false;
                     // Define the player.
                     socket.party = m[1];
+                    if (c.SANDBOX) {
+                        if (+m[1] === 0) {
+                            m[1] = (Math.random() * 1000000) | 0;
+                        }
+                        socket.sandboxId = +m[1];
+                    }
                     socket.name = name;
                     socket.backlogData.name = name;
                     if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {
@@ -1156,7 +1160,7 @@ const sockets = (() => {
                         gui.skills.update(getstuff(b.skill));
                         // Update physics
                         gui.accel.update(b.acceleration);
-                        gui.topspeed.update(-b.team * room.partyHash);
+                        gui.topspeed.update(c.SANDBOX ? b.sandboxId : -b.team * room.partyHash);
                     }
 
                     function publish(gui) {
@@ -1288,6 +1292,9 @@ const sockets = (() => {
                     // Create and bind a body for the player host
                     let body = new Entity(loc);
                     body.socket = socket;
+                    if (socket.sandboxId) {
+                        body.sandboxId = socket.sandboxId;
+                    }
                     body.protect();
                     body.isPlayer = true;
                     body.define(c.NAVAL_SHIPS ? Class.navalShips : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
@@ -1588,9 +1595,11 @@ const sockets = (() => {
                                 if (nearby[i].photo) {
                                     //if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
                                         // Grab the photo
-                                        if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
-                                        let output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
-                                        if (output) visible.push(output);
+                                        if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
+                                            if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
+                                            let output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
+                                            if (output) visible.push(output);
+                                        }
                                     //}
                                 }
                             }
@@ -1730,7 +1739,7 @@ const sockets = (() => {
                         });
                     return all
                 }))
-                let leaderboard = new Delta(6, () => {
+                let leaderboard = new Delta(6 + c.SANDBOX, () => {
                     let list = [];
                     if (c.TAG || c.SOCCER || c.KILL_RACE || c.HIDE_AND_SEEK || (c.EPICENTER && typeof epicenter === "object")) {
                         let epicenterScoreboard;
@@ -1785,21 +1794,24 @@ const sockets = (() => {
                                 getBarColor(entry),
                                 entry.nameColor
                             ]
-                        })
+                        });
+                        if (c.SANDBOX) {
+                            topTen[topTen.length - 1].data.push(entry.sandboxId);
+                        }
                         list.splice(top, 1)
                     }
                     room.topPlayerID = topTen.length ? topTen[0].id : -1
-                    return topTen.sort((a, b) => a.id - b.id)
+                    return topTen.sort((a, b) => a.id - b.id);
                 })
                 // Periodically give out updates
                 let subscribers = []
                 setInterval(() => {
-                    logs.minimap.set()
-                    let minimapUpdate = minimapAll.update()
-                    let minimapTeamUpdates = minimapTeams.map(r => r.update())
-                    let leaderboardUpdate = leaderboard.update()
+                    logs.minimap.set();
+                    let minimapUpdate = minimapAll.update();
+                    let minimapTeamUpdates = minimapTeams.map(r => r.update());
+                    let leaderboardUpdate = leaderboard.update();
                     for (let socket of subscribers) {
-                        if (!socket.status.hasSpawned) continue
+                        if (!socket.status.hasSpawned) continue;
                         let team = minimapTeamUpdates[socket.player.team - 1];
                         if (socket.status.needsNewBroadcast) {
                             socket.talk('b', ...minimapUpdate.reset, ...(team ? team.reset : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
@@ -1808,8 +1820,8 @@ const sockets = (() => {
                             socket.talk('b', ...minimapUpdate.update, ...(team ? team.update : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
                         }
                     }
-                    logs.minimap.mark()
-                    let time = util.time()
+                    logs.minimap.mark();
+                    let time = util.time();
                     for (let socket of clients) {
                         if (socket.timeout.check(time)) socket.lastWords('K', "Socket timed out.");
                         if (time - socket.statuslastHeartbeat > c.maxHeartbeatInterval) socket.kick('Lost heartbeat.');

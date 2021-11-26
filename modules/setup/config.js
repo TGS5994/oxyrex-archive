@@ -71,7 +71,7 @@ function setup(options = {}) {
 
 const gamemodes = {
     "FFA": {}, // "defaults" is already FFA.
-    "TDM": (function() {
+    /*"TDM": (function() {
         const teams = 2 + (Math.random() * 3 | 0);
         const bases = getBaseShuffling(teams);
         const map = (Math.random() > .5 ? [
@@ -112,20 +112,62 @@ const gamemodes = {
             TEAMS: teams,
             X_GRID: 15,
             Y_GRID: 15,
-            ROOM_SETUP: map
+            ROOM_SETUP: map,
+            ALLOW_MAZE: true
         }
     })(),
     "Open TDM": {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 3 | 0),
+        ALLOW_MAZE: true,
         ROOM_SETUP: setup()
-    },
+    },*/
+    "TDM": (function() {
+        const teams = (Math.random() * 3 | 0) + 2;
+        let width = 15,
+            height = 15;
+        return {
+            MODE: "tdm",
+            TEAMS: teams,
+            X_GRID: width,
+            Y_GRID: height,
+            ALLOW_MAZE: true,
+            ROOM_SETUP: (function() {
+                const output = setup({
+                    width: width,
+                    height: height
+                });
+                const mapType = Math.round(Math.random());
+                const bases = getBaseShuffling(teams);
+                width --;
+                height --;
+                switch (mapType) {
+                    case 0: {
+                        output.isOpen = true;
+                    } break;
+                    case 1: {
+                        output[0][0] = id(bases[0], 0);
+                        output[0][1] = output[1][0] = id(bases[0], 1);
+                        output[0][width] = id(bases[1], 0);
+                        output[0][width - 1] = output[1][width] = id(bases[1], 1);
+                        output[height][width] = id(bases[2], 0);
+                        output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
+                        output[height][0] = id(bases[3], 0);
+                        output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                    }
+                    break;
+                }
+                return output;
+            })()
+        };
+    })(),
     "Kill Race": {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 3 | 0),
         ROOM_SETUP: setup(),
         KILL_RACE: true,
-        secondaryGameMode: "killRace"
+        ALLOW_MAZE: true,
+        secondaryGameMode: "kr"
     },
     "Hide and Seek": {
         MODE: "tdm",
@@ -141,7 +183,7 @@ const gamemodes = {
             rockScatter: 0
         }),
         HIDE_AND_SEEK: true,
-        secondaryGameMode: "hideAndSeek"
+        secondaryGameMode: "hs"
     },
     "Soccer": {
         MODE: "tdm",
@@ -162,7 +204,7 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
         ],
-        secondaryGameMode: "soccer"
+        secondaryGameMode: "sc"
     },
     "Survival": {
         SURVIVAL: true,
@@ -182,14 +224,15 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         ROOM_SETUP: setup(),
         MOTHERSHIP_LOOP: true,
-        secondaryGameMode: "Mothership"
+        secondaryGameMode: "m"
     },
     "Tag": {
         MODE: "tdm",
         TEAMS: (Math.random() * 3 | 0) + 2,
         ROOM_SETUP: setup(),
         TAG: true,
-        secondaryGameMode: "Tag"
+        ALLOW_MAZE: true,
+        secondaryGameMode: "t"
     },
     "Domination": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
@@ -200,6 +243,7 @@ const gamemodes = {
             TEAMS: teams,
             X_GRID: width,
             Y_GRID: height,
+            ALLOW_MAZE: true,
             ROOM_SETUP: (function() {
                 const output = setup({
                     width: width,
@@ -222,6 +266,7 @@ const gamemodes = {
                         if ((width + 1) % 2) {
                             output[majorHeight][majorWidth] = "dom0";
                         }
+                        output.isOpen = true;
                     } break;
                     case 1: {
                         output[0][0] = id(bases[0], 0);
@@ -243,7 +288,7 @@ const gamemodes = {
                 return output;
             })(),
             DOMINATOR_LOOP: true,
-            secondaryGameMode: "Domination"
+            secondaryGameMode: "d"
         };
     })(),
     "Space": {
@@ -261,7 +306,7 @@ const gamemodes = {
             ["norm", "rock", "norm", "rock", "norm"],
             ["norm", "norm", "roid", "norm", "norm"],
         ],
-        secondaryGameMode: "Space"
+        secondaryGameMode: "sp"
     },
     "Boss Rush": {
         MODE: "tdm",
@@ -323,7 +368,7 @@ const gamemodes = {
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
         ],
-        secondaryGameMode: "Boss Rush",
+        secondaryGameMode: "br",
         DO_BASE_DAMAGE: false
     },
     "Center Control": {
@@ -343,7 +388,7 @@ const gamemodes = {
             ["norm", "norm", "roid", "norm", "roid", "norm", "norm"],
         ],
         EPICENTER: true,
-        secondaryGameMode: "Center Control"
+        secondaryGameMode: "cc"
     },
     "Naval Battle": {
         NAVAL_SHIPS: true,
@@ -351,14 +396,91 @@ const gamemodes = {
         HEIGHT: 7500,
         FOOD_AMOUNT: 0,
         MODE: "tdm",
-        TEAMS: 2
+        TEAMS: 2,
+        secondaryGameMode: "nb"
+    },
+    "Trench Battle": {
+        MODE: "tdm",
+        TEAMS: 2,
+        WIDTH: 5500,
+        HEIGHT: 5500,
+        X_GRID: 16,
+        Y_GRID: 16,
+        MAZE: `
+            --------------------------------
+            -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
+            -@############################@-
+            -@#####@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@##-----@@----@@----@@-----@#@-
+            -@##--@@----@@----@@----@@--@#@-
+            -@#@--########################@-
+            -@#@----@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@----@#@-
+            -@########################--@#@-
+            -@#@--@@----@@----@@----@@--##@-
+            -@#@-----@@----@@----@@-----##@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@#####@-
+            -@############################@-
+            -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
+            --------------------------------
+        `,
+        ROOM_SETUP: [
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "bas2", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
+        ],
+        secondaryGameMode: "tb",
+        DO_BASE_DAMAGE: false,
+        TRENCH_WARFARE: true
+    },
+    "Sandbox": {
+        WIDTH: 3500,
+        HEIGHT: 3500,
+        X_GRID: 3,
+        Y_GRID: 3,
+        ROOM_SETUP: [
+            ["norm", "norm", "norm"],
+            ["norm", "nest", "norm"],
+            ["norm", "norm", "norm"]
+        ],
+        SANDBOX: true,
+        secondaryGameMode: "sb"
     }
 };
 
 const choiceTable = {
     "FFA": 10,
     "TDM": 9,
-    "Open TDM": 8,
+    //"Open TDM": 8,
     "Kill Race": 4,
     "Hide and Seek": 2,
     "Soccer": 6,
@@ -383,10 +505,15 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return table[Math.floor(Math.random() * table.length)];
+    return global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
+let changedToMaze = false;
+if (mode.ALLOW_MAZE && Math.random() > .5) {
+    mode.MAZE = (mode.X_GRID || defaults.X_GRID) * 2;
+    changedToMaze = true;
+}
 let output = {};
 for (let key in defaults) {
     output[key] = defaults[key];
@@ -399,6 +526,22 @@ if (gamemode.includes("TDM")) {
 if (["Kill Race", "Mothership", "Tag", "Domination", "Center Control"].includes(gamemode)) {
     output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
+if (changedToMaze) {
+    for (let y = 0; y < output.ROOM_SETUP.length; y ++) {
+        for (let x = 0; x < output.ROOM_SETUP[y].length; x ++) {
+            if (["rock", "roid"].includes(output.ROOM_SETUP[y][x])) {
+                output.ROOM_SETUP[y][x] = "norm";
+            }
+        }
+    }
+    output.gameModeName = "Maze " + output.gameModeName;
+    output.secondaryGameMode = "m_" + output.secondaryGameMode;
+}
+if (output.ROOM_SETUP.isOpen) {
+    output.gameModeName = "Open " + output.gameModeName;
+    output.secondaryGameMode = "o_" + output.secondaryGameMode;
+}
+
 module.exports = {
     output
 };

@@ -56,6 +56,9 @@ const gameloop = (() => {
         if (instance.settings.hitsOwnType === "everything" && other.settings.hitsOwnType === "everything") {
             return 0;
         }
+        if (c.SANDBOX && instance.sandboxId !== other.sandboxId) {
+            return 0;
+        }
         if (instance.master.passive || other.master.passive) return;
         switch (true) {
             case (instance.type === "wall" || other.type === "wall"):
@@ -175,6 +178,11 @@ const gameloop = (() => {
         logs.loops.tally();
         logs.master.set();
         logs.activation.set();
+        global.sandboxIds.forEach(id => {
+            if (!entities.some(entry => entry.sandboxId === id)) {
+                global.sandboxIds = global.sandboxIds.filter(entry => entry !== id);
+            }
+        });
         loopThrough(entities, entitiesactivationloop);
         logs.activation.mark();
         // Do collisions
@@ -492,7 +500,7 @@ const maintainloop = (() => {
             sentryChance: 0.95,
             nestDefenderChance: 0.999,
             crashers: [Class.crasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm, Class.sentryOmission, Class.quadriaticShard],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm, Class.sentryOmission],
             nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
         };
         function getType() {
@@ -502,6 +510,9 @@ const maintainloop = (() => {
             return ran.choose(config.crashers);
         }
         return census => {
+            if (c.SANDBOX && global.sandboxIds.length < 1) {
+                return {};
+            }
             if (census.crasher < config.max) {
                 for (let i = 0; i < config.max - census.crasher; i ++) {
                     if (Math.random() > config.chance) {
@@ -514,6 +525,9 @@ const maintainloop = (() => {
                         let o = new Entity(spot);
                         o.define(getType());
                         o.team = -100;
+                        if (c.SANDBOX) {
+                            o.sandboxId = ran.choose(global.sandboxIds);
+                        }
                         if (o.label === "Nest Defender") {
                             nestDefenderSpawned = true;
                             sockets.broadcast("The nest cries out for help!");
@@ -670,14 +684,16 @@ const maintainloop = (() => {
             });
             // Spawning
             spawnCrasher(census);
-            spawnBosses(census);
-            spawnSanctuaries(census);
-            // Bots
-            if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed) {
-                if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {} else {
-                    for (let i = bots.length + views.length; i < Math.ceil(c.maxPlayers / 2); i ++) {
-                        if (Math.random() > .5) {
-                            bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+            if (!c.SANDBOX) {
+                spawnBosses(census);
+                spawnSanctuaries(census);
+                // Bots
+                if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed) {
+                    if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {} else {
+                        for (let i = bots.length + views.length; i < Math.ceil(c.maxPlayers / 2); i ++) {
+                            if (Math.random() > .5) {
+                                bots.push(spawnBot(global.nextTagBotTeam.shift() || null));
+                            }
                         }
                     }
                 }
@@ -750,6 +766,9 @@ const maintainloop = (() => {
             return possible[0][ran.chooseChance(...possible[1])];
         }
         function spawnShape(location, type = 0) {
+            if (c.SANDBOX && global.sandboxIds.length < 1) {
+                return {};
+            }
             let o = new Entity(location);
             type = types[type].choose();
             o.define(type);
@@ -760,6 +779,9 @@ const maintainloop = (() => {
             })
             o.facing = ran.randomAngle();
             o.team = -100;
+            if (c.SANDBOX) {
+                o.sandboxId = ran.choose(global.sandboxIds);
+            }
             return o;
         };
         function spawnGroupedFood() {
