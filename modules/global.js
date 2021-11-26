@@ -9,7 +9,7 @@ goog.require('goog.structs.QuadTree');
 // Global Utilities Requires
 
 global.fingerPrint = (function() {
-    const herokuVA = process.argv.some(arg => arg.includes("heroku"));
+    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX != true);
     const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX == true);
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
     const localhost = !herokuVA && !herokuWA && !digitalOcean;
