@@ -10,8 +10,8 @@ goog.require('goog.structs.QuadTree');
 
 global.fingerPrint = (function() {
     const hsb = process.env.HEROKU_SANDBOX;
-    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && !(process.env.HEROKU_SANDBOX == true);
-    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX == true);
+    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX !== "true");
+    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX === "true");
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
     const localhost = !herokuVA && !herokuWA && !digitalOcean;
     return {
