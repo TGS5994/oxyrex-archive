@@ -1468,7 +1468,7 @@ const sockets = (() => {
                     if (c.SANDBOX) {
                         [
                             "Press CTRL+SHIFT+F to open the terminal! Type 'help' to see what commands you can use",
-                            "You have access to Beta Tester permissions, go to the help menu on the home page to see more info",
+                            "To get people to join your room, send them your party link!",
                             "Welcome to sandbox!"
                         ].forEach(body.sendMessage);
                     }
