@@ -258,6 +258,10 @@ const maintainloop = (() => {
             count++;
             placeRoid('rock', Class.babyObstacle);
         }
+        for (let i = Math.ceil(rockcount * 0.5); i; i--) {
+            count++;
+            placeRoid('rock', Class.pebbleObstacle);
+        }
         util.log('Placing ' + count + ' obstacles!');
     }
     placeRoids();
@@ -780,7 +784,7 @@ const maintainloop = (() => {
                 Class.greenpentagon
             ], ["scale", 2], 1),
             new FoodType("Nest Food", [
-                Class.pentagon, Class.bigPentagon, Class.hugePentagon,
+                Class.pentagon, Class.scaleneTriangle, Class.rhombus, Class.bigPentagon, Class.hugePentagon,
                 Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon,
                 Class.alphaNonagon, Class.alphaDecagon, Class.icosagon
             ], ["scale", 3], 1, true)
