@@ -259,7 +259,7 @@ const sockets = (() => {
                 "sentryFragBoss", "summoner", "palisade",
                 "atrium", "guardian", "greenGuardian",
                 "quadriatic", "fallenOverlord", "fallenBooster",
-                "fallenHybrid"
+                "fallenHybrid", "eliteDirector"
             ];
             if (message[1] === "list") {
                 socket.talk("Q", "info", bossNames.join(", "));
@@ -1931,7 +1931,6 @@ const sockets = (() => {
                         for (let socket of subscribers) {
                             if (!socket.status.hasSpawned) continue;
                             let minimapUpdate = newMaps[socket.sandboxId];
-                            console.log(minimapUpdate);
                             if (socket.status.needsNewBroadcast) {
                                 socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
                                 socket.status.needsNewBroadcast = false
