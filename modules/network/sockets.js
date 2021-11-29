@@ -1924,14 +1924,18 @@ const sockets = (() => {
                                 });
                             }
                         }
+                        const newMaps = {};
+                        for (const id in sandboxMinimaps) {
+                            newMaps[id] = sandboxMinimaps[id].update();
+                        }
                         for (let socket of subscribers) {
                             if (!socket.status.hasSpawned) continue;
-                            let minimapUpdate = sandboxMinimaps[socket.sandboxId];
+                            let minimapUpdate = newMaps[socket.sandboxId];
                             if (socket.status.needsNewBroadcast) {
-                                socket.talk('b', ...(minimapUpdate ? (minimapUpdate.update()).reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
                                 socket.status.needsNewBroadcast = false
                             } else {
-                                socket.talk('b', ...(minimapUpdate ? (minimapUpdate.update()).update : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
                             }
                         }
                     } else {
