@@ -179,8 +179,13 @@ const gameloop = (() => {
         logs.master.set();
         logs.activation.set();
         global.sandboxRooms.forEach(({ id }) => {
-            if (!entities.some(entry => entry.sandboxId === id)) {
+            if (!sockets.clients.find(entry => entry.sandboxId === id)) {
                 global.sandboxRooms = global.sandboxRooms.filter(entry => entry.id !== id);
+                for (let i = 0; i < entities.length; i ++) {
+                    if (entities[i].sandboxId === id) {
+                        entities[i].kill();
+                    }
+                }
             }
         });
         loopThrough(entities, entitiesactivationloop);
@@ -530,7 +535,7 @@ const maintainloop = (() => {
                         o.define(getType());
                         o.team = -100;
                         if (c.SANDBOX) {
-                            o.sandboxId = ran.choose(global.sandboxRooms);
+                            o.sandboxId = ran.choose(global.sandboxRooms).id;
                         }
                         if (o.label === "Nest Defender") {
                             nestDefenderSpawned = true;
@@ -778,16 +783,16 @@ const maintainloop = (() => {
             new FoodType("Normal Food", [
                 Class.egg, Class.square, Class.triangle,
                 Class.pentagon, Class.bigPentagon
-            ], [25, 20, 14, 7, 1], 1000),
+            ], ["scale", 4], 2000),
             new FoodType("Rare Food", [
                 Class.gem, Class.greensquare, Class.greentriangle,
                 Class.greenpentagon
-            ], ["scale", 2], 1),
+            ], ["scale", 5], 1),
             new FoodType("Nest Food", [
                 Class.pentagon, Class.scaleneTriangle, Class.rhombus, Class.bigPentagon, Class.hugePentagon,
                 Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon,
                 Class.alphaNonagon, Class.alphaDecagon, Class.icosagon
-            ], ["scale", 3], 1, true)
+            ], ["scale", 5], 1, true)
         ];
         function getFoodType(isNestFood = false) {
             const possible = [[], []];
@@ -814,7 +819,7 @@ const maintainloop = (() => {
             o.facing = ran.randomAngle();
             o.team = -100;
             if (c.SANDBOX) {
-                o.sandboxId = ran.choose(global.sandboxRooms);
+                o.sandboxId = ran.choose(global.sandboxRooms).id;
             }
             return o;
         };

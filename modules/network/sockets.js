@@ -1784,7 +1784,7 @@ const sockets = (() => {
                 }
                 // Deltas
                 let minimapAll = new Delta(7, () => {
-                    let all = []
+                    let all = [];
                     for (let my of entities)
                         if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership || my.showsOnMap) all.push({
                             id: my.id,
@@ -1797,8 +1797,8 @@ const sockets = (() => {
                                 my.width || 1,
                                 my.height || 1
                             ]
-                        })
-                    return all
+                        });
+                    return all;
                 });
                 let teamIDs = [1, 2, 3, 4];
                 if (c.GROUPS) {
@@ -1809,7 +1809,7 @@ const sockets = (() => {
                     }*/
                 }
                 let minimapTeams = teamIDs.map(team => new Delta(3, () => {
-                    let all = []
+                    let all = [];
                     for (let my of entities)
                         if (my.type === 'tank' && my.team === -team && my.master === my && !my.lifetime) all.push({
                             id: my.id,
@@ -1819,8 +1819,8 @@ const sockets = (() => {
                                 my.color
                             ]
                         });
-                    return all
-                }))
+                    return all;
+                }));
                 let leaderboard = new Delta(6 + c.SANDBOX, () => {
                     let list = [];
                     if (c.TAG || c.SOCCER || c.KILL_RACE || c.HIDE_AND_SEEK || (c.EPICENTER && typeof epicenter === "object")) {
@@ -1887,19 +1887,65 @@ const sockets = (() => {
                 })
                 // Periodically give out updates
                 let subscribers = []
+                const sandboxMinimaps = {};
                 setInterval(() => {
                     logs.minimap.set();
-                    let minimapUpdate = minimapAll.update();
-                    let minimapTeamUpdates = minimapTeams.map(r => r.update());
                     let leaderboardUpdate = leaderboard.update();
-                    for (let socket of subscribers) {
-                        if (!socket.status.hasSpawned) continue;
-                        let team = minimapTeamUpdates[socket.player.team - 1];
-                        if (socket.status.needsNewBroadcast) {
-                            socket.talk('b', ...minimapUpdate.reset, ...(team ? team.reset : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
-                            socket.status.needsNewBroadcast = false
-                        } else {
-                            socket.talk('b', ...minimapUpdate.update, ...(team ? team.update : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
+                    if (c.SANDBOX) {
+                        for (const ID in sandboxMinimaps) {
+                            if (!global.sandboxRooms.find(({ id }) => id === ID)) {
+                                delete sandboxMinimaps[ID];
+                            }
+                        }
+                        for (let i = 0; i < global.sandboxRooms.length; i ++) {
+                            const id = global.sandboxRooms[i].id;
+                            if (sandboxMinimaps[id] == null) {
+                                sandboxMinimaps[id] = new Delta(7, () => {
+                                    let all = [];
+                                    for (let my of entities) {
+                                        if (my.sandboxId === id) {
+                                            if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership || my.showsOnMap) {
+                                                all.push({
+                                                    id: my.id,
+                                                    data: [
+                                                        (my.type === 'wall' || my.isMothership) ? my.shape === 4 ? 2 : 1 : 0,
+                                                        util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
+                                                        util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
+                                                        my.color,
+                                                        Math.round(my.SIZE),
+                                                        my.width || 1,
+                                                        my.height || 1
+                                                    ]
+                                                });
+                                            }
+                                        }
+                                    }
+                                    return all;
+                                });
+                            }
+                        }
+                        for (let socket of subscribers) {
+                            if (!socket.status.hasSpawned) continue;
+                            let minimapUpdate = sandboxMinimaps[socket.sandboxId];
+                            if (socket.status.needsNewBroadcast) {
+                                socket.talk('b', ...(minimapUpdate ? (minimapUpdate.update()).reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
+                                socket.status.needsNewBroadcast = false
+                            } else {
+                                socket.talk('b', ...(minimapUpdate ? (minimapUpdate.update()).update : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
+                            }
+                        }
+                    } else {
+                        let minimapUpdate = minimapAll.update();
+                        let minimapTeamUpdates = minimapTeams.map(r => r.update());
+                        for (let socket of subscribers) {
+                            if (!socket.status.hasSpawned) continue;
+                            let team = minimapTeamUpdates[socket.player.team - 1];
+                            if (socket.status.needsNewBroadcast) {
+                                socket.talk('b', ...minimapUpdate.reset, ...(team ? team.reset : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
+                                socket.status.needsNewBroadcast = false
+                            } else {
+                                socket.talk('b', ...minimapUpdate.update, ...(team ? team.update : [0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
+                            }
                         }
                     }
                     logs.minimap.mark();
