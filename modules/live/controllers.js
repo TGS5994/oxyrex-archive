@@ -1002,8 +1002,8 @@ class io_skipBomb extends IO {
         }
         return {
             goal: {
-                x: this.body.x + this.goal.x,
-                y: this.body.y + this.goal.y
+                x: this.body.x + this.goal.x * this.body.size,
+                y: this.body.y + this.goal.y * this.body.size
             },
             power: (interval - this.step) + 1
         }
