@@ -989,8 +989,8 @@ class io_skipBomb extends IO {
         this.step += .05;
         const interval = this.step | 0;
         if (this.step === interval) {
-            this.body.velocity.x *= Math.random() / 4 - .125;
-            this.body.velocity.y *= Math.random() / 4 - .125;
+            this.body.velocity.x *= 1 + (Math.random() / 4 - .125);
+            this.body.velocity.y *= 1 + (Math.random() / 4 - .125);
         }
         this.body.facing += (interval % 2 === 0 ? .1 : -.1);
     }
