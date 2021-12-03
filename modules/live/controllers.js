@@ -984,6 +984,10 @@ class io_skipBomb extends IO {
     constructor(body) {
         super(body);
         this.step = 0;
+        this.goal = {
+            x: 0,
+            y: 0
+        };
     }
     think(input) {
         this.step += .05;
@@ -996,7 +1000,7 @@ class io_skipBomb extends IO {
             };
             this.body.maxSpeed *= 10;
         }
-        this.body.facing += (interval % 2 === 0 ? .1 : -.1);
+        //this.body.facing += (interval % 2 === 0 ? .1 : -.1);
         return {
             goal: {
                 x: this.body.x + this.goal.x,
