@@ -998,8 +998,8 @@ class io_skipBomb extends IO {
                 x: Math.cos(angle),
                 y: Math.cos(angle)
             };
-            this.body.maxSpeed = 10;
-            this.body.damp = 0;
+            this.body.maxSpeed = this.body.topSpeed;
+            this.body.damp = 1;
         }
         //this.body.facing += (interval % 2 === 0 ? .1 : -.1);
         this.body.accel.x = this.goal.x;
