@@ -1005,7 +1005,7 @@ class io_skipBomb extends IO {
                 x: this.body.x + this.goal.x,
                 y: this.body.y + this.goal.y
             },
-            power: (interval - step) + 1
+            power: (interval - this.step) + 1
         }
     }
 }
