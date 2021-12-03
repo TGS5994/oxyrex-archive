@@ -990,8 +990,8 @@ class io_skipBomb extends IO {
         const interval = this.step | 0;
         if (this.step === interval) {
             const angle = this.body.velocity.direction + ((Math.PI * Math.random()) - Math.PI / 2);
-            this.body.velocity.x = Math.cos(angle) * 1.2;
-            this.body.velocity.y = Math.sin(angle) * 1.2;
+            this.body.velocity.x = Math.cos(angle);
+            this.body.velocity.y = Math.sin(angle);
         }
         this.body.facing += (interval % 2 === 0 ? .1 : -.1);
     }
