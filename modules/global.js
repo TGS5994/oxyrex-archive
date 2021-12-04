@@ -38,6 +38,7 @@ global.roomSpeed = c.gameSpeed;
 global.fps = "Unknown";
 global.minimap = [];
 global.entities = [];
+global.squadronPoints = {};
 global.activeEntities = [];
 global.views = [];
 global.entitiesToAvoid = [];

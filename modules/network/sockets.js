@@ -472,12 +472,13 @@ const sockets = (() => {
                     // Bring to life
                     socket.status.deceased = false;
                     // Define the player.
-                    socket.party = m[1];
+                    socket.party = +m[1];
                     if (c.SANDBOX) {
-                        if (+m[1] === 0) {
-                            m[1] = (Math.random() * 1000000) | 0;
+                        const room = socket.sandboxRooms.find(entry => entry.id === socket.party);
+                        if (!room) {
+                            socket.party = (Math.random() * 1000000) | 0;
                         }
-                        socket.sandboxId = +m[1];
+                        socket.sandboxId = socket.party;
                     }
                     socket.name = name;
                     socket.backlogData.name = name;
@@ -943,9 +944,11 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 1000 * i);
-                                    player.body.controllingSquadron = true;
-                                    player.body.sendMessage("Right click to fire.");
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 75 * i);
+                                    setTimeout(() => {
+                                        player.body.controllingSquadron = true;
+                                        player.body.sendMessage("Right click to fire.");
+                                    }, 75 * gun.countsOwnKids);
                                 }
                             } break;
                             case 2: { // launch Torpedo Bombers
@@ -954,9 +957,11 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 1500 * i);
-                                    player.body.controllingSquadron = true;
-                                    player.body.sendMessage("Right click to fire.");
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 100 * i);
+                                    setTimeout(() => {
+                                        player.body.controllingSquadron = true;
+                                        player.body.sendMessage("Right click to fire.");
+                                    }, 100 * gun.countsOwnKids);
                                 }
                             } break;
                             case 3: { // launch Rocket Attack Planes
@@ -965,9 +970,11 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 750 * i);
-                                    player.body.controllingSquadron = true;
-                                    player.body.sendMessage("Right click to fire.");
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 50 * i);
+                                    setTimeout(() => {
+                                        player.body.controllingSquadron = true;
+                                        player.body.sendMessage("Right click to fire.");
+                                    }, 50 * gun.countsOwnKids);
                                 }
                             } break;
                             case 4: { // launch Fighter Patrol
@@ -976,9 +983,24 @@ const sockets = (() => {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
                                     gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 500 * i);
-                                    player.body.controllingSquadron = true;
-                                    player.body.sendMessage("Left click to fire.");
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 25 * i);
+                                    setTimeout(() => {
+                                        player.body.controllingSquadron = true;
+                                        player.body.sendMessage("Left click to fire.");
+                                    }, 25 * gun.countsOwnKids);
+                                }
+                            } break;
+                            case 5: { // launch Skip Bombers
+                                const gun = player.body.guns.find(r => r.launchSquadron === 5);
+                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                    gun.coolDown.time = Date.now();
+                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 50 * i);
+                                    setTimeout(() => {
+                                        player.body.controllingSquadron = true;
+                                        player.body.sendMessage("Right click to fire.");
+                                    }, 50 * gun.countsOwnKids);
                                 }
                             } break;
                         }
@@ -1785,19 +1807,22 @@ const sockets = (() => {
                 // Deltas
                 let minimapAll = new Delta(7, () => {
                     let all = [];
-                    for (let my of entities)
-                        if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership || my.showsOnMap) all.push({
-                            id: my.id,
-                            data: [
-                                (my.type === 'wall' || my.isMothership) ? my.shape === 4 ? 2 : 1 : 0,
-                                util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
-                                util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
-                                my.color,
-                                Math.round(my.SIZE),
-                                my.width || 1,
-                                my.height || 1
-                            ]
-                        });
+                    for (let my of entities.concat(Object.values(global.squadronPoints))) {
+                        if ((my.type === 'wall' && my.alpha > 0.2) || my.type === 'miniboss' || (my.type === 'tank' && my.lifetime) || my.isMothership || my.showsOnMap) {
+                            all.push({
+                                id: my.id,
+                                data: [
+                                    (my.type === 'wall' || my.isSquadron) ? my.isSquadron ? 3 : my.shape === 4 ? 2 : 1 : 0,
+                                    util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
+                                    util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
+                                    my.color,
+                                    Math.round(my.SIZE),
+                                    my.width || 1,
+                                    my.height || 1
+                                ]
+                            });
+                        }
+                    }
                     return all;
                 });
                 let teamIDs = [1, 2, 3, 4];

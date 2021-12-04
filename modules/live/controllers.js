@@ -980,32 +980,31 @@ class io_spinMissile extends IO {
         };
     }
 }
+const skipBombVariation = Math.PI / 3;
 class io_skipBomb extends IO {
     constructor(body) {
         super(body);
-        this.step = 0;
         this.goal = {
             x: 0,
             y: 0
         };
+        this.lastSkip = Date.now();
     }
     think(input) {
-        this.step += .05;
-        const interval = this.step | 0;
-        if (this.step === interval) {
-            const angle = this.body.velocity.direction + ((Math.PI * Math.random()) - Math.PI / 2);
+        if (Date.now() - this.lastSkip >= 1250) {
+            this.lastSkip = Date.now();
+            const angle = this.body.velocity.direction + (Math.random() * (skipBombVariation * 2) + skipBombVariation);
             this.goal = {
-                x: Math.cos(angle),
-                y: Math.cos(angle)
+                x: Math.cos(angle) * 100,
+                y: Math.cos(angle) * 100
             };
-            this.body.topSpeed = 5;
         }
         return {
-            goal: {
-                x: this.body.x + this.goal.x * this.body.size,
-                y: this.body.y + this.goal.y * this.body.size
+            target: {
+                x: this.goal.x,
+                y: this.goal.y
             },
-            power: (interval - this.step) + 1
+            power: 1
         }
     }
 }

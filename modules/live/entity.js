@@ -1277,7 +1277,7 @@ class Entity {
             }
         }
         if (this.controllingSquadron) {
-            const squadron = this.guns.find(gun => gun.launchSquadron && gun.children.length);
+            const squadron = this.guns.find(gun => gun.launchSquadron > 0 && gun.children.length);
             if (squadron) {
                 let x = 0, y = 0;
                 for (const child of squadron.children) {
@@ -1290,13 +1290,25 @@ class Entity {
                 out.cy = y;
                 this.lastCameraPos = [x, y];
                 this.cameraLingerTime = 35;
+                global.squadronPoints[this.id] = {
+                    showsOnMap: true,
+                    isSquadron: true,
+                    x: x,
+                    y: y,
+                    SIZE: 1,
+                    color: this.color,
+                    id: squadron.children[0].id
+                };
             } else {
+                delete global.squadronPoints[this.id];
                 this.cameraLingerTime --;
                 const [x, y] = (this.lastCameraPos || [0, 0]);
                 out.cx = x;
                 out.cy = y;
                 if (this.cameraLingerTime <= 0) this.controllingSquadron = false;
             }
+        } else if (global.squadronPoints[this.id]) {
+            delete global.squadronPoints[this.id];
         }
         return out;
     }
@@ -1697,6 +1709,7 @@ class Entity {
         this.damageRecieved = 0;
         // Check for death
         if (this.isDead()) {
+            delete global.squadronPoints[this.id];
             if (this.onDead) this.onDead();
             if (c.KILL_RACE && (this.isPlayer || this.isBot)) {
                 killRace.getKillData(this);
