@@ -27,7 +27,7 @@ class Gun {
         this.color = 16;
         this.skin = 0;
         this.canShoot = false;
-        this.launchSquadron = +info.LAUNCH_SQUADRON;
+        this.launchSquadron = info.LAUNCH_SQUADRON;
         this.coolDown = {
             time: 0,
             max: +info.COOLDOWN
@@ -860,7 +860,11 @@ class Entity {
         if (set.LAYER != null) this.layerID = set.LAYER;
         if (set.TRAVERSE_SPEED != null) this.turretTraverseSpeed = set.TRAVERSE_SPEED;
         if (set.ALWAYS_ACTIVE != null) this.alwaysActive = set.ALWAYS_ACTIVE;
-        if (set.CARRIER_TALK_DATA != null && this.socket) this.socket.talk("cv", ...set.CARRIER_TALK_DATA.flat());
+        if (set.CARRIER_TALK_DATA != null && this.socket) {
+            this.socket.talk("cv", ...set.CARRIER_TALK_DATA.flat());
+        } else if (this.socket) {
+            this.socket.talk("cv");
+        }
         if (set.index != null) {
             this.index = set.index;
         }
@@ -1277,7 +1281,7 @@ class Entity {
             }
         }
         if (this.controllingSquadron) {
-            const squadron = this.guns.find(gun => gun.launchSquadron > 0 && gun.children.length);
+            const squadron = this.guns.find(gun => typeof gun.launchSquadron === "string" && gun.children.length);
             if (squadron) {
                 let x = 0, y = 0;
                 for (const child of squadron.children) {

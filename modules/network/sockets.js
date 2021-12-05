@@ -923,23 +923,24 @@ const sockets = (() => {
                     }
                 } break;
                 case "cv": {
-                    if (m.length !== 1 || typeof m[0] !== "number") {
+                    if (m.length !== 1 || typeof m[0] !== "string") {
                         socket.kick("Invalid CV request.");
                         return 1;
                     }
                     if (player.body && !player.body.isCarrier) {
                         switch (m[0]) {
-                            case 0: { // Relinquish Squadron
+                            case "relinquish": { // Relinquish Squadron
                                 player.body.controllingSquadron = false;
                                 const squadron = player.body.guns.find(gun => gun.launchSquadron && gun.children.length);
                                 if (squadron) {
                                     for (const child of squadron.children) {
                                         child.kill();
                                     }
+                                    player.body.sendMessage("Squadron relinquished.");
                                 }
                             } break;
-                            case 1: { // launch Dive / Skip Bombers
-                                const gun = player.body.guns.find(r => r.launchSquadron === 1);
+                            case "heBomb": case "apBomb": case "skipBomb": case "sapBomb": case "carpetBomb": { // launch Dive / Skip Bombers
+                                const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
                                 if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
@@ -948,11 +949,12 @@ const sockets = (() => {
                                     setTimeout(() => {
                                         player.body.controllingSquadron = true;
                                         player.body.sendMessage("Right click to fire.");
+                                        player.body.sendMessage("Squadron airborne.");
                                     }, 75 * gun.countsOwnKids);
                                 }
                             } break;
-                            case 2: { // launch Torpedo Bombers
-                                const gun = player.body.guns.find(r => r.launchSquadron === 2);
+                            case "torpedo": { // launch Torpedo Bombers
+                                const gun = player.body.guns.find(r => r.launchSquadron === "torpedo");
                                 if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
@@ -964,34 +966,8 @@ const sockets = (() => {
                                     }, 100 * gun.countsOwnKids);
                                 }
                             } break;
-                            case 3: { // launch Rocket Attack Planes
-                                const gun = player.body.guns.find(r => r.launchSquadron === 3);
-                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
-                                    gun.coolDown.time = Date.now();
-                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
-                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 50 * i);
-                                    setTimeout(() => {
-                                        player.body.controllingSquadron = true;
-                                        player.body.sendMessage("Right click to fire.");
-                                    }, 50 * gun.countsOwnKids);
-                                }
-                            } break;
-                            case 4: { // launch Fighter Patrol
-                                const gun = player.body.guns.find(r => r.launchSquadron === 4);
-                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
-                                    gun.coolDown.time = Date.now();
-                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
-                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 25 * i);
-                                    setTimeout(() => {
-                                        player.body.controllingSquadron = true;
-                                        player.body.sendMessage("Left click to fire.");
-                                    }, 25 * gun.countsOwnKids);
-                                }
-                            } break;
-                            case 5: { // launch Skip Bombers
-                                const gun = player.body.guns.find(r => r.launchSquadron === 5);
+                            case "heRocket": case "apRocket": case "sapRocket": { // launch Rocket Attack Planes
+                                const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
                                 if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
                                     gun.coolDown.time = Date.now();
                                     let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
