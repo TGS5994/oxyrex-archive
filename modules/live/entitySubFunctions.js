@@ -260,6 +260,24 @@ class HealthType {
         this.resist = resist;
         this.regen = 0;
         this.lastDamage = 0;
+        this.rMax = health;
+        this.rAmount = health;
+    }
+    get max() {
+        return this.rMax;
+    }
+    get amount() {
+        return this.rAmount;
+    }
+    set max(value) {
+        if (Number.isFinite(value)) {
+            this.rMax = value;
+        }
+    }
+    set amount(value) {
+        if (Number.isFinite(value)) {
+            this.rAmount = value;
+        }
     }
     set(health, regen = 0) {
         this.amount = (this.max) ? this.amount / this.max * health : health;
