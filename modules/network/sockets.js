@@ -474,7 +474,7 @@ const sockets = (() => {
                     // Define the player.
                     socket.party = +m[1];
                     if (c.SANDBOX) {
-                        const room = socket.sandboxRooms.find(entry => entry.id === socket.party);
+                        const room = global.sandboxRooms.find(entry => entry.id === socket.party);
                         if (!room) {
                             socket.party = (Math.random() * 1000000) | 0;
                         }
