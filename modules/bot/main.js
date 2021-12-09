@@ -124,7 +124,7 @@ async function messageEvent(message) {
     util.error(message, "That command doesn't exist!");
 };
 bot.on("message", messageEvent);
-bot.on("error", error => {
+bot.on("error", async error => {
     await util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
 });
 bot.logRecord = function(data) {
@@ -169,10 +169,10 @@ bot.logRecord = function(data) {
         }
     }
 }
-process.on("unhandledRejection", (reason, p) => {
+process.on("unhandledRejection", async (reason, p) => {
     await util.log(bot, "error",`Unhandled Promise rejection! \n**Reason:**\n${reason.toString()}\n**Data:**\n${p.toString()}`);
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", async error => {
     await util.log(bot, "error", `Uncaught Error:\n${error.toString()}`);
     process.exit(1);
 });
