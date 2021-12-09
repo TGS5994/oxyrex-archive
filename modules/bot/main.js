@@ -124,7 +124,9 @@ async function messageEvent(message) {
     util.error(message, "That command doesn't exist!");
 };
 bot.on("message", messageEvent);
-bot.on("error", () => {});
+bot.on("error", error => {
+    util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()})`;
+});
 bot.logRecord = function(data) {
     const channel = bot.channels.cache.get("895793977868058674");
     console.log(channel);
@@ -167,6 +169,13 @@ bot.logRecord = function(data) {
         }
     }
 }
+process.on("unhandledRejection", (reason, p) => {
+    util.log(bot, "error",`Unhandled Promise rejection! \n**Reason:**\n${reason.toString()}\n**Data:**\n${p.toString()}`);
+});
+process.on("uncaughtException", error => {
+    util.log(bot, "error", `Uncaught Error:\n${error.toString()})`;
+    process.exit(1);
+});
 bot.login(config.token);
 bot.util = util;
 bot.config = config;
