@@ -125,7 +125,7 @@ async function messageEvent(message) {
 };
 bot.on("message", messageEvent);
 bot.on("error", error => {
-    util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
+    await util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
 });
 bot.logRecord = function(data) {
     const channel = bot.channels.cache.get("895793977868058674");
@@ -170,10 +170,10 @@ bot.logRecord = function(data) {
     }
 }
 process.on("unhandledRejection", (reason, p) => {
-    util.log(bot, "error",`Unhandled Promise rejection! \n**Reason:**\n${reason.toString()}\n**Data:**\n${p.toString()}`);
+    await util.log(bot, "error",`Unhandled Promise rejection! \n**Reason:**\n${reason.toString()}\n**Data:**\n${p.toString()}`);
 });
 process.on("uncaughtException", error => {
-    util.log(bot, "error", `Uncaught Error:\n${error.toString()}`);
+    await util.log(bot, "error", `Uncaught Error:\n${error.toString()}`);
     process.exit(1);
 });
 bot.login(config.token);
