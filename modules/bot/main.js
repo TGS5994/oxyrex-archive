@@ -173,7 +173,7 @@ process.on("unhandledRejection", (reason, p) => {
     util.log(bot, "error",`Unhandled Promise rejection! \n**Reason:**\n${reason.toString()}\n**Data:**\n${p.toString()}`);
 });
 process.on("uncaughtException", error => {
-    util.log(bot, "error", `Uncaught Error:\n${error.toString()})`;
+    util.log(bot, "error", `Uncaught Error:\n${error.toString()}`);
     process.exit(1);
 });
 bot.login(config.token);
