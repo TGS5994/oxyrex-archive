@@ -284,7 +284,9 @@ const sockets = (() => {
                     o.team = -100;
                     o.sandboxId = global.sandboxRooms[index].id;
                     o.onDead = function() {
-                        global.sandboxRooms[index].boss = false;
+                        if (global.sandboxRooms[index]) {
+                            global.sandboxRooms[index].boss = false;
+                        }
                     }
                     sockets.broadcast(o.name + " has arrived.");
                 }, 5000);
