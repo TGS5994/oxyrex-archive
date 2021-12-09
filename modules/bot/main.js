@@ -125,7 +125,7 @@ async function messageEvent(message) {
 };
 bot.on("message", messageEvent);
 bot.on("error", error => {
-    util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()})`;
+    util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
 });
 bot.logRecord = function(data) {
     const channel = bot.channels.cache.get("895793977868058674");
