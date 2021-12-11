@@ -399,7 +399,7 @@ function reflectCollide(wall, bounce) {
     }
     if (intersected) {
         bounce.collisionArray.push(wall);
-        if (bounce.type !== 'tank' && bounce.type !== 'miniboss') bounce.kill();
+        if (bounce.type !== 'tank' && bounce.type !== 'miniboss' && bounce.type !== "crasher") bounce.kill();
     }
 };
 module.exports = {
