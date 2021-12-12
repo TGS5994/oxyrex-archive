@@ -59,6 +59,9 @@ const gameloop = (() => {
         if (c.SANDBOX && instance.sandboxId !== other.sandboxId) {
             return 0;
         }
+        if (instance.submarine.submerged !== other.submarine.submerged) {
+            return 0;
+        }
         if (instance.master.passive || other.master.passive) return;
         switch (true) {
             case (instance.type === "wall" || other.type === "wall"):

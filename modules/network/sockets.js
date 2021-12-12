@@ -984,6 +984,11 @@ const sockets = (() => {
                         }
                     }
                 } break;
+                case "sub": {
+                    if (player.body != null && player.body.submarine && player.body.submarine.maxAir > 0) {
+                        player.body.submarine.submerged = !player.body.submarine.submerged;
+                    }
+                } break;
                 case "A": {
                     if (player.body != null) return 1;
                     let possible = entities.map(entry => {
@@ -1679,8 +1684,15 @@ const sockets = (() => {
                                         // Grab the photo
                                         if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
                                             if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
-                                            let output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
-                                            if (output) visible.push(output);
+                                            const output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
+                                            if (output) {
+                                                if (player.body != null) {
+                                                    if (player.body.submarine.submerged != nearby[i].submarine.submerged) {
+                                                        output[15] = Math.round(255 * (+player.body.submarine.submerged * .25));
+                                                    }
+                                                }
+                                                visible.push(output);
+                                            }
                                         }
                                     //}
                                 }
@@ -1688,6 +1700,12 @@ const sockets = (() => {
                             // Update the gui
                             player.gui.update();
                             // Send it to the player
+                            if (player.body != null && player.body.submarine && player.body.submarine.maxAir > 0) {
+                                const data = player.body.submarine;
+                                socket.talk("sub", true, data.air, data.submerged);
+                            } else {
+                                socket.talk("sub", false);
+                            }
                             socket.talk('u', rightNow, camera.x, camera.y, setFov, camera.vx, camera.vy, ...player.gui.publish(), visible.length, ...visible.flat());
                             logs.network.mark();
                         },

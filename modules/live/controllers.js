@@ -113,6 +113,16 @@ class io_mapTargetToGoal extends IO {
         super(b);
     }
     think(input) {
+        if (this.body.master.master.controllingSquadron && this.body.master.master.control.target && !this.body.settings.independent) {
+            input.target = this.body.master.master.control.target;
+            return {
+                goal: {
+                    x: input.target.x + this.body.x,
+                    y: input.target.y + this.body.y,
+                },
+                power: 1
+            }
+        }
         if (input.main || input.alt) {
             return {
                 goal: {

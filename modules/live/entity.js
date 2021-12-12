@@ -221,7 +221,7 @@ class Gun {
         }
     }
     fire(gx, gy, sk, carrier = false) {
-        if (this.launchSquadron && !carrier) return;
+        if (this.launchSquadron && this.launchSquadron !== "yes" && !carrier) return;
         if (c.MODE === "tdm" && c.DO_BASE_DAMAGE && this.master.master.isPlayer) {
             for (let i = 1; i <= c.TEAMS; i ++) {
                 if (room[`bas${i}`].length && room.isIn(`bas${i}`, this.master.master)) return;
@@ -268,6 +268,7 @@ class Gun {
             o.y += s.y * this.cycle / jumpAhead;
         }*/
         o.velocity = s;
+        o.submarine.submerged = this.body.submarine.submerged;
         this.bulletInit(o);
         o.coreSize = o.SIZE;
     }
@@ -340,6 +341,11 @@ class Gun {
         switch (this.onShoot) {
             case "die": {
                 this.body.kill();
+            } break;
+            case "mindController": {
+                if (!this.body.controllingSquadron && this.body.guns.find(gun => typeof gun.launchSquadron === "string" && gun.children.length)) {
+                    this.body.controllingSquadron = true;
+                }
             } break;
             case "hitScan":
             case "hitScan1":
@@ -726,6 +732,12 @@ class Entity {
         this.team = this.id;
         this.team = master.team;
         this.turnAngle = 0;
+        this.submarine = {
+            submerged: false,
+            air: 0,
+            maxAir: 0,
+            lastTick: 0
+        };
         // This is for collisions
         this.updateAABB = () => {};
         this.getAABB = (() => {
@@ -764,6 +776,28 @@ class Entity {
                                 }
                             }
                         }
+                    }
+                }
+                if (this.submarine && this.submarine.maxAir > 0) {
+                    if (this.submarine.submerged) {
+                        if (this.submarine.air > 0) {
+                            if (Date.now() - this.submarine.lastTick >= 1000) {
+                                this.submarine.air --;
+                                if (this.submarine.air === 0) {
+                                    this.sendMessage("Warning! Ship out of air! Please surface!");
+                                }
+                                this.submarine.lastTick = Date.now();
+                            }
+                        } else {
+                            this.health.amount -= .2;
+                            this.health.lastDamage = this.shield.lastDamage = Date.now();
+                        }
+                    } else if (Date.now() - this.submarine.lastTick >= 1000) {
+                        this.submarine.air ++;
+                        if (this.submarine.air >= this.submarine.maxAir) {
+                            this.submarine.air = this.submarine.maxAir;
+                        }
+                        this.submarine.lastTick = Date.now();
                     }
                 }
                 if (this.shield.max) this.shield.regenerate();
@@ -864,6 +898,11 @@ class Entity {
             this.socket.talk("cv", ...set.CARRIER_TALK_DATA.flat());
         } else if (this.socket) {
             this.socket.talk("cv");
+        }
+        if (set.SUBMARINE != null) {
+            this.submarine.maxAir = set.SUBMARINE;
+        } else if (this.submarine != null && this.submarine.maxAir > 0) {
+            this.submarine.maxAir = 0;
         }
         if (set.index != null) {
             this.index = set.index;
