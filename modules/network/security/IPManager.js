@@ -60,6 +60,9 @@ class IPManager {
             });
         });
     }
+    isWhitelisted(ip) {
+        return this.whitelist.includes(ip);
+    }
     checkIsVPN(ip, options = { // checkIsVPN("127.0.0.1", { port: 80, timeout: 5000, saveToLog: true }) Checks if an IP is a possible VPN
         port: 80,
         timeout: 5000,

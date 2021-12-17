@@ -36,11 +36,11 @@ const botBuilds = [
     [6, 7, 7, 7, 6, 3, 2, 2, 3, 3],
     [9, 7, 7, 7, 6, 0, 0, 0, 0, 9]
 ];
-const botSets = [/*{ // Smasher Ram Bots
+const botSets = [{ // Smasher Ram Bots
     ai: "ramBot",
     build: [0, 0, 0, 0, 0, 5, 9, 12, 3, 10],
-    startClass: "smash"
-}, */{ // Tri-Angle Ram Bots
+    startClass: "smasher"
+}, { // Tri-Angle Ram Bots
     ai: "ramBot",
     build: [9, 0, 0, 0, 0, 5, 9, 9, 4, 9],
     startClass: "propeller"

@@ -577,7 +577,7 @@ const maintainloop = (() => {
     function spawnBot(TEAM = null) {
         let team = TEAM ? TEAM : getTeam();
         let set = (c.NAVAL_SHIPS ? {
-            startClass: ran.choose(["alexanderNevsky", "yamato"]),
+            startClass: ran.choose(["alexanderNevsky", "yamato", "petropavlovsk"]),
             build: getBuild(),
             ai: "bot"
         } : (c.HIDE_AND_SEEK && team == 2) ? {

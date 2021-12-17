@@ -6,7 +6,6 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-const WebSocket = require('ws');
 const fetch = require("node-fetch");
 const sockets = (() => {
     let clients = [],
@@ -2004,6 +2003,8 @@ const sockets = (() => {
                 socket.connection = req;
                 socket.key = '';
                 socket.ip = -1;
+                socket.fingerprint = (req.fingerprint || { hash: -1 }).hash;
+                if (socket.fingerprint === -1) return socket.terminate();
                 socket.id = id ++;
                 socket.spawnEntity = Class.icosagon;
                 socket.name = "Unnamed";
@@ -2024,7 +2025,7 @@ const sockets = (() => {
                         },
                         check: time => {
                             return timer && time - timer > c.maxHeartbeatInterval;
-                        },
+                        }
                     };
                 })();
                 socket.awaiting = {};

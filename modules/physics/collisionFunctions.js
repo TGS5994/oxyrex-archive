@@ -190,6 +190,22 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     if (n.settings.isNecromancer && necroTypes.includes(my.type)) bail = n.necro(my, necroTypes.length > 1);
                 }
                 if (!bail) {
+                    if (my.poison.status == true && n.poison.timeLeft == 0) {
+                        n.poison.amplification = my.poison.amplification
+                        n.poison.timeLeft += my.poison.duration;
+                    }
+                    if (n.poison.status == true && my.poison.timeLeft == 0) {
+                        my.poison.amplification = n.poison.amplification
+                        my.poison.timeLeft += n.poison.duration;
+                    }
+                    if (my.ice.status == true && n.ice.timeLeft == 0) {
+                        n.ice.amplification = my.ice.amplification
+                        n.ice.timeLeft += my.ice.duration;
+                    }
+                    if (n.ice.status == true && my.ice.timeLeft == 0) {
+                        my.ice.amplification = n.ice.amplification
+                        my.ice.timeLeft += n.ice.duration;
+                    }
                     // Calculate base damage
                     let resistDiff = my.health.resist - n.health.resist,
                         damage = {

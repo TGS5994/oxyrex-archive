@@ -585,6 +585,18 @@ class Entity {
                 this.sandboxId = this.master.sandboxId;
             }
         }
+        this.poison = { //Poison effect
+            status: false,
+            timeLeft: 0,
+            duration: 0,
+            amplification: 1
+        };
+        this.ice = { //Ice effect
+            status: false,
+            timeLeft: 0,
+            duration: 0,
+            amplification: 1
+        };
         this.isInGrid = false;
         this.removeFromGrid = () => {
             if (this.isInGrid) {
@@ -800,6 +812,17 @@ class Entity {
                         this.submarine.lastTick = Date.now();
                     }
                 }
+                if (this.poison.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
+                    if (this.health.amount > (this.health.max / 10)) {
+                        this.health.amount -= (1 * this.poison.amplification);
+                    }
+                    this.poison.timeLeft --;
+                }
+                if (this.ice.timeLeft > 0) {
+                    this.velocity.x -= (this.velocity.x * (this.ice.amplification / 3.5));
+                    this.velocity.y -= (this.velocity.y * (this.ice.amplification / 3.5));
+                    this.ice.timeLeft --;
+                }
                 if (this.shield.max) this.shield.regenerate();
                 if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);
                 // Get bounds
@@ -952,6 +975,28 @@ class Entity {
         }
         if (set.MOTION_EFFECTS != null) {
             this.settings.motionEffects = set.MOTION_EFFECTS;
+        }
+        if (set.POISON != null) {
+            if (set.POISON.STATUS != null) {
+                this.poison.status = set.POISON.STATUS;
+            }
+            if (set.POISON.TIME != null) {
+                this.poison.duration = set.POISON.TIME;
+            }
+            if (set.POISON.AMPLIFY != null) {
+                this.poison.amplification = set.POISON.AMPLIFY;
+            }
+        }
+        if (set.ICE != null) {
+            if (set.ICE.STATUS != null) {
+                this.ice.status = set.ICE.STATUS;
+            }
+            if (set.ICE.TIME != null) {
+                this.ice.duration = set.ICE.TIME;
+            }
+            if (set.ICE.AMPLIFY != null) {
+                this.ice.amplification = set.ICE.AMPLIFY;
+            }
         }
         if (set.ACCEPTS_SCORE != null) {
             this.settings.acceptsScore = set.ACCEPTS_SCORE;
