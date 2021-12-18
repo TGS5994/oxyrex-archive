@@ -42,7 +42,7 @@ class IPManager {
         const [a, b, c, d] = ip.split(".").map(part => parseInt(part, 10));
         return (a << 24) | (b << 16) | (c << 8) | d;
     }
-    ping(ip, port = 80, timeout = 5000) { // ping("127.0.0.1", 80, 5000) timeout is in milliseconds
+    ping(ip, port = 80, timeout = 2000) { // ping("127.0.0.1", 80, 5000) timeout is in milliseconds
         return new Promise((resolve, reject) => {
             const socket = new Socket();
             const timeoutID = setTimeout(function() {
@@ -65,7 +65,7 @@ class IPManager {
     }
     checkIsVPN(ip, options = { // checkIsVPN("127.0.0.1", { port: 80, timeout: 5000, saveToLog: true }) Checks if an IP is a possible VPN
         port: 80,
-        timeout: 5000,
+        timeout: 2000,
         saveToLog: true
     }) {
         return new Promise((resolve, reject) => {
