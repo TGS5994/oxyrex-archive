@@ -338,128 +338,186 @@ class Gun {
         this.recoilDir = this.body.facing + this.angle;
     }
     onShootFunction() {
-        switch (this.onShoot) {
-            case "die": {
-                this.body.kill();
-            } break;
-            case "mindController": {
-                if (!this.body.controllingSquadron && this.body.guns.find(gun => typeof gun.launchSquadron === "string" && gun.children.length)) {
-                    this.body.controllingSquadron = true;
-                }
-            } break;
-            case "hitScan":
-            case "hitScan1":
-            case "hitScan2":
-            case "hitScan3": {
-                if (this.body.master.health.amount < 0) break;
-                let save = {
-                    x: this.body.master.x,
-                    y: this.body.master.y,
-                    angle: this.body.master.facing + this.angle
-                };
-                let s = this.body.size * this.width * this.settings2.size;
-                let target = {
-                    x: save.x + this.body.master.control.target.x,
-                    y: save.y + this.body.master.control.target.y
-                };
-                let amount = util.getDistance(target, save) / s | 0;
-                let explode = e => {
-                    e.onDead = () => {
-                        let o = new Entity(e, this.body);
-                        o.accel = {
-                            x: 3 * Math.cos(save.angle),
-                            y: 3 * Math.sin(save.angle)
-                        };
-                        o.color = this.body.master.color;
-                        o.define(Class.hitScanExplosion);
-                        // Pass the gun attributes
-                        o.define({
-                            BODY: this.interpret(this.settings3),
-                            SKILL: this.getSkillRaw(),
-                            SIZE: (this.body.size * this.width * this.settings3.size) / 2,
-                            LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + o.label
-                        });
-                        o.refreshBodyAttributes();
-                        o.life();
-                        o.source = this.body;
+        if (typeof this.onShoot === "string") {
+            switch (this.onShoot) {
+                case "die": {
+                    this.body.kill();
+                } break;
+                case "mindController": {
+                    if (!this.body.controllingSquadron && this.body.guns.find(gun => typeof gun.launchSquadron === "string" && gun.children.length)) {
+                        this.body.controllingSquadron = true;
                     }
-                };
-                let branchAlt = 0;
-                let branchLength = 0;
-                let branch = (e, a, b = false, g = 0, z = amount) => {
-                    if (!b) branchAlt++;
-                    let total = (z / 5 | 0) || 2;
-                    let dir = (a ? Math.PI / 2 : -Math.PI / 2) + g;
-                    for (let i = 0; i < total; i++) setTimeout(() => {
-                        let ss = s * 1.5;
-                        let x = e.x + (ss * Math.cos(save.angle + dir)) * i;
-                        let y = e.y + (ss * Math.sin(save.angle + dir)) * i;
-                        let o = new Entity({
-                            x,
-                            y
-                        }, this.body);
-                        o.facing = Math.atan2(target.y - y, target.x - x) + dir;
-                        o.color = this.body.master.color;
-                        o.define(Class.hitScanBullet);
-                        // Pass the gun attributes
-                        o.define({
-                            BODY: this.interpret(this.settings3),
-                            SKILL: this.getSkillRaw(),
-                            SIZE: (this.body.size * this.width * this.settings2.size) / 2,
-                            LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + o.label
-                        });
-                        o.refreshBodyAttributes();
-                        o.life();
-                        o.source = this.body;
-                        if (i === total - 1) {
-                            if (branchLength < 3) {
-                                branchLength++;
-                                branch(o, a, true, dir + g, total);
-                            } else branchLength = 0;
+                } break;
+                case "aka":
+                case "aka2":
+                    for (let i = 1; i < 32; i++) setTimeout(() => {
+                        if (this.body.health.amount <= 0) {
+                            return;
                         }
-                    }, (500 / amount) * i);
-                };
-                const hitScanLevel = +this.onShoot.split("hitScan").pop();
-                for (let i = 0; i < amount; i++) {
-                    setTimeout(() => {
-                        if (this.body.master.health.amount < 0) return;
-                        let x = save.x + (s * Math.cos(save.angle)) * i;
-                        let y = save.y + (s * Math.sin(save.angle)) * i;
-                        let e = new Entity({
-                            x: x,
-                            y: y
-                        }, this.body);
-                        e.facing = Math.atan2(target.y - y, target.x - x);
-                        e.color = this.body.master.color;
-                        e.define(Class.hitScanBullet);
-                        // Pass the gun attributes
-                        e.define({
-                            BODY: this.interpret(this.settings2),
-                            SKILL: this.getSkillRaw(),
-                            SIZE: (this.body.size * this.width * this.settings2.size) / 2,
-                            LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + e.label
-                        });
-                        e.refreshBodyAttributes();
-                        e.life();
-                        e.source = this.body;
-                        switch (hitScanLevel) {
-                            case 1: {
-                                if (i % 5 === 0) branch(e, branchAlt % 2 === 0);
+                        if (this.onShoot === "aka2" && i === 31) {
+                            this.body.master.upgrades = [];
+                        }
+                        this.body.master.define(Class[`akafuji${this.onShoot === "aka" ? i : 31 - i}`]);
+                    }, 40 * i);
+                    break;
+                case "sab":
+                case "sab2":
+                    for (let i = 1; i < 32; i++) setTimeout(() => {
+                        if (this.body.health.amount <= 0) {
+                            return;
+                        }
+                        if (this.onShoot === "sab2" && i === 31) {
+                            this.body.master.upgrades = [];
+                        }
+                        this.body.master.define(Class[`saboten${this.onShoot === "sab" ? i : 31 - i}`]);
+                    }, 40 * i);
+                    break;
+                case "ves":
+                case "ves2":
+                    for (let i = 1; i < 32; i++) setTimeout(() => {
+                        if (this.body.health.amount <= 0) {
+                            return;
+                        }
+                        if (this.onShoot === "ves2" && i === 31) {
+                            this.body.master.upgrades = [];
+                        }
+                        this.body.master.define(Class[`vessel${this.onShoot === "ves" ? i : 31 - i}`]);
+                    }, 40 * i);
+                    break;
+                case "hitScan":
+                case "hitScan1":
+                case "hitScan2":
+                case "hitScan3": {
+                    if (this.body.master.health.amount < 0) break;
+                    let save = {
+                        x: this.body.master.x,
+                        y: this.body.master.y,
+                        angle: this.body.master.facing + this.angle
+                    };
+                    let s = this.body.size * this.width * this.settings2.size;
+                    let target = {
+                        x: save.x + this.body.master.control.target.x,
+                        y: save.y + this.body.master.control.target.y
+                    };
+                    let amount = util.getDistance(target, save) / s | 0;
+                    let explode = e => {
+                        e.onDead = () => {
+                            let o = new Entity(e, this.body);
+                            o.accel = {
+                                x: 3 * Math.cos(save.angle),
+                                y: 3 * Math.sin(save.angle)
+                            };
+                            o.color = this.body.master.color;
+                            o.define(Class.hitScanExplosion);
+                            // Pass the gun attributes
+                            o.define({
+                                BODY: this.interpret(this.settings3),
+                                SKILL: this.getSkillRaw(),
+                                SIZE: (this.body.size * this.width * this.settings3.size) / 2,
+                                LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + o.label
+                            });
+                            o.refreshBodyAttributes();
+                            o.life();
+                            o.source = this.body;
+                        }
+                    };
+                    let branchAlt = 0;
+                    let branchLength = 0;
+                    let branch = (e, a, b = false, g = 0, z = amount) => {
+                        if (!b) branchAlt++;
+                        let total = (z / 5 | 0) || 2;
+                        let dir = (a ? Math.PI / 2 : -Math.PI / 2) + g;
+                        for (let i = 0; i < total; i++) setTimeout(() => {
+                            let ss = s * 1.5;
+                            let x = e.x + (ss * Math.cos(save.angle + dir)) * i;
+                            let y = e.y + (ss * Math.sin(save.angle + dir)) * i;
+                            let o = new Entity({
+                                x,
+                                y
+                            }, this.body);
+                            o.facing = Math.atan2(target.y - y, target.x - x) + dir;
+                            o.color = this.body.master.color;
+                            o.define(Class.hitScanBullet);
+                            // Pass the gun attributes
+                            o.define({
+                                BODY: this.interpret(this.settings3),
+                                SKILL: this.getSkillRaw(),
+                                SIZE: (this.body.size * this.width * this.settings2.size) / 2,
+                                LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + o.label
+                            });
+                            o.refreshBodyAttributes();
+                            o.life();
+                            o.source = this.body;
+                            if (i === total - 1) {
+                                if (branchLength < 3) {
+                                    branchLength++;
+                                    branch(o, a, true, dir + g, total);
+                                } else branchLength = 0;
+                            }
+                        }, (500 / amount) * i);
+                    };
+                    const hitScanLevel = +this.onShoot.split("hitScan").pop();
+                    for (let i = 0; i < amount; i++) {
+                        setTimeout(() => {
+                            if (this.body.master.health.amount < 0) return;
+                            let x = save.x + (s * Math.cos(save.angle)) * i;
+                            let y = save.y + (s * Math.sin(save.angle)) * i;
+                            let e = new Entity({
+                                x: x,
+                                y: y
+                            }, this.body);
+                            e.facing = Math.atan2(target.y - y, target.x - x);
+                            e.color = this.body.master.color;
+                            e.define(Class.hitScanBullet);
+                            // Pass the gun attributes
+                            e.define({
+                                BODY: this.interpret(this.settings2),
+                                SKILL: this.getSkillRaw(),
+                                SIZE: (this.body.size * this.width * this.settings2.size) / 2,
+                                LABEL: this.master.label + (this.label ? " " + this.label : "") + " " + e.label
+                            });
+                            e.refreshBodyAttributes();
+                            e.life();
+                            e.source = this.body;
+                            switch (hitScanLevel) {
+                                case 1: {
+                                    if (i % 5 === 0) branch(e, branchAlt % 2 === 0);
+                                }
+                                break;
+                            case 2: { // Superlaser
+                                if (i === amount - 1) explode(e);
                             }
                             break;
-                        case 2: { // Superlaser
-                            if (i === amount - 1) explode(e);
-                        }
-                        break;
-                        case 3: { // Death Star
-                            if (i % 3 === 0) explode(e);
-                        }
-                        break;
-                        }
-                    }, 10 * i);
+                            case 3: { // Death Star
+                                if (i % 3 === 0) explode(e);
+                            }
+                            break;
+                            }
+                        }, 10 * i);
+                    }
                 }
+                break;
             }
-            break;
+        } else {
+            if (this.onShoot && this.onShoot.animation && !this.body.master.animating) {
+                this.body.master.animating = true;
+                const frames = this.onShoot.frames;
+                for (let i = 1; i <= frames; i++) setTimeout(() => {
+                    if (this.body.health.amount <= 0) {
+                        return;
+                    }
+                    if (this.onShoot.end && i === frames) {
+                        this.body.master.upgrades = [];
+                    }
+                    const id = `${this.onShoot.exportName}${this.onShoot.end ? frames - i : i}`;
+                    try {
+                        this.body.master.define(Class[id]);
+                    } catch(e) {
+                        console.log(id);
+                    }
+                }, 40 * i);
+                setTimeout(() => this.body.master.animating = false, 40 * (frames + 1));
+            }
         }
     }
     getTracking() {
@@ -822,7 +880,7 @@ class Entity {
                         }
                         this.poison.timeLeft --;
                     }
-                    if (this.ice.timeLeft > 0) {
+                    if (this.ice.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
                         this.velocity.x -= (this.velocity.x * (this.ice.amplification / 4.25));
                         this.velocity.y -= (this.velocity.y * (this.ice.amplification / 4.25));
                         this.ice.timeLeft --;
@@ -1282,7 +1340,7 @@ class Entity {
         this.health.set((((this.settings.healthWithLevel) ? 2 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
         this.health.resist = 1 - 1 / Math.max(1, this.RESIST + this.skill.brst);
         this.shield.set((((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * (this.skill.rgn * 6)));
-        this.damage = this.DAMAGE * (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk);;
+        this.damage = this.DAMAGE * (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk);
         this.penetration = this.PENETRATION + 1.5 * ((this.settings.hitsOwnType === 'everything' ? this.skill.lancer.pen : this.skill.brst) + 0.8 * (this.skill.atk - 1));
         if (!this.settings.dieAtRange || !this.range) {
             this.range = this.RANGE;
@@ -1352,7 +1410,7 @@ class Entity {
             alpha: this.alpha,
             facing: this.facing,
             vfacing: this.vfacing,
-            twiggle: this.facingType === 'autospin' || this.facingType === 'lucrehulkSpin' || (this.facingType === 'locksFacing' && this.control.alt),
+            twiggle: this.facingType === 'autospin' || this.facingType === 'lucrehulkSpin' || this.facingType === "windmill" || (this.facingType === 'locksFacing' && this.control.alt),
             layer: this.layerID ? this.layerID : (this.bond != null) ? this.bound.layer : (this.type === 'wall') ? 11 : (this.type === 'food') ? 10 : (this.type === 'tank') ? 5 : (this.type === 'crasher') ? 1 : 0,
             color: this.color,
             name: this.nameColor + this.name,
@@ -1408,11 +1466,25 @@ class Entity {
         }
         return out;
     }
+    syncTurretSkill() {
+        this.skill = this.master.skill;
+        this.refreshBodyAttributes();
+        for (let i = 0; i < this.turrets.length; i++) {
+            if (this.turrets[i].settings.hitsOwnType === "everything") {
+                this.turrets[i].syncTurretSkill();
+            }
+        }
+    }
     skillUp(stat) {
         let suc = this.skill.upgrade(stat);
         if (suc) {
             this.refreshBodyAttributes();
             for (let i = 0; i < this.guns.length; i++) this.guns[i].syncChildren();
+            for (let i = 0; i < this.turrets.length; i++) {
+                if (this.turrets[i].settings.hitsOwnType === "everything") {
+                    this.turrets[i].syncTurretSkill();
+                }
+            }
         }
         return suc;
     }
@@ -1575,6 +1647,9 @@ class Entity {
                 break;
             case 'turnWithSpeed':
                 this.facing += this.velocity.length / 90 * Math.PI / roomSpeed;
+                break;
+            case "windmill":
+                this.facing += 0.1 + ((this.velocity.length / 90) * Math.PI) / roomSpeed;
                 break;
             case 'spin':
                 this.facing += 0.05 / roomSpeed;

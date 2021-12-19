@@ -24,29 +24,21 @@ const gameloop = (() => {
         let instance = collision[0],
             other = collision[1];
         // Check for ghosts...
-        if (other.isGhost && other.settings.hitsOwnType !== "everything") {
-            util.error('GHOST FOUND');
-            util.error(other.label);
-            util.error('x: ' + other.x + ' y: ' + other.y);
-            util.error(other.collisionArray);
-            util.error('health: ' + other.health.amount);
-            util.warn('Ghost removed.');
-            if (grid.checkIfInHSHG(other)) {
-                util.warn('Ghost removed.');
-                grid.removeObject(other);
+        if (instance.isGhost || other.isGhost) {
+            const ghost = instance.isGhost ? instance : other;
+            if (ghost.settings.hitsOwnType !== "everything") {
+                util.error("A ghost has been found!");
+                util.error("Type: " + ghost.label);
+                util.error("Position: (" + ghost.x + ", " + ghost.y + ")");
+                util.error("Collision Array: " + ghost.collisionArray);
+                util.error("Health: " + ghost.health.amount);
+                util.warn("Ghost removed successfully.");
             }
-            return 0;
-        }
-        if (instance.isGhost && instance.settings.hitsOwnType !== "everything") {
-            util.error('GHOST FOUND');
-            util.error(instance.label);
-            util.error('x: ' + instance.x + ' y: ' + instance.y);
-            util.error(instance.collisionArray);
-            util.error('health: ' + instance.health.amount);
-            if (grid.checkIfInHSHG(instance)) {
-                util.warn('Ghost removed.');
-                grid.removeObject(instance);
+            if (grid.checkIfInHSHG(ghost)) {
+                grid.removeObject(ghost);
             }
+            ghost.isInGrid = false;
+            purgeEntities();
             return 0;
         }
         if (!instance.activation.check() && !other.activation.check()) {
