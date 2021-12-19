@@ -14,7 +14,7 @@ function closeArena() {
     global.updateStatusMessage("Arena Closed: No players may join!");
     global.arenaClosed = true;
     if (c.SANDBOX) {
-        global.sandboxIds.forEach(id => {
+        global.sandboxRooms.forEach(({ id }) => {
             for (let i = 0; i < 4; i++) {
                 let angle = (Math.PI * 2) / 4 * i;
                 let o = new Entity({

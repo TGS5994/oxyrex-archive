@@ -812,16 +812,24 @@ class Entity {
                         this.submarine.lastTick = Date.now();
                     }
                 }
-                if (this.poison.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
-                    if (this.health.amount > (this.health.max / 10)) {
-                        this.health.amount -= (1 * this.poison.amplification);
+                if (!this.passive && !this.invuln && !this.godmode) {
+                    if (this.poison.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
+                        if (this.health.amount > (this.health.max / 10)) {
+                            this.health.amount -= (.75 * this.poison.amplification);
+                        }
+                        if (this.shield.amount > (this.shield.max / 10)) {
+                            this.shield.amount -= (.75 * this.poison.amplification);
+                        }
+                        this.poison.timeLeft --;
                     }
-                    this.poison.timeLeft --;
-                }
-                if (this.ice.timeLeft > 0) {
-                    this.velocity.x -= (this.velocity.x * (this.ice.amplification / 3.5));
-                    this.velocity.y -= (this.velocity.y * (this.ice.amplification / 3.5));
-                    this.ice.timeLeft --;
+                    if (this.ice.timeLeft > 0) {
+                        this.velocity.x -= (this.velocity.x * (this.ice.amplification / 4.25));
+                        this.velocity.y -= (this.velocity.y * (this.ice.amplification / 4.25));
+                        this.ice.timeLeft --;
+                    }
+                } else {
+                    this.poison.timeLeft = 0;
+                    this.ice.timeLeft = 0;
                 }
                 if (this.shield.max) this.shield.regenerate();
                 if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);

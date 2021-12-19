@@ -413,6 +413,30 @@ const gamemodes = {
         DO_BASE_DAMAGE: false,
         TRENCH_WARFARE: true
     },
+    "Infection": {
+        MODE: "tdm",
+        TEAMS: 1,
+        WIDTH: 3500,
+        HEIGHT: 3500,
+        X_GRID: 75,
+        Y_GRID: 75,
+        INFECTION_LOOP: true,
+        ROOM_SETUP: (() => {
+            let output = [];
+            for (let i = 0; i < 75; i ++) {
+                let row = [];
+                for (let j = 0; j < 75; j ++) {
+                    row.push("norm");
+                }
+                output.push(row);
+            }
+            for (let i = 0; i < 10; i ++) {
+                output[Math.random() * 75 | 0][Math.random() * 75 | 0] = "nest";
+            }
+            return output
+        })(),
+        secondaryGameMode: "if"
+    },
     "Sandbox": {
         WIDTH: 3500,
         HEIGHT: 3500,
@@ -431,7 +455,6 @@ const gamemodes = {
 const choiceTable = {
     "FFA": 10,
     "TDM": 9,
-    //"Open TDM": 8,
     "Kill Race": 4,
     "Hide and Seek": 2,
     "Soccer": 6,
@@ -440,6 +463,7 @@ const choiceTable = {
     "Tag": 6,
     "Domination": 7,
     "Naval Battle": 4,
+    "Infection": 5,
     "Boss Rush": 6,
     "Space": 1,
     "Center Control": 5
@@ -456,7 +480,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
+    return /*global.fingerPrint.herokuWA ? "Sandbox" : */table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
