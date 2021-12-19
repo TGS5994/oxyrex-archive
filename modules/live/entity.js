@@ -381,7 +381,7 @@ class Gun {
                         if (this.onShoot === "ves2" && i === 31) {
                             this.body.master.upgrades = [];
                         }
-                        this.body.master.define(Class[`vessel${this.onShoot === "ves" ? i : 31 - i}`]);
+                        this.body.master.define(Class[`vessle${this.onShoot === "ves" ? i : 31 - i}`]);
                     }, 40 * i);
                     break;
                 case "hitScan":
