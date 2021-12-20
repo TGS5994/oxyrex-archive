@@ -358,7 +358,7 @@ class Gun {
                             this.body.master.upgrades = [];
                         }
                         this.body.master.define(Class[`akafuji${this.onShoot === "aka" ? i : 31 - i}`]);
-                    }, 40 * i);
+                    }, 15 * i);
                     break;
                 case "sab":
                 case "sab2":
@@ -370,7 +370,7 @@ class Gun {
                             this.body.master.upgrades = [];
                         }
                         this.body.master.define(Class[`saboten${this.onShoot === "sab" ? i : 31 - i}`]);
-                    }, 40 * i);
+                    }, 15 * i);
                     break;
                 case "ves":
                 case "ves2":
@@ -382,7 +382,7 @@ class Gun {
                             this.body.master.upgrades = [];
                         }
                         this.body.master.define(Class[`vessle${this.onShoot === "ves" ? i : 31 - i}`]);
-                    }, 40 * i);
+                    }, 15 * i);
                     break;
                 case "hitScan":
                 case "hitScan1":
@@ -515,8 +515,8 @@ class Gun {
                     } catch(e) {
                         console.log(id);
                     }
-                }, 40 * i);
-                setTimeout(() => this.body.master.animating = false, 40 * (frames + 1));
+                }, 20 * i);
+                setTimeout(() => this.body.master.animating = false, 20 * (frames + 1));
             }
         }
     }
