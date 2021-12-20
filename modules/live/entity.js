@@ -983,6 +983,7 @@ class Entity {
         if (set.LAYER != null) this.layerID = set.LAYER;
         if (set.TRAVERSE_SPEED != null) this.turretTraverseSpeed = set.TRAVERSE_SPEED;
         if (set.ALWAYS_ACTIVE != null) this.alwaysActive = set.ALWAYS_ACTIVE;
+        if (set.BOUNCE_OBSTACLES != null) this.bounceObstacles = set.BOUNCE_OBSTACLES;
         if (set.CARRIER_TALK_DATA != null && this.socket) {
             this.socket.talk("cv", ...set.CARRIER_TALK_DATA.flat());
         } else if (this.socket) {
@@ -1629,6 +1630,7 @@ class Entity {
                 this.firingArc = [ref.facing + bound.angle, bound.arc / 2];
                 nullVector(this.accel);
                 this.blend = ref.blend;
+                this.skill.set(this.bond.skill.raw);
                 break;
         }
         this.accel.x += engine.x * this.control.power;

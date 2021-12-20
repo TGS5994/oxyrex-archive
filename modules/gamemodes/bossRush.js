@@ -28,8 +28,8 @@ const bossRush = (function() {
                 type = type.sort(() => 0.5 - Math.random());
             }
         }
-        [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4, Class.triangleBossTier3].forEach(type => output.push([type]));
-        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.lucrehulk].forEach(celestial => output.push([celestial]));
+        [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4, Class.triangleBossTier3, Class.sacredCrasher, Class.legendaryCrasher].sort(() => .5 - Math.random()).forEach(type => output.push([type]));
+        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.lucrehulk, Class.catalyst, Class.legendaryQuadralMachine].sort(() => .5 - Math.random()).forEach(celestial => output.push([celestial]));
         return output;
     })();
     let index = 0;
