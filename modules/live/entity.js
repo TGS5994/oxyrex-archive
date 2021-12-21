@@ -1644,6 +1644,9 @@ class Entity {
             case 'autospin':
                 this.facing += 0.02 / roomSpeed;
                 break;
+            case 'reverseSpin':
+                this.facing -= 0.02 / roomSpeed;
+                break;
             case 'lucrehulkSpin':
                 this.facing += .005 / roomSpeed;
                 break;
