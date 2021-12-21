@@ -204,6 +204,9 @@ const sockets = (() => {
             o.team = +team;
             o.color = +color;
             o.SIZE = +size;
+            if (socket.sandboxId) {
+                o.sandboxId = socket.sandboxId;
+            }
             socket.talk("Q", "info", "Spawned entity.");
         }
     }, {
@@ -819,6 +822,9 @@ const sockets = (() => {
                                         socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
                                     }
                                     o.define(socket.spawnEntity);
+                                    if (body.sandboxId) {
+                                        o.sandboxId = body.sandboxId;
+                                    }
                                     o.team = -100;
                                 }
                             } break;
