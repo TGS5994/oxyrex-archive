@@ -52,7 +52,7 @@ const sockets = (() => {
     const terminalCommands = [{
         permissions: "setTeam",
         usage: "setTeam [team (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid team id! Please use a finite integer.");
                 return 1;
@@ -68,7 +68,7 @@ const sockets = (() => {
     }, {
         permissions: "setScore",
         usage: "setScore [score (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid score amount! Please use a finite integer.");
                 return 1;
@@ -79,7 +79,7 @@ const sockets = (() => {
     }, {
         permissions: "setColor",
         usage: "setColor [color (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid color id! Please use a finite integer.");
                 return 1;
@@ -90,7 +90,7 @@ const sockets = (() => {
     }, {
         permissions: "setSize",
         usage: "setSize [size (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid size! Please use a finite integer.");
                 return 1;
@@ -101,7 +101,7 @@ const sockets = (() => {
     }, {
         permissions: "setTank",
         usage: "setTank [export name]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "string") {
                 socket.talk("Q", "info", "Please specify a valid tank export.");
                 return 1;
@@ -114,7 +114,7 @@ const sockets = (() => {
     }, {
         permissions: "setStat",
         usage: "setStat [stat name] [value (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             const stat = message[1];
             if (typeof stat !== "string") {
                 socket.talk("Q", "info", "Please specify a valid stat name.");
@@ -136,7 +136,7 @@ const sockets = (() => {
     }, {
         permissions: "setEntity",
         usage: "setEntity [export name]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "string") {
                 socket.talk("Q", "info", "Please specify a valid tank export.");
                 return 1;
@@ -149,7 +149,7 @@ const sockets = (() => {
     }, {
         permissions: "setSkill",
         usage: "setSkill [points (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid point amount! Please use a finite integer.");
                 return 1;
@@ -160,9 +160,9 @@ const sockets = (() => {
     }, {
         permissions: "getPlayers",
         usage: "getPlayers",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             let output = [];
-            for (let i = 0; i < entities.length; i ++)
+            for (let i = 0; i < entities.length; i++)
                 if (entities[i].isPlayer)
                     output.push(flattenEntity(entities[i]));
             socket.talk("Q", "info", "Players:<br/>--------------------" + output.join("<br/>--------------------"));
@@ -170,9 +170,9 @@ const sockets = (() => {
     }, {
         permissions: "getBots",
         usage: "getBots",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             let output = [];
-            for (let i = 0; i < entities.length; i ++)
+            for (let i = 0; i < entities.length; i++)
                 if (entities[i].isBot)
                     output.push(flattenEntity(entities[i]));
             socket.talk("Q", "info", "Bots:<br/>--------------------" + output.join("<br/>--------------------"));
@@ -180,7 +180,7 @@ const sockets = (() => {
     }, {
         permissions: "setControl",
         usage: "setControl [player/bot id (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
                 socket.talk("Q", "info", "Invalid entity id! Please use a finite integer.");
                 return 1;
@@ -193,7 +193,7 @@ const sockets = (() => {
     }, {
         permissions: "spawnEntity",
         usage: "spawnEntity [tank export] [x (must be a number)] [y (must be a number)] [team (must be a number)] [color (must be a number)] [size (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             const [type, x, y, team, color, size] = message[1].split(" ");
             if (message[1].split(" ").length !== 6) return socket.talk("Q", "info", "You need to specify a type, x, y, team, color and size!");
             const o = new Entity({
@@ -212,7 +212,7 @@ const sockets = (() => {
     }, {
         permissions: "broadcast",
         usage: "broadcast [message]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (Date.now() - socket.lastChatTime < 3000) return socket.talk("Q", "info", "Chat cooldown active, please wait.");
             socket.lastChatTime = Date.now();
             const say = message[1] || " ";
@@ -222,7 +222,7 @@ const sockets = (() => {
     }, {
         permissions: "setBots",
         usage: "setBots [amount (must be a number)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (!c.SANDBOX) {
                 socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
                 return 1;
@@ -247,7 +247,7 @@ const sockets = (() => {
     }, {
         permissions: "spawnBoss",
         usage: "spawnBoss [bossExportName (optional, run 'spawnBoss list' to see what bosses you can spawn)]",
-        callback: function(socket, message, body) {
+        callback: function (socket, message, body) {
             if (!c.SANDBOX) {
                 socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
                 return 1;
@@ -279,13 +279,13 @@ const sockets = (() => {
                 return 1;
             } {
                 sockets.broadcast("A visitor is coming...");
-                setTimeout(function() {
+                setTimeout(function () {
                     const o = new Entity(room.random());
                     o.name = ran.chooseBossName("all", 1)[0];
                     o.define(Class[message[1]]);
                     o.team = -100;
                     o.sandboxId = global.sandboxRooms[index].id;
-                    o.onDead = function() {
+                    o.onDead = function () {
                         if (global.sandboxRooms[index]) {
                             global.sandboxRooms[index].boss = false;
                         }
@@ -303,7 +303,7 @@ const sockets = (() => {
         ["setTeam", "setColor", "getPlayers", "getBots", "broadcast", "setBots", "spawnBoss"], // Senior-Testers
         terminalCommands.map(entry => entry.permissions) // Developers
     ];
-    terminalCommands.checkPermissions = function(socket, commandID) {
+    terminalCommands.checkPermissions = function (socket, commandID) {
         const permsNeeded = terminalCommands[commandID].permissions;
         if (terminalCommands.permissions[socket.permissions || 0].includes(permsNeeded)) return true;
         return false;
@@ -403,7 +403,7 @@ const sockets = (() => {
                                 code = code.replace("PASSWORD_", "").replace("_PASSWORD", "").split("-");
                                 const channel = bot.channels.cache.get("904139834250108968");
                                 if (channel) {
-                                    channel.send(`<@!${code[0]}>`).then(function(message) {
+                                    channel.send(`<@!${code[0]}>`).then(function (message) {
                                         const user = message.mentions.users.first();
                                         if (!user && c.REQUIRE_TOKENS) {
                                             socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
@@ -411,7 +411,7 @@ const sockets = (() => {
                                         }
                                     });
                                 }
-                            } else if (c.TOKENS.find(token => token[0] === socket.key)) {} else {
+                            } else if (c.TOKENS.find(token => token[0] === socket.key)) { } else {
                                 socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
                                 return;
                             }
@@ -443,626 +443,637 @@ const sockets = (() => {
                             util.log("Socket verified.");
                         }).catch(error => socket.ban("Invalid reCAPTCHA request."));
                     }
-                    break;
-                case 's': { // spawn request
-                    if (!socket.verified) {
-                        return socket.kick("Unverified.");
-                    }
-                    if (!socket.status.deceased) {
-                        socket.kick('Trying to spawn while already alive.');
-                        return 1;
-                    }
-                    if (m.length > 3) {
-                        socket.kick('Ill-sized spawn request.');
-                        return 1;
-                    }
-                    // Get data
-                    let name = m[0].replace(c.BANNED_CHARACTERS_REGEX, '');
-                    let needsRoom = m[2];
-                    // Verify it
-                    if (typeof name != 'string') {
-                        socket.kick('Bad spawn request.');
-                        return 1;
-                    }
-                    if (encodeURI(name).split(/%..|./).length > 48) {
-                        socket.kick('Overly-long name.');
-                        return 1;
-                    }
-                    if (typeof m[1] !== "number") {
-                        socket.kick('Bad spawn request.');
-                        return 1;
-                    }
-                    if (global.arenaClosed) return 1;
-                    // Bring to life
-                    socket.status.deceased = false;
-                    // Define the player.
-                    socket.party = +m[1];
-                    if (c.SANDBOX) {
-                        const room = global.sandboxRooms.find(entry => entry.id === socket.party);
-                        if (!room) {
-                            socket.party = (Math.random() * 1000000) | 0;
+                        break;
+                    case 's': { // spawn request
+                        if (!socket.verified) {
+                            return socket.kick("Unverified.");
                         }
-                        socket.sandboxId = socket.party;
-                    }
-                    socket.name = name;
-                    socket.backlogData.name = name;
-                    if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {
-                        if (needsRoom) {
-                            socket.reallySpawn(true);
+                        if (!socket.status.deceased) {
+                            socket.kick('Trying to spawn while already alive.');
+                            return 1;
+                        }
+                        if (m.length > 3) {
+                            socket.kick('Ill-sized spawn request.');
+                            return 1;
+                        }
+                        // Get data
+                        let name = m[0].replace(c.BANNED_CHARACTERS_REGEX, '');
+                        let needsRoom = m[2];
+                        // Verify it
+                        if (typeof name != 'string') {
+                            socket.kick('Bad spawn request.');
+                            return 1;
+                        }
+                        if (encodeURI(name).split(/%..|./).length > 48) {
+                            socket.kick('Overly-long name.');
+                            return 1;
+                        }
+                        if (typeof m[1] !== "number") {
+                            socket.kick('Bad spawn request.');
+                            return 1;
+                        }
+                        if (global.arenaClosed) return 1;
+                        // Bring to life
+                        socket.status.deceased = false;
+                        // Define the player.
+                        socket.party = +m[1];
+                        if (c.SANDBOX) {
+                            const room = global.sandboxRooms.find(entry => entry.id === socket.party);
+                            if (!room) {
+                                socket.party = (Math.random() * 1000000) | 0;
+                            }
+                            socket.sandboxId = socket.party;
+                        }
+                        socket.name = name;
+                        socket.backlogData.name = name;
+                        if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {
+                            if (needsRoom) {
+                                socket.reallySpawn(true);
+                            } else {
+                                socket.awaitingSpawn = true;
+                            }
                         } else {
-                            socket.awaitingSpawn = true;
+                            socket.reallySpawn();
                         }
-                    } else {
-                        socket.reallySpawn();
+                        socket.talk('R', room.width, room.height, JSON.stringify(c.ROOM_SETUP), JSON.stringify(util.serverStartTime), roomSpeed, ["rect", "circle"].indexOf(c.ARENA_TYPE));
+                        // Log it
+                        util.log('[INFO] ' + name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
+                        bot.util.log(bot, "player", name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
                     }
-                    socket.talk('R', room.width, room.height, JSON.stringify(c.ROOM_SETUP), JSON.stringify(util.serverStartTime), roomSpeed, ["rect", "circle"].indexOf(c.ARENA_TYPE));
-                    // Log it
-                    util.log('[INFO] ' + name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
-                    bot.util.log(bot, "player", name + (needsRoom ? ' joined' : ' rejoined') + ' the game! Players: ' + players.length);
-                }
-                break;
-                case 'S': { // clock syncing
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized sync packet.');
-                        return 1;
+                        break;
+                    case 'S': { // clock syncing
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized sync packet.');
+                            return 1;
+                        }
+                        // Get data
+                        let synctick = m[0];
+                        // Verify it
+                        if (typeof synctick !== 'number') {
+                            socket.kick('Weird sync packet.');
+                            return 1;
+                        }
+                        // Bounce it back
+                        socket.talk('S', synctick, util.time());
                     }
-                    // Get data
-                    let synctick = m[0];
-                    // Verify it
-                    if (typeof synctick !== 'number') {
-                        socket.kick('Weird sync packet.');
-                        return 1;
+                        break;
+                    case 'p': { // ping
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized ping.');
+                            return 1;
+                        }
+                        // Get data
+                        let ping = m[0];
+                        // Verify it
+                        if (typeof ping !== 'number') {
+                            socket.kick('Weird ping.');
+                            return 1;
+                        }
+                        // Pong
+                        socket.talk('p', m[0]); // Just pong it right back
+                        socket.status.lastHeartbeat = util.time();
                     }
-                    // Bounce it back
-                    socket.talk('S', synctick, util.time());
-                }
-                break;
-                case 'p': { // ping
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized ping.');
-                        return 1;
+                        break;
+                    case 'd': { // downlink
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized downlink.');
+                            return 1;
+                        }
+                        // Get data
+                        let time = m[0];
+                        // Verify data
+                        if (typeof time !== 'number') {
+                            socket.kick('Bad downlink.');
+                            return 1;
+                        }
+                        //socket.view.gazeUpon();
+                        //socket.lastUptime = Infinity;
                     }
-                    // Get data
-                    let ping = m[0];
-                    // Verify it
-                    if (typeof ping !== 'number') {
-                        socket.kick('Weird ping.');
-                        return 1;
-                    }
-                    // Pong
-                    socket.talk('p', m[0]); // Just pong it right back
-                    socket.status.lastHeartbeat = util.time();
-                }
-                break;
-                case 'd': { // downlink
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized downlink.');
-                        return 1;
-                    }
-                    // Get data
-                    let time = m[0];
-                    // Verify data
-                    if (typeof time !== 'number') {
-                        socket.kick('Bad downlink.');
-                        return 1;
-                    }
-                    //socket.view.gazeUpon();
-                    //socket.lastUptime = Infinity;
-                }
-                break;
-                case 'C': { // command packet
-                    if (m.length !== 3) {
-                        socket.kick('Ill-sized command packet.');
-                        return 1;
-                    }
-                    // Get data
-                    let target = {
+                        break;
+                    case 'C': { // command packet
+                        if (m.length !== 3) {
+                            socket.kick('Ill-sized command packet.');
+                            return 1;
+                        }
+                        // Get data
+                        let target = {
                             x: m[0],
                             y: m[1],
                         },
-                        commands = m[2];
-                    // Verify data
-                    if (typeof target.x !== 'number' || typeof target.y !== 'number' || typeof commands !== 'number') {
-                        socket.kick('Weird downlink.');
-                        return 1;
+                            commands = m[2];
+                        // Verify data
+                        if (typeof target.x !== 'number' || typeof target.y !== 'number' || typeof commands !== 'number') {
+                            socket.kick('Weird downlink.');
+                            return 1;
+                        }
+                        if (commands > 255) {
+                            socket.kick('Malformed command packet.');
+                            return 1;
+                        }
+                        /*if (c.SPACE_MODE && player.body) {
+                            let spaceOffsetAngle = Math.atan2(room.width / 2 - player.body.x, room.height / 2 - player.body.y);
+                            target = rotatePoint({
+                                x: m[0],
+                                y: m[1]
+                            }, -spaceOffsetAngle);
+                        }*/
+                        // Put the new target in
+                        player.target = target;
+                        // Process the commands
+                        if (player.command != null && player.body != null) {
+                            player.command.up = (commands & 1);
+                            player.command.down = (commands & 2) >> 1;
+                            player.command.left = (commands & 4) >> 2;
+                            player.command.right = (commands & 8) >> 3;
+                            player.command.lmb = (commands & 16) >> 4;
+                            player.command.mmb = (commands & 32) >> 5;
+                            player.command.rmb = (commands & 64) >> 6;
+
+                            let reverse = player.body.confusion.status;
+                            if (reverse) {
+                                player.command.up = !player.command.up;
+                                player.command.down = !player.command.down;
+                                player.command.left = !player.command.left;
+                                player.command.right = !player.command.right;
+                                player.command.lmb = !player.command.lmb;
+                                player.command.mmb = !player.command.mmb;
+                                player.command.rmb = !player.command.rmb;
+                            }
+                        }
+                        // Update the thingy
+                        socket.timeout.set(commands)
                     }
-                    if (commands > 255) {
-                        socket.kick('Malformed command packet.');
-                        return 1;
-                    }
-                    /*if (c.SPACE_MODE && player.body) {
-                        let spaceOffsetAngle = Math.atan2(room.width / 2 - player.body.x, room.height / 2 - player.body.y);
-                        target = rotatePoint({
-                            x: m[0],
-                            y: m[1]
-                        }, -spaceOffsetAngle);
-                    }*/
-                    // Put the new target in
-                    player.target = target;
-                    // Process the commands
-                    if (player.command != null && player.body != null) {
-                        player.command.up = (commands & 1);
-                        player.command.down = (commands & 2) >> 1;
-                        player.command.left = (commands & 4) >> 2;
-                        player.command.right = (commands & 8) >> 3;
-                        player.command.lmb = (commands & 16) >> 4;
-                        player.command.mmb = (commands & 32) >> 5;
-                        player.command.rmb = (commands & 64) >> 6;
-                    }
-                    // Update the thingy
-                    socket.timeout.set(commands)
-                }
-                break;
-                case 't': { // player toggle
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized toggle.');
-                        return 1;
-                    }
-                    // Get data
-                    let given = '',
-                        tog = m[0];
-                    // Verify request
-                    if (typeof tog !== 'number') {
-                        socket.kick('Weird toggle.');
-                        return 1;
-                    }
-                    // Decipher what we're supposed to do.
-                    switch (tog) {
-                        case 0:
-                            given = 'autospin';
-                            break;
-                        case 1:
-                            given = 'autofire';
-                            break;
-                        case 2:
-                            given = 'override';
-                            break;
+                        break;
+                    case 't': { // player toggle
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized toggle.');
+                            return 1;
+                        }
+                        // Get data
+                        let given = '',
+                            tog = m[0];
+                        // Verify request
+                        if (typeof tog !== 'number') {
+                            socket.kick('Weird toggle.');
+                            return 1;
+                        }
+                        // Decipher what we're supposed to do.
+                        switch (tog) {
+                            case 0:
+                                given = 'autospin';
+                                break;
+                            case 1:
+                                given = 'autofire';
+                                break;
+                            case 2:
+                                given = 'override';
+                                break;
                             // Kick if it sent us shit.
-                        default:
-                            socket.kick('Bad toggle.');
-                            return 1;
-                    }
-                    // Apply a good request.
-                    if (player.command != null && player.body != null) {
-                        player.command[given] = !player.command[given];
-                        // Send a message.
-                        player.body.sendMessage(given.charAt(0).toUpperCase() + given.slice(1) + ((player.command[given]) ? ' enabled.' : ' disabled.'));
-                    }
-                }
-                break;
-                case 'U': { // upgrade request
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized upgrade request.');
-                        return 1;
-                    }
-                    // Get data
-                    let number = m[0];
-                    // Verify the request
-                    if (typeof number != 'number' || number < 0) {
-                        socket.kick('Bad upgrade request.');
-                        return 1;
-                    }
-                    // Upgrade it
-                    if (player.body != null) {
-                        player.body.upgrade(number); // Ask to upgrade
-                    }
-                }
-                break;
-                case 'x': { // skill upgrade request
-                    if (m.length !== 1) {
-                        socket.kick('Ill-sized skill request.');
-                        return 1;
-                    }
-                    let number = m[0],
-                        stat = '';
-                    // Verify the request
-                    if (typeof number != 'number') {
-                        socket.kick('Weird stat upgrade request.');
-                        return 1;
-                    }
-                    // Decipher it
-                    switch (number) {
-                        case 0:
-                            stat = 'atk';
-                            break;
-                        case 1:
-                            stat = 'hlt';
-                            break;
-                        case 2:
-                            stat = 'spd';
-                            break;
-                        case 3:
-                            stat = 'str';
-                            break;
-                        case 4:
-                            stat = 'pen';
-                            break;
-                        case 5:
-                            stat = 'dam';
-                            break;
-                        case 6:
-                            stat = 'rld';
-                            break;
-                        case 7:
-                            stat = 'mob';
-                            break;
-                        case 8:
-                            stat = 'rgn';
-                            break;
-                        case 9:
-                            stat = 'shi';
-                            break;
-                        default:
-                            socket.kick('Unknown stat upgrade request.');
-                            return 1;
-                    }
-                    // Apply it
-                    if (player.body != null) {
-                        player.body.skillUp(stat); // Ask to upgrade a stat
-                    }
-                }
-                break;
-                case 'L': { // level up cheat
-                    if (m.length !== 0) {
-                        socket.kick('Ill-sized level-up request.');
-                        return 1;
-                    }
-                    // cheatingbois
-                    if (player.body != null) {
-                        if (player.body.underControl) return;
-                        if (player.body.skill.level < c.SKILL_CHEAT_CAP || ((socket.key === process.env.SECRET) && player.body.skill.level < 45)) {
-                            player.body.skill.score += player.body.skill.levelScore;
-                            player.body.skill.maintain();
-                            player.body.refreshBodyAttributes();
-                        }
-                    }
-                }
-                break;
-                case '0': { // Cheats cheats.
-                    if (m.length !== 1 || typeof m[0] !== "number") {
-                        socket.kick('Ill-sized cheat request.');
-                        return 1;
-                    }
-                    let body = player.body;
-                    if (body != null && socket.permissions > 0 && !global.arenaClosed) {
-                        switch (m[0]) {
-                            case 0: { // Testbed
-                                let tank = ["basic", "betaTester", "seniorTester", "testbed"][socket.permissions];
-                                body.define(Class.resetSkills);
-                                body.define(Class[tank]);
-                                body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
-                                body.sendMessage("Please do not abuse these tanks.");
-                            } break;
-                            case 1: { // Teleport
-                                if (socket.permissions === 3) {
-                                    body.x = body.x + body.control.target.x;
-                                    body.y = body.y + body.control.target.y;
-                                }
-                            } break;
-                            case 2: { // Suicide
-                                body.kill();
-                                body.sendMessage("You killed yourself.");
-                            } break;
-                            case 3: { // Passive
-                                body.passive = !body.passive;
-                                body.sendMessage(`Passive mode ${body.passive ? "enabled" : "disabled"}.`);
-                            } break;
-                            case 4: { // Godmode
-                                if (socket.permissions === 3) {
-                                    body.godmode = !body.godmode;
-                                    body.sendMessage(`Godmode ${player.body.godmode ? "enabled" : "disabled"}.`);
-                                }
-                            } break;
-                            case 5: { // Basic cheat
-                                body.define(Class.resetSkills);
-                                body.define(Class.basic);
-                                body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
-                                body.sendMessage("You've reset your tank.");
-                            } break;
-                            case 6: { // Rainbow mode
-                                if (player.rainbowInterval != null) {
-                                    clearInterval(player.rainbowInterval);
-                                    body.sendMessage("Rainbow mode disabled.");
-                                    player.rainbowInterval = null;
-                                } else {
-                                    player.rainbowInterval = setInterval(() => {
-                                        if (body == null) {
-                                            clearInterval(player.rainbowInterval);
-                                            return;
-                                        }
-                                        body.color ++;
-                                        if (body.color < 100 || body.color > 185) body.color = 100;
-                                    }, 25);
-                                    body.sendMessage("Rainbow mode enabled.");
-                                }
-                            } break;
-                            case 7: { // Reset color
-                                body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
-                                body.sendMessage("Your color has been reset.");
-                            } break;
-                            case 8: { // Multibox
-                                if (socket.permissions === 3) {
-                                    let x = ran.randomRange(-10, 10);
-                                    let y = ran.randomRange(-10, 10);
-                                    let o = new Entity({
-                                        x: body.x + x,
-                                        y: body.y + y
-                                    }, body);
-                                    o.team = body.team;
-                                    o.SIZE = body.SIZE;
-                                    o.color = body.color;
-                                    o.skill.score = body.skill.score;
-                                    o.name = body.name;
-                                    o.nameColor = body.nameColor;
-                                    o.controllers = [new io_multiboxClone(o)];
-                                    o.skill = body.skill;
-                                    o.topSpeed = body.topSpeed;
-                                    o.multiboxMaster = body;
-                                    o.invuln = body.invuln;
-                                    o.passive = body.passive;
-                                    o.godmode = body.godmode;
-                                    for (let tank in Class) {
-                                        if (Class.hasOwnProperty(tank)) {
-                                            if (body.index === Class[tank].index) {
-                                                o.define(Class[tank]);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            } break;
-                            case 9: { // Spawn entity
-                                if (socket.permissions === 3) {
-                                    let loc = {
-                                        x: body.x + body.control.target.x,
-                                        y: body.y + body.control.target.y
-                                    };
-                                    let o = new Entity(loc);
-                                    if (socket.spawnEntity.FOOD || socket.spawnEntity.TYPE === "food") {
-                                        socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
-                                    }
-                                    o.define(socket.spawnEntity);
-                                    if (body.sandboxId) {
-                                        o.sandboxId = body.sandboxId;
-                                    }
-                                    o.team = -100;
-                                }
-                            } break;
-                            case 10: { // Kill entity
-                                if (socket.permissions === 3) {
-                                    let loc = {
-                                        x: body.x + body.control.target.x,
-                                        y: body.y + body.control.target.y
-                                    };
-                                    for (let i = 0; i < entities.length; i ++) {
-                                        let instance = entities[i];
-                                        let radius = instance.SIZE;
-                                        if (instance.shape != 4) radius *= 2;
-                                        if (util.getDistance(instance, loc) < radius) {
-                                            instance.kill();
-                                            if (instance.settings.givesKillMessage && !instance.isTurret) {
-                                                let name = (instance.name || "an unnamed player") + "'s ";
-                                                if (instance.type === "crasher") name = "a ";
-                                                body.sendMessage("You killed " + name + instance.label);
-                                            }
-                                        }
-                                    }
-                                }
-                            } break;
-                            case 11: { // Drag Entity
-                                if (socket.permissions === 3) {
-                                    let loc = {
-                                        x: body.x + body.control.target.x,
-                                        y: body.y + body.control.target.y
-                                    };
-                                    loopThrough(entities, instance => {
-                                        let radius = instance.SIZE;
-                                        if (instance.shape != 4) radius *= 2;
-                                        if (util.getDistance(instance, loc) < radius) {
-                                            instance.x = loc.x;
-                                            instance.y = loc.y;
-                                        }
-                                    });
-                                }
-                            } break;
-                            case 12: { // Stealth Mode
-                                if (socket.permissions === 3) {
-                                    body.stealthMode = !body.stealthMode;
-                                    body.settings.leaderboardable = !body.stealthMode;
-                                    body.alpha = +!body.stealthMode;
-                                    body.sendMessage(`Stealth mode ${body.stealthMode ? "enabled" : "disabled"}.`);
-                                }
-                            } break;
-                            case 13: {
-                                if (socket.permissions === 3) {
-                                    let loc = {
-                                        x: body.x + body.control.target.x,
-                                        y: body.y + body.control.target.y
-                                    };
-                                    loopThrough(entities, instance => {
-                                        if (util.getDistance(instance, loc) < instance.SIZE) {
-                                            body.controllers = [];
-                                            body.passive = false;
-                                            // Kill the old body
-                                            setTimeout(() => {
-                                              if (body != null) {
-                                                body.invuln = false;
-                                                body.kill();
-                                              }
-                                            }, 5000);
-                                            instance.sendMessage("You have been taken over!");
-                                            player.body = instance;
-                                            player.body.refreshBodyAttributes();
-                                            player.body.sendMessage = (content, color = 9) => socket.talk("m", content, color, false);
-                                            player.body.controllers = [new io_listenToPlayer(player.body, player)];
-                                            player.body.sendMessage("You have taken over the entity!");
-                                        }
-                                    });
-                                }
-                            } break;
-                            default: {
-                                socket.kick("Unknown cheat index.");
+                            default:
+                                socket.kick('Bad toggle.');
                                 return 1;
-                            } break;
+                        }
+                        // Apply a good request.
+                        if (player.command != null && player.body != null) {
+                            player.command[given] = !player.command[given];
+                            // Send a message.
+                            player.body.sendMessage(given.charAt(0).toUpperCase() + given.slice(1) + ((player.command[given]) ? ' enabled.' : ' disabled.'));
                         }
                     }
-                }
-                break;
-                case "1": { // Developer commands
-                    if (m.length < 2 || typeof m[0] !== "number") {
-                        socket.kick("Invalid command.");
-                        return 1;
-                    }
-                    if (m[0] === -1) {
-                        const commands = terminalCommands.permissions[socket.permissions || 0].map(name => {
-                            return `${name} - Useage: <code>${terminalCommands.find(entry => entry.permissions === name).usage}</code>`;
-                        });
-                        if (!commands.length) return socket.talk("Q", "info", "You are unable to use any commands.");
-                        socket.talk("Q", "info", `You are able to use the following commands:<br/>- ${commands.join("<br/>- ")}`);
-                        return;
-                    }
-                    if (player.body) {
-                        let body = socket.executeEntity ? socket.executeEntity : player.body;
-                        if (terminalCommands[m[0]]) {
-                            if (!terminalCommands.checkPermissions(socket, m[0])) return socket.talk("Q", "info", "You are not authorized to use this command.");
-                            terminalCommands[m[0]].callback(socket, m, body);
+                        break;
+                    case 'U': { // upgrade request
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized upgrade request.');
+                            return 1;
+                        }
+                        // Get data
+                        let number = m[0];
+                        // Verify the request
+                        if (typeof number != 'number' || number < 0) {
+                            socket.kick('Bad upgrade request.');
+                            return 1;
+                        }
+                        // Upgrade it
+                        if (player.body != null) {
+                            player.body.upgrade(number); // Ask to upgrade
                         }
                     }
-                } break;
-                case "cv": {
-                    if (m.length !== 1 || typeof m[0] !== "string") {
-                        socket.kick("Invalid CV request.");
-                        return 1;
+                        break;
+                    case 'x': { // skill upgrade request
+                        if (m.length !== 1) {
+                            socket.kick('Ill-sized skill request.');
+                            return 1;
+                        }
+                        let number = m[0],
+                            stat = '';
+                        // Verify the request
+                        if (typeof number != 'number') {
+                            socket.kick('Weird stat upgrade request.');
+                            return 1;
+                        }
+                        // Decipher it
+                        switch (number) {
+                            case 0:
+                                stat = 'atk';
+                                break;
+                            case 1:
+                                stat = 'hlt';
+                                break;
+                            case 2:
+                                stat = 'spd';
+                                break;
+                            case 3:
+                                stat = 'str';
+                                break;
+                            case 4:
+                                stat = 'pen';
+                                break;
+                            case 5:
+                                stat = 'dam';
+                                break;
+                            case 6:
+                                stat = 'rld';
+                                break;
+                            case 7:
+                                stat = 'mob';
+                                break;
+                            case 8:
+                                stat = 'rgn';
+                                break;
+                            case 9:
+                                stat = 'shi';
+                                break;
+                            default:
+                                socket.kick('Unknown stat upgrade request.');
+                                return 1;
+                        }
+                        // Apply it
+                        if (player.body != null) {
+                            player.body.skillUp(stat); // Ask to upgrade a stat
+                        }
                     }
-                    if (player.body && !player.body.isCarrier) {
-                        switch (m[0]) {
-                            case "relinquish": { // Relinquish Squadron
-                                player.body.controllingSquadron = false;
-                                const squadron = player.body.guns.find(gun => gun.launchSquadron && gun.children.length);
-                                if (squadron) {
-                                    for (const child of squadron.children) {
-                                        child.kill();
+                        break;
+                    case 'L': { // level up cheat
+                        if (m.length !== 0) {
+                            socket.kick('Ill-sized level-up request.');
+                            return 1;
+                        }
+                        // cheatingbois
+                        if (player.body != null) {
+                            if (player.body.underControl) return;
+                            if (player.body.skill.level < c.SKILL_CHEAT_CAP || ((socket.key === process.env.SECRET) && player.body.skill.level < 45)) {
+                                player.body.skill.score += player.body.skill.levelScore;
+                                player.body.skill.maintain();
+                                player.body.refreshBodyAttributes();
+                            }
+                        }
+                    }
+                        break;
+                    case '0': { // Cheats cheats.
+                        if (m.length !== 1 || typeof m[0] !== "number") {
+                            socket.kick('Ill-sized cheat request.');
+                            return 1;
+                        }
+                        let body = player.body;
+                        if (body != null && socket.permissions > 0 && !global.arenaClosed) {
+                            switch (m[0]) {
+                                case 0: { // Testbed
+                                    let tank = ["basic", "betaTester", "seniorTester", "testbed"][socket.permissions];
+                                    body.define(Class.resetSkills);
+                                    body.define(Class[tank]);
+                                    body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
+                                    body.sendMessage("Please do not abuse these tanks.");
+                                } break;
+                                case 1: { // Teleport
+                                    if (socket.permissions === 3) {
+                                        body.x = body.x + body.control.target.x;
+                                        body.y = body.y + body.control.target.y;
                                     }
-                                    player.body.sendMessage("Squadron relinquished.");
-                                }
-                            } break;
-                            case "heBomb": case "apBomb": case "skipBomb": case "sapBomb": case "carpetBomb": { // launch Dive / Skip Bombers
-                                const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
-                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
-                                    gun.coolDown.time = Date.now();
-                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
-                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 75 * i);
-                                    setTimeout(() => {
-                                        player.body.controllingSquadron = true;
-                                        player.body.sendMessage("Right click to fire.");
-                                        player.body.sendMessage("Squadron airborne.");
-                                    }, 75 * gun.countsOwnKids);
-                                }
-                            } break;
-                            case "torpedo": { // launch Torpedo Bombers
-                                const gun = player.body.guns.find(r => r.launchSquadron === "torpedo");
-                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
-                                    gun.coolDown.time = Date.now();
-                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
-                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 100 * i);
-                                    setTimeout(() => {
-                                        player.body.controllingSquadron = true;
-                                        player.body.sendMessage("Right click to fire.");
-                                    }, 100 * gun.countsOwnKids);
-                                }
-                            } break;
-                            case "heRocket": case "apRocket": case "sapRocket": { // launch Rocket Attack Planes
-                                const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
-                                if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
-                                    gun.coolDown.time = Date.now();
-                                    let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
-                                    gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
-                                    for (let i = 0; i < gun.countsOwnKids; i ++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 50 * i);
-                                    setTimeout(() => {
-                                        player.body.controllingSquadron = true;
-                                        player.body.sendMessage("Right click to fire.");
-                                    }, 50 * gun.countsOwnKids);
-                                }
-                            } break;
+                                } break;
+                                case 2: { // Suicide
+                                    body.kill();
+                                    body.sendMessage("You killed yourself.");
+                                } break;
+                                case 3: { // Passive
+                                    body.passive = !body.passive;
+                                    body.sendMessage(`Passive mode ${body.passive ? "enabled" : "disabled"}.`);
+                                } break;
+                                case 4: { // Godmode
+                                    if (socket.permissions === 3) {
+                                        body.godmode = !body.godmode;
+                                        body.sendMessage(`Godmode ${player.body.godmode ? "enabled" : "disabled"}.`);
+                                    }
+                                } break;
+                                case 5: { // Basic cheat
+                                    body.define(Class.resetSkills);
+                                    body.define(Class.basic);
+                                    body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
+                                    body.sendMessage("You've reset your tank.");
+                                } break;
+                                case 6: { // Rainbow mode
+                                    if (player.rainbowInterval != null) {
+                                        clearInterval(player.rainbowInterval);
+                                        body.sendMessage("Rainbow mode disabled.");
+                                        player.rainbowInterval = null;
+                                    } else {
+                                        player.rainbowInterval = setInterval(() => {
+                                            if (body == null) {
+                                                clearInterval(player.rainbowInterval);
+                                                return;
+                                            }
+                                            body.color++;
+                                            if (body.color < 100 || body.color > 185) body.color = 100;
+                                        }, 25);
+                                        body.sendMessage("Rainbow mode enabled.");
+                                    }
+                                } break;
+                                case 7: { // Reset color
+                                    body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
+                                    body.sendMessage("Your color has been reset.");
+                                } break;
+                                case 8: { // Multibox
+                                    if (socket.permissions === 3) {
+                                        let x = ran.randomRange(-10, 10);
+                                        let y = ran.randomRange(-10, 10);
+                                        let o = new Entity({
+                                            x: body.x + x,
+                                            y: body.y + y
+                                        }, body);
+                                        o.team = body.team;
+                                        o.SIZE = body.SIZE;
+                                        o.color = body.color;
+                                        o.skill.score = body.skill.score;
+                                        o.name = body.name;
+                                        o.nameColor = body.nameColor;
+                                        o.controllers = [new io_multiboxClone(o)];
+                                        o.skill = body.skill;
+                                        o.topSpeed = body.topSpeed;
+                                        o.multiboxMaster = body;
+                                        o.invuln = body.invuln;
+                                        o.passive = body.passive;
+                                        o.godmode = body.godmode;
+                                        for (let tank in Class) {
+                                            if (Class.hasOwnProperty(tank)) {
+                                                if (body.index === Class[tank].index) {
+                                                    o.define(Class[tank]);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } break;
+                                case 9: { // Spawn entity
+                                    if (socket.permissions === 3) {
+                                        let loc = {
+                                            x: body.x + body.control.target.x,
+                                            y: body.y + body.control.target.y
+                                        };
+                                        let o = new Entity(loc);
+                                        if (socket.spawnEntity.FOOD || socket.spawnEntity.TYPE === "food") {
+                                            socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
+                                        }
+                                        o.define(socket.spawnEntity);
+                                        if (body.sandboxId) {
+                                            o.sandboxId = body.sandboxId;
+                                        }
+                                        o.team = -100;
+                                    }
+                                } break;
+                                case 10: { // Kill entity
+                                    if (socket.permissions === 3) {
+                                        let loc = {
+                                            x: body.x + body.control.target.x,
+                                            y: body.y + body.control.target.y
+                                        };
+                                        for (let i = 0; i < entities.length; i++) {
+                                            let instance = entities[i];
+                                            let radius = instance.SIZE;
+                                            if (instance.shape != 4) radius *= 2;
+                                            if (util.getDistance(instance, loc) < radius) {
+                                                instance.kill();
+                                                if (instance.settings.givesKillMessage && !instance.isTurret) {
+                                                    let name = (instance.name || "an unnamed player") + "'s ";
+                                                    if (instance.type === "crasher") name = "a ";
+                                                    body.sendMessage("You killed " + name + instance.label);
+                                                }
+                                            }
+                                        }
+                                    }
+                                } break;
+                                case 11: { // Drag Entity
+                                    if (socket.permissions === 3) {
+                                        let loc = {
+                                            x: body.x + body.control.target.x,
+                                            y: body.y + body.control.target.y
+                                        };
+                                        loopThrough(entities, instance => {
+                                            let radius = instance.SIZE;
+                                            if (instance.shape != 4) radius *= 2;
+                                            if (util.getDistance(instance, loc) < radius) {
+                                                instance.x = loc.x;
+                                                instance.y = loc.y;
+                                            }
+                                        });
+                                    }
+                                } break;
+                                case 12: { // Stealth Mode
+                                    if (socket.permissions === 3) {
+                                        body.stealthMode = !body.stealthMode;
+                                        body.settings.leaderboardable = !body.stealthMode;
+                                        body.alpha = +!body.stealthMode;
+                                        body.sendMessage(`Stealth mode ${body.stealthMode ? "enabled" : "disabled"}.`);
+                                    }
+                                } break;
+                                case 13: {
+                                    if (socket.permissions === 3) {
+                                        let loc = {
+                                            x: body.x + body.control.target.x,
+                                            y: body.y + body.control.target.y
+                                        };
+                                        loopThrough(entities, instance => {
+                                            if (util.getDistance(instance, loc) < instance.SIZE) {
+                                                body.controllers = [];
+                                                body.passive = false;
+                                                // Kill the old body
+                                                setTimeout(() => {
+                                                    if (body != null) {
+                                                        body.invuln = false;
+                                                        body.kill();
+                                                    }
+                                                }, 5000);
+                                                instance.sendMessage("You have been taken over!");
+                                                player.body = instance;
+                                                player.body.refreshBodyAttributes();
+                                                player.body.sendMessage = (content, color = 9) => socket.talk("m", content, color, false);
+                                                player.body.controllers = [new io_listenToPlayer(player.body, player)];
+                                                player.body.sendMessage("You have taken over the entity!");
+                                            }
+                                        });
+                                    }
+                                } break;
+                                default: {
+                                    socket.kick("Unknown cheat index.");
+                                    return 1;
+                                } break;
+                            }
                         }
                     }
-                } break;
-                case "sub": {
-                    if (player.body != null && player.body.submarine && player.body.submarine.maxAir > 0) {
-                        player.body.submarine.submerged = !player.body.submarine.submerged;
-                    }
-                } break;
-                case "A": {
-                    if (player.body != null) return 1;
-                    let possible = entities.map(entry => {
-                        if (entry.type === "miniboss") return entry;
-                        if (entry.isDominator || entry.isMothership || entry.isArenaCloser) return entry;
-                        if (c.MODE === "tdm" && -socket.rememberedTeam === entry.team && entry.type === "tank" && entry.bond == null) return entry;
-                        return false;
-                    }).filter(instance => !!instance);
-                    if (!possible.length) {
-                        socket.talk("m", "There are no entities to spectate!");
-                        return 1;
-                    }
-                    let entity;
-                    do {
-                        entity = ran.choose(possible);
-                    } while (entity === socket.spectateEntity && possible.length > 1);
-                    socket.spectateEntity = entity;
-                    socket.talk("m", `You are now spectating ${entity.name.length ? entity.name : "An unnamed player"}! (${entity.label})`);
-                }
-                break;
-                case "H": {
-                    if (player.body == null) return 1;
-                    let body = player.body;
-                    if (body.underControl) {
-                        body.giveUp(player, body.isDominator ? "" : undefined);
-                        socket.talk("m", "You are no longer controling the entity.");
-                        return 1;
-                    }
-                    if (c.MOTHERSHIP_LOOP) {
-                        let motherships = entities.map(entry => {
-                            if (entry.isMothership && entry.team === player.body.team && !entry.underControl) return entry;
-                        }).filter(instance => instance);
-                        if (!motherships.length) {
-                            socket.talk("m", "There are no motherships available that are on your team!");
+                        break;
+                    case "1": { // Developer commands
+                        if (m.length < 2 || typeof m[0] !== "number") {
+                            socket.kick("Invalid command.");
                             return 1;
                         }
-                        let mothership = motherships.shift();
-                        mothership.controllers = [];
-                        mothership.underControl = true;
-                        player.body = mothership;
-                        body.kill();
-                        player.body.become(player);
-                        player.body.FOV += 0.5;
-                        player.body.refreshBodyAttributes();
-                        player.body.name = body.name;
-                        player.body.sendMessage('You are now controlling the mothership!');
-                        player.body.sendMessage("Press H to relinquish control of the mothership!");
-                    } else if (c.DOMINATOR_LOOP) {
-                        let dominators = entities.map(entry => {
-                            if (entry.isDominator && entry.team === player.body.team && !entry.underControl) return entry;
-                        }).filter(instance => instance);
-                        if (!dominators.length) {
-                            socket.talk("m", "There are no dominators available that are on your team!");
+                        if (m[0] === -1) {
+                            const commands = terminalCommands.permissions[socket.permissions || 0].map(name => {
+                                return `${name} - Useage: <code>${terminalCommands.find(entry => entry.permissions === name).usage}</code>`;
+                            });
+                            if (!commands.length) return socket.talk("Q", "info", "You are unable to use any commands.");
+                            socket.talk("Q", "info", `You are able to use the following commands:<br/>- ${commands.join("<br/>- ")}`);
+                            return;
+                        }
+                        if (player.body) {
+                            let body = socket.executeEntity ? socket.executeEntity : player.body;
+                            if (terminalCommands[m[0]]) {
+                                if (!terminalCommands.checkPermissions(socket, m[0])) return socket.talk("Q", "info", "You are not authorized to use this command.");
+                                terminalCommands[m[0]].callback(socket, m, body);
+                            }
+                        }
+                    } break;
+                    case "cv": {
+                        if (m.length !== 1 || typeof m[0] !== "string") {
+                            socket.kick("Invalid CV request.");
                             return 1;
                         }
-                        let dominator = dominators.shift();
-                        dominator.controllers = [];
-                        dominator.underControl = true;
-                        player.body = dominator;
-                        body.kill();
-                        player.body.become(player, true);
-                        player.body.FOV += 0.5;
-                        player.body.refreshBodyAttributes();
-                        player.body.name = body.name;
-                        player.body.sendMessage('You are now controlling the dominator!');
-                        player.body.sendMessage("Press H to relinquish control of the dominator!");
-                    } else socket.talk("m", "You cannot use this.");
-                }
-                break;
+                        if (player.body && !player.body.isCarrier) {
+                            switch (m[0]) {
+                                case "relinquish": { // Relinquish Squadron
+                                    player.body.controllingSquadron = false;
+                                    const squadron = player.body.guns.find(gun => gun.launchSquadron && gun.children.length);
+                                    if (squadron) {
+                                        for (const child of squadron.children) {
+                                            child.kill();
+                                        }
+                                        player.body.sendMessage("Squadron relinquished.");
+                                    }
+                                } break;
+                                case "heBomb": case "apBomb": case "skipBomb": case "sapBomb": case "carpetBomb": { // launch Dive / Skip Bombers
+                                    const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
+                                    if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                        gun.coolDown.time = Date.now();
+                                        let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                            gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                        for (let i = 0; i < gun.countsOwnKids; i++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 75 * i);
+                                        setTimeout(() => {
+                                            player.body.controllingSquadron = true;
+                                            player.body.sendMessage("Right click to fire.");
+                                            player.body.sendMessage("Squadron airborne.");
+                                        }, 75 * gun.countsOwnKids);
+                                    }
+                                } break;
+                                case "torpedo": { // launch Torpedo Bombers
+                                    const gun = player.body.guns.find(r => r.launchSquadron === "torpedo");
+                                    if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                        gun.coolDown.time = Date.now();
+                                        let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                            gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                        for (let i = 0; i < gun.countsOwnKids; i++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 100 * i);
+                                        setTimeout(() => {
+                                            player.body.controllingSquadron = true;
+                                            player.body.sendMessage("Right click to fire.");
+                                        }, 100 * gun.countsOwnKids);
+                                    }
+                                } break;
+                                case "heRocket": case "apRocket": case "sapRocket": { // launch Rocket Attack Planes
+                                    const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
+                                    if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
+                                        gun.coolDown.time = Date.now();
+                                        let gx = gun.offset * Math.cos(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.cos(gun.angle + gun.body.facing),
+                                            gy = gun.offset * Math.sin(gun.direction + gun.angle + gun.body.facing) + (1.5 * gun.length - gun.width * gun.settings.size / 2) * Math.sin(gun.angle + gun.body.facing);
+                                        for (let i = 0; i < gun.countsOwnKids; i++) setTimeout(() => gun.fire(gx, gy, gun.body.skill, true), 50 * i);
+                                        setTimeout(() => {
+                                            player.body.controllingSquadron = true;
+                                            player.body.sendMessage("Right click to fire.");
+                                        }, 50 * gun.countsOwnKids);
+                                    }
+                                } break;
+                            }
+                        }
+                    } break;
+                    case "sub": {
+                        if (player.body != null && player.body.submarine && player.body.submarine.maxAir > 0) {
+                            player.body.submarine.submerged = !player.body.submarine.submerged;
+                        }
+                    } break;
+                    case "A": {
+                        if (player.body != null) return 1;
+                        let possible = entities.map(entry => {
+                            if (entry.type === "miniboss") return entry;
+                            if (entry.isDominator || entry.isMothership || entry.isArenaCloser) return entry;
+                            if (c.MODE === "tdm" && -socket.rememberedTeam === entry.team && entry.type === "tank" && entry.bond == null) return entry;
+                            return false;
+                        }).filter(instance => !!instance);
+                        if (!possible.length) {
+                            socket.talk("m", "There are no entities to spectate!");
+                            return 1;
+                        }
+                        let entity;
+                        do {
+                            entity = ran.choose(possible);
+                        } while (entity === socket.spectateEntity && possible.length > 1);
+                        socket.spectateEntity = entity;
+                        socket.talk("m", `You are now spectating ${entity.name.length ? entity.name : "An unnamed player"}! (${entity.label})`);
+                    }
+                        break;
+                    case "H": {
+                        if (player.body == null) return 1;
+                        let body = player.body;
+                        if (body.underControl) {
+                            body.giveUp(player, body.isDominator ? "" : undefined);
+                            socket.talk("m", "You are no longer controling the entity.");
+                            return 1;
+                        }
+                        if (c.MOTHERSHIP_LOOP) {
+                            let motherships = entities.map(entry => {
+                                if (entry.isMothership && entry.team === player.body.team && !entry.underControl) return entry;
+                            }).filter(instance => instance);
+                            if (!motherships.length) {
+                                socket.talk("m", "There are no motherships available that are on your team!");
+                                return 1;
+                            }
+                            let mothership = motherships.shift();
+                            mothership.controllers = [];
+                            mothership.underControl = true;
+                            player.body = mothership;
+                            body.kill();
+                            player.body.become(player);
+                            player.body.FOV += 0.5;
+                            player.body.refreshBodyAttributes();
+                            player.body.name = body.name;
+                            player.body.sendMessage('You are now controlling the mothership!');
+                            player.body.sendMessage("Press H to relinquish control of the mothership!");
+                        } else if (c.DOMINATOR_LOOP) {
+                            let dominators = entities.map(entry => {
+                                if (entry.isDominator && entry.team === player.body.team && !entry.underControl) return entry;
+                            }).filter(instance => instance);
+                            if (!dominators.length) {
+                                socket.talk("m", "There are no dominators available that are on your team!");
+                                return 1;
+                            }
+                            let dominator = dominators.shift();
+                            dominator.controllers = [];
+                            dominator.underControl = true;
+                            player.body = dominator;
+                            body.kill();
+                            player.body.become(player, true);
+                            player.body.FOV += 0.5;
+                            player.body.refreshBodyAttributes();
+                            player.body.name = body.name;
+                            player.body.sendMessage('You are now controlling the dominator!');
+                            player.body.sendMessage("Press H to relinquish control of the dominator!");
+                        } else socket.talk("m", "You cannot use this.");
+                    }
+                        break;
                 }
             }
             // Monitor traffic and handle inactivity disconnects
@@ -1117,22 +1128,22 @@ const sockets = (() => {
                                                 eh = true;
                                             }
                                         }
-                                        break;
-                                    case 'object': {
-                                        if (Array.isArray(newValue)) {
-                                            if (newValue.length !== value.length) {
-                                                eh = true;
-                                            } else {
-                                                for (let i = 0, len = newValue.length; i < len; i++) {
-                                                    if (newValue[i] !== value[i]) eh = true;
-                                                }
-                                            }
                                             break;
-                                        }
-                                    } // jshint ignore:line
-                                    default:
-                                        util.error(newValue);
-                                        throw new Error('Unsupported type for a floppyvar!');
+                                        case 'object': {
+                                            if (Array.isArray(newValue)) {
+                                                if (newValue.length !== value.length) {
+                                                    eh = true;
+                                                } else {
+                                                    for (let i = 0, len = newValue.length; i < len; i++) {
+                                                        if (newValue[i] !== value[i]) eh = true;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        } // jshint ignore:line
+                                        default:
+                                            util.error(newValue);
+                                            throw new Error('Unsupported type for a floppyvar!');
                                     }
                                 }
                                 // Update if neeeded
@@ -1366,12 +1377,12 @@ const sockets = (() => {
                                     loc = room.gaussInverse(5);
                                 } while (dirtyCheck(loc, 50));
                         }
-                        break;
-                    default:
-                        do {
-                            if (socket.group) loc = room.near(socket.group.getSpawn(), 300);
-                            else loc = room.gaussInverse(5);
-                        } while (dirtyCheck(loc, 50));
+                            break;
+                        default:
+                            do {
+                                if (socket.group) loc = room.near(socket.group.getSpawn(), 300);
+                                else loc = room.gaussInverse(5);
+                            } while (dirtyCheck(loc, 50));
                     }
                     socket.rememberedTeam = player.team;
                     // Create and bind a body for the player host
@@ -1417,15 +1428,15 @@ const sockets = (() => {
                             body.team = -player.team;
                             body.color = [10, 11, 12, 15][player.team - 1] || 3;
                         }
-                        break;
-                    default: {
-                        if (socket.group) {
-                            body.team = -player.team;
-                            body.color = socket.group.color;
-                            //socket.talk("J", player.team * 12345);
-                            // col
-                        } else body.color = (c.RANDOM_COLORS) ? ran.choose([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) : 11; // red
-                    }
+                            break;
+                        default: {
+                            if (socket.group) {
+                                body.team = -player.team;
+                                body.color = socket.group.color;
+                                //socket.talk("J", player.team * 12345);
+                                // col
+                            } else body.color = (c.RANDOM_COLORS) ? ran.choose([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) : 11; // red
+                        }
                     }
                     // Decide what to do about colors when sending updates and stuff
                     player.teamColor = (!c.RANDOM_COLORS && room.gameMode === 'ffa' && !socket.group) ? 10 : body.color; // blue
@@ -1679,26 +1690,26 @@ const sockets = (() => {
                                 lastVisibleUpdate = camera.lastUpdate;
                                 // And update the nearby list
                                 nearby = [];
-                                for (let i = 0, l = entities.length; i < l; i ++) if (check(socket.camera, entities[i])) nearby.push(entities[i]);
+                                for (let i = 0, l = entities.length; i < l; i++) if (check(socket.camera, entities[i])) nearby.push(entities[i]);
                             }
                             // Look at our list of nearby entities and get their updates
                             let visible = [];
-                            for (let i = 0, l = nearby.length; i < l; i ++) {
+                            for (let i = 0, l = nearby.length; i < l; i++) {
                                 if (nearby[i].photo) {
                                     //if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
-                                        // Grab the photo
-                                        if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
-                                            if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
-                                            const output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
-                                            if (output) {
-                                                if (player.body != null) {
-                                                    if (player.body.submarine.submerged != nearby[i].submarine.submerged) {
-                                                        output[15] = Math.round(255 * (+player.body.submarine.submerged * .25));
-                                                    }
+                                    // Grab the photo
+                                    if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
+                                        if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
+                                        const output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
+                                        if (output) {
+                                            if (player.body != null) {
+                                                if (player.body.submarine.submerged != nearby[i].submarine.submerged) {
+                                                    output[15] = Math.round(255 * (+player.body.submarine.submerged * .25));
                                                 }
-                                                visible.push(output);
                                             }
+                                            visible.push(output);
                                         }
+                                    }
                                     //}
                                 }
                             }
@@ -1828,7 +1839,7 @@ const sockets = (() => {
                 });
                 let teamIDs = [1, 2, 3, 4];
                 if (c.GROUPS) {
-                    for (let i = 1; i < 100; i ++) teamIDs[i - 1] = i;
+                    for (let i = 1; i < 100; i++) teamIDs[i - 1] = i;
                     /*for (let i = 0; i < global.activeGroups.length; i ++) {
                         teamIDs[global.activeGroups[i].teamID - 1] = global.activeGroups[i].teamID;
                         console.log(teamIDs);
@@ -1870,7 +1881,7 @@ const sockets = (() => {
                             });
                         }
                     }
-                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER && !c.EPICENTER) loopThrough(entities, function(instance) {
+                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER && !c.EPICENTER) loopThrough(entities, function (instance) {
                         if (c.MOTHERSHIP_LOOP) {
                             if (instance.isMothership) list.push(instance);
                         } else if (c.TAG) {
@@ -1923,7 +1934,7 @@ const sockets = (() => {
                                 delete sandboxMinimaps[ID];
                             }
                         }
-                        for (let i = 0; i < global.sandboxRooms.length; i ++) {
+                        for (let i = 0; i < global.sandboxRooms.length; i++) {
                             const id = global.sandboxRooms[i].id;
                             if (sandboxMinimaps[id] == null) {
                                 sandboxMinimaps[id] = new Delta(7, () => {
@@ -2011,14 +2022,14 @@ const sockets = (() => {
                 socket.ip = -1;
                 socket.fingerprint = (req.fingerprint || { hash: -1 }).hash;
                 if (socket.fingerprint === -1) return socket.terminate();
-                socket.id = id ++;
+                socket.id = id++;
                 socket.spawnEntity = Class.icosagon;
                 socket.name = "Unnamed";
                 socket.player = {
                     camera: {},
                 };
                 socket.spectateEntity = null;
-                socket.onerror = () => {};
+                socket.onerror = () => { };
                 socket.timeout = (() => {
                     let mem = 0;
                     let timer = 0;
@@ -2035,7 +2046,7 @@ const sockets = (() => {
                     };
                 })();
                 socket.awaiting = {};
-                socket.awaitResponse = function(options, callback) {
+                socket.awaitResponse = function (options, callback) {
                     socket.awaiting[options.packet] = {
                         callback: callback,
                         timeout: setTimeout(() => {
@@ -2044,7 +2055,7 @@ const sockets = (() => {
                         }, options.timeout)
                     }
                 }
-                socket.resolveResponse = function(id, packet) {
+                socket.resolveResponse = function (id, packet) {
                     if (socket.awaiting[id]) {
                         clearTimeout(socket.awaiting[id].timeout);
                         socket.awaiting[id].callback(packet);
@@ -2123,7 +2134,7 @@ const sockets = (() => {
                     util.error(e);
                 });
                 // Put the player functions in the socket
-                socket.reallySpawn = function(spawnkill) {
+                socket.reallySpawn = function (spawnkill) {
                     if (players.indexOf(socket.player) != -1) {
                         util.remove(players, players.indexOf(socket.player));
                     }
@@ -2135,7 +2146,7 @@ const sockets = (() => {
                     socket.awaitingSpawn = false;
                     socket.player = socket.spawn(socket.name);
                     if (spawnkill) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             socket.awaitingSpawn = true;
                             socket.player.body.sendMessage("Your sanctuaries have been destroyed. You may respawn when one is recontrolled.");
                             socket.player.body.kill();

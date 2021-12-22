@@ -655,6 +655,12 @@ class Entity {
             duration: 0,
             amplification: 1
         };
+        this.confusion = { //Confusion effect
+            status: false,
+            timeLeft: 0,
+            duration: 0,
+            amplification: 1
+        };
         this.isInGrid = false;
         this.removeFromGrid = () => {
             if (this.isInGrid) {
@@ -885,9 +891,13 @@ class Entity {
                         this.velocity.y -= (this.velocity.y * (this.ice.amplification / 4.25));
                         this.ice.timeLeft --;
                     }
+                    if (this.confusion.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
+                        this.confusion.timeLeft --;
+                    }
                 } else {
                     this.poison.timeLeft = 0;
                     this.ice.timeLeft = 0;
+                    this.confusion.timeLeft = 0;
                 }
                 if (this.shield.max) this.shield.regenerate();
                 if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);
