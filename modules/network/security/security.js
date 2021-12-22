@@ -7,6 +7,9 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
+
+// TODO: READD SHA256 AND STUFF
+
 let securityDatabase = {
     bans: [{ // ||WAtcher||
         ip: "110.224.133.127",
