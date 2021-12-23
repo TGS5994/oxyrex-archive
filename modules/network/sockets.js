@@ -1972,7 +1972,7 @@ const sockets = (() => {
                                 socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), 0, 0, ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
                                 socket.status.needsNewBroadcast = false;
                             } else {
-                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), 0, 0, ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), 0, 0, ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
                             }
                         }
                     } else {
