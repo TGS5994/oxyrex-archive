@@ -1917,7 +1917,7 @@ const sockets = (() => {
                         if (c.SANDBOX) {
                             topTen[topTen.length - 1].data.push(entry.sandboxId);
                         }
-                        list.splice(top, 1)
+                        list.splice(top, 1);
                     }
                     room.topPlayerID = topTen.length ? topTen[0].id : -1
                     return topTen.sort((a, b) => a.id - b.id);
@@ -1969,10 +1969,10 @@ const sockets = (() => {
                             if (!socket.status.hasSpawned) continue;
                             let minimapUpdate = newMaps[socket.sandboxId];
                             if (socket.status.needsNewBroadcast) {
-                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), 0, 0, ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...leaderboardUpdate.reset);
                                 socket.status.needsNewBroadcast = false;
                             } else {
-                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), 0, 0, ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), ...([0, 0]), ...leaderboardUpdate.update);
                             }
                         }
                     } else {
