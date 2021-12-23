@@ -1969,7 +1969,7 @@ const sockets = (() => {
                             if (!socket.status.hasSpawned) continue;
                             let minimapUpdate = newMaps[socket.sandboxId];
                             if (socket.status.needsNewBroadcast) {
-                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...leaderboardUpdate.reset);
+                                socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...leaderboardUpdate.update);
                                 socket.status.needsNewBroadcast = false;
                             } else {
                                 socket.talk('b', ...(minimapUpdate ? minimapUpdate.update : [0, 0]), ...([0, 0]), ...leaderboardUpdate.update);
