@@ -13,9 +13,10 @@ const bossRush = (function() {
         let output = [];
         const types = [
             [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss, Class.eliteDirector],
-            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic],
+            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.sterilizerBoss, Class.lucrehulk],
             [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2]
         ];
+        const finalBosses = [Class.catalyst, Class.legendaryQuadralMachine, Class.mythicalCrasher, Class.oceanusCelestial, Class.thorCelestial, Class.raCelestial];
         types.push(types.flat());
         types.forEach((type, i) => types[i] = type.sort(() => 0.5 - Math.random()));
         for (let type of types) {
@@ -29,7 +30,8 @@ const bossRush = (function() {
             }
         }
         [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4, Class.triangleBossTier3, Class.sacredCrasher, Class.legendaryCrasher].sort(() => .5 - Math.random()).forEach(type => output.push([type]));
-        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.lucrehulk, Class.catalyst, Class.legendaryQuadralMachine].sort(() => .5 - Math.random()).forEach(celestial => output.push([celestial]));
+        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].forEach(celestial => output.push([celestial]));
+        output.push([finalBosses[Math.random() * finalBosses.length | 0]]);
         return output;
     })();
     let index = 0;
