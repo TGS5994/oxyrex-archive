@@ -114,8 +114,8 @@ async function messageEvent(message) {
     });
     if (util.checkPermissions(message) === -1) return util.error(message, "You are blacklisted from using the bot.");
     if (message.content === config.prefix + "prefix") return util.info(message, `The prefix for the ${global.fingerPrint.prefix} server is \`${config.prefix + global.fingerPrint.prefix}\`. Run \`${config.prefix + global.fingerPrint.prefix} help\` for more commands.`)
-    if (!message.content.startsWith(config.prefix + global.fingerPrint.prefix + " ")) return;
-    message.content = message.content.replace(config.prefix + global.fingerPrint.prefix + " ", "");
+    if (!message.content.startsWith(config.prefix + global.fingerPrint.prefix + " ") && !(util.checkPermissions(message) === 3 && message.content.startsWith(config.prefix + "global "))) return;
+    message.content = message.content.replace(message.content.split(" ").shift() + " ", "");
     let args = message.content.split(" ");
     let command = args.shift().toLowerCase();
     try {
