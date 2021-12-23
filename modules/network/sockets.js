@@ -1929,11 +1929,6 @@ const sockets = (() => {
                     logs.minimap.set();
                     let leaderboardUpdate = leaderboard.update();
                     if (c.SANDBOX) {
-                        for (const ID in sandboxMinimaps) {
-                            if (!global.sandboxRooms.find(({ id }) => id === ID)) {
-                                delete sandboxMinimaps[ID];
-                            }
-                        }
                         for (let i = 0; i < global.sandboxRooms.length; i++) {
                             const id = global.sandboxRooms[i].id;
                             if (sandboxMinimaps[id] == null) {
@@ -1961,6 +1956,11 @@ const sockets = (() => {
                                 });
                             }
                         }
+                        for (const ID in sandboxMinimaps) {
+                            if (!global.sandboxRooms.find(({ id }) => id === ID)) {
+                                delete sandboxMinimaps[ID];
+                            }
+                        }
                         const newMaps = {};
                         for (const id in sandboxMinimaps) {
                             newMaps[id] = sandboxMinimaps[id].update();
@@ -1970,7 +1970,7 @@ const sockets = (() => {
                             let minimapUpdate = newMaps[socket.sandboxId];
                             if (socket.status.needsNewBroadcast) {
                                 socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.reset))
-                                socket.status.needsNewBroadcast = false
+                                socket.status.needsNewBroadcast = false;
                             } else {
                                 socket.talk('b', ...(minimapUpdate ? minimapUpdate.reset : [0, 0]), ...([0, 0]), ...(socket.anon ? [0, 0] : leaderboardUpdate.update))
                             }
