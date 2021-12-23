@@ -1957,7 +1957,7 @@ const sockets = (() => {
                             }
                         }
                         for (const ID in sandboxMinimaps) {
-                            if (!global.sandboxRooms.find(({ id }) => id === ID)) {
+                            if (global.sandboxRooms.find(entry => entry.id === ID) == null) {
                                 delete sandboxMinimaps[ID];
                             }
                         }
