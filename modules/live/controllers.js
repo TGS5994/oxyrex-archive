@@ -495,7 +495,7 @@ class io_minion extends IO {
         }
         if (input.target != null && (input.alt || input.main)) {
             let sizeFactor = Math.sqrt(this.body.master.size / this.body.master.SIZE);
-            if (this.body.type === "miniboss") sizeFactor = (this.body.master.SIZE / 15) + 0.5;
+            if (this.body.type === "miniboss") sizeFactor = (this.body.master.SIZE / 20) + 0.5;
             let leash = 60 * sizeFactor;
             let orbit = 120 * sizeFactor;
             let repel = 135 * sizeFactor;

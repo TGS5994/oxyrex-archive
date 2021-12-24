@@ -17,7 +17,7 @@
         "forwarded-for": "latest"
     },
     "engines": {
-        "node": "16.x"
+        "node": "17.x"
     },
     "license": "GPL-3.0"
 }

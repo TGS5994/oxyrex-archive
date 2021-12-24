@@ -9,7 +9,18 @@ goog.require('goog.structs.QuadTree');
 const speedcheckloop = (() => {
     let fails = 0;
     // Return the function
-    return () => {
+    return async () => {
+        if (global.mspt > 30) {
+            fails ++;
+        } else {
+            fails --;
+        }
+        if (Math.ceil(fails) > 60 && !arenaClosed) {
+            arenaClosed = true;
+            sockets.broadcast("Server overloaded, restarting...");
+            await bot.util.log(bot, "error", "Server overloaded, restarting...");
+            process.exit();
+        }
         let activationtime = logs.activation.sum(),
             collidetime = logs.collide.sum(),
             movetime = logs.entities.sum(),
@@ -21,9 +32,7 @@ const speedcheckloop = (() => {
         let sum = logs.master.record();
         let loops = logs.loops.count(),
             active = logs.entities.count();
-        global.fps = (1000 / sum).toFixed(2);
-        if (sum > 1000 / roomSpeed / 30) {
-            //fails++;
+        if (global.mspt > 100) {
             util.warn('~~ LOOPS: ' + loops + '. ENTITY #: ' + entities.length + '//' + Math.round(active / loops) + '. VIEW #: ' + views.length + '. BACKLOGGED :: ' + (sum * roomSpeed * 3).toFixed(3) + '%! ~~');
             util.warn('Total activation time: ' + activationtime);
             util.warn('Total collision time: ' + collidetime);
@@ -34,14 +43,8 @@ const speedcheckloop = (() => {
             util.warn('Total entity life+thought cycle time: ' + lifetime);
             util.warn('Total entity selfie-taking time: ' + selfietime);
             util.warn('Total time: ' + (activationtime + collidetime + movetime + playertime + maptime + physicstime + lifetime + selfietime));
-            if (fails > 60) {
-                util.error("FAILURE!");
-                //process.exit(1);
-            }
-        } else {
-            fails = 0;
         }
-    };
+    }
 })();
 module.exports = {
     speedcheckloop

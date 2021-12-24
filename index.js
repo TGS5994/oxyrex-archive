@@ -103,7 +103,10 @@ const gameloop = (() => {
         case ((instance.type === 'crasher' && other.type === 'food') || (other.type === 'crasher' && instance.type === 'food')):
             firmcollide(instance, other);
             break;
-        case (instance.team !== other.team):
+        case (instance.team !== other.team && !instance.hitsOwnTeam && !other.hitsOwnTeam):
+            advancedcollide(instance, other, true, true);
+            break;
+        case (instance.team === other.team && (instance.hitsOwnTeam || other.hitsOwnTeam) && instance.master.master.id !== other.master.master.id && other.master.master.id !== instance.master.master.id):
             advancedcollide(instance, other, true, true);
             break;
         case (instance.settings.hitsOwnType == 'never' || other.settings.hitsOwnType == 'never'):
@@ -170,6 +173,7 @@ const gameloop = (() => {
     // Return the loop function
     let ticks = 0;
     return () => {
+        const start = Date.now();
         logs.loops.tally();
         logs.master.set();
         logs.activation.set();
@@ -204,15 +208,10 @@ const gameloop = (() => {
         purgeEntities();
         room.lastCycle = util.time();
         ticks++;
-        if (true) {
-            loopThrough(sockets.players, function(instance) {
-                instance.socket.view.gazeUpon();
-                instance.socket.lastUptime = Infinity;
-            });
-        }
-        if (ticks % 25 === 0 && Math.min(1, global.fps / roomSpeed / 1000 * 30) < 0.95) {
+        if (ticks % 25 === 0 && global.mspt > 30) {
             antiLagbot();
         }
+        global.mspt = Date.now() - start;
     };
 })();
 setTimeout(closeArena, 60000 * 240); // Restart every 2 hours
@@ -819,9 +818,13 @@ const maintainloop = (() => {
             return o;
         };
         function spawnGroupedFood() {
-            let location;
+            let location, i = 5;
             do {
                 location = room.random();
+                i --;
+                if (i <= 0) {
+                    return;
+                }
             } while (room.isIn("nest", location));
             for (let i = 0, amount = (Math.random() * 10) | 0; i < amount; i ++) {
                 const angle = Math.random() * Math.PI * 2;
@@ -832,9 +835,13 @@ const maintainloop = (() => {
             }
         }
         function spawnDistributedFood() {
-            let location;
+            let location, i = 5;
             do {
                 location = room.random();
+                i --;
+                if (i <= 0) {
+                    return;
+                }
             } while (room.isIn("nest", location));
             spawnShape(location, getFoodType());
         }
@@ -1155,3 +1162,9 @@ setInterval(gameloop, room.cycleSpeed);
 setInterval(maintainloop, 1000);
 setInterval(speedcheckloop, 1000);
 setInterval(gamemodeLoop, 1000);
+setInterval(function() {
+    loopThrough(sockets.players, function(instance) {
+        instance.socket.view.gazeUpon();
+        instance.socket.lastUptime = Infinity;
+    });
+}, 1000 / 30);

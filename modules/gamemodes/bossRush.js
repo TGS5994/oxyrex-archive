@@ -69,9 +69,9 @@ const bossRush = (function() {
     let maxSanctuaries = 0;
     let sanctuaries = 0;
     let spawn = (loc, team, type = false) => {
-        type = type ? type : Class.destroyerDominator;
+        const realType = Class[team === -1 ? type + "Sanctuary" : type];
         let o = new Entity(loc);
-        o.define(type);
+        o.define(realType);
         o.team = team;
         o.color = [10, 11, 12, 15][-team - 1] || 3;
         o.skill.score = 111069;
@@ -131,7 +131,7 @@ const bossRush = (function() {
         for (let loc of room["bas1"]) {
             maxSanctuaries ++;
             sanctuaries ++;
-            spawn(loc, -1, ran.choose([Class.destroyerDominator, Class.gunnerDominator, Class.trapperDominator, Class.droneDominator, Class.steamrollerDominator, Class.crockettDominator, Class.spawnerDominator, Class.autoDominator]));
+            spawn(loc, -1, ran.choose(['destroyerDominator', 'gunnerDominator', 'trapperDominator', 'droneDominator', 'steamrollerDominator', 'autoDominator', 'crockettDominator', 'spawnerDominator']));
         }
         console.log("Boss rush initialized.");
         function recursive() {

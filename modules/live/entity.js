@@ -185,13 +185,18 @@ class Gun {
                     let gx = this.offset * Math.cos(this.direction + this.angle + this.body.facing) + (1.5 * this.length - this.width * this.settings.size / 2) * Math.cos(this.angle + this.body.facing);
                     let gy = this.offset * Math.sin(this.direction + this.angle + this.body.facing) + (1.5 * this.length - this.width * this.settings.size / 2) * Math.sin(this.angle + this.body.facing);
                     // Shoot, multiple times in a tick if needed
-                    while (shootPermission && this.cycle >= 1) {
+                    this.fire(gx, gy, sk);
+                    // Cycle down
+                    this.cycle -= 1;
+                    /*let shots = 0;
+                    while (shootPermission && this.cycle >= 1 && shots < 3) {
+                        shots ++;
                         this.fire(gx, gy, sk);
                         // Figure out if we may still shoot
                         shootPermission = (this.countsOwnKids) ? this.countsOwnKids > this.children.length : (this.body.maxChildren) ? this.body.maxChildren > this.body.children.length : true;
                         // Cycle down
                         this.cycle -= 1;
-                    }
+                    }*/
                 } // If we're not shooting, only cycle up to where we'll have the proper firing delay
             } else if (this.cycle > !this.waitToCycle - this.delay) {
                 this.cycle = !this.waitToCycle - this.delay;
@@ -233,8 +238,8 @@ class Gun {
         this.lastShot.power = 3 * Math.log(Math.sqrt(sk.spd) + this.trueRecoil + 1) + 1;
         this.motion += this.lastShot.power;
         // Find inaccuracy
-        let ss, sd;
-        let loops = 0;
+        let ss = ran.gauss(0, Math.sqrt(this.settings.shudder)), sd = ran.gauss(0, this.settings.spray * this.settings.shudder);
+        /*let loops = 0;
         do {
             ss = ran.gauss(0, Math.sqrt(this.settings.shudder));
             if (loops ++ > 60) break;
@@ -242,7 +247,7 @@ class Gun {
         do {
             sd = ran.gauss(0, this.settings.spray * this.settings.shudder);
             if (loops ++ > 60) break;
-        } while (Math.abs(sd) >= this.settings.spray / 2);
+        } while (Math.abs(sd) >= this.settings.spray / 2);*/
         sd *= Math.PI / 180;
         // Find speed
         let s = new Vector(
@@ -990,6 +995,7 @@ class Entity {
                 this.define(set.PARENT[i]);
             }
         }
+        if (set.HITS_OWN_TEAM != null) this.hitsOwnTeam = set.HITS_OWN_TEAM;
         if (set.LAYER != null) this.layerID = set.LAYER;
         if (set.TRAVERSE_SPEED != null) this.turretTraverseSpeed = set.TRAVERSE_SPEED;
         if (set.ALWAYS_ACTIVE != null) this.alwaysActive = set.ALWAYS_ACTIVE;
@@ -1832,7 +1838,7 @@ class Entity {
             y: this.y
         }) && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive) {
             if (this.type === "miniboss" || this.type === "crasher") {
-                let pos = room.randomType("boss");
+                let pos = room.randomType("nest");
                 this.x = pos.x;
                 this.y = pos.y;
             } else if (this.type === "tank" || this.type === "food") {

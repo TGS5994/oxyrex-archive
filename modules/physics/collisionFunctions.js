@@ -19,7 +19,7 @@ function simplecollide(my, n) {
     n.accel.y -= b / (a + 0.3) * d;
 }
 
-function firmcollide(my, n, buffer = 0) {
+function firmcollide(my, n, buffer = 100) {
     let item1 = {
         x: my.x + my.m_x,
         y: my.y + my.m_y,
@@ -43,14 +43,14 @@ function firmcollide(my, n, buffer = 0) {
         strike1 = false;
         strike2 = false;
         if (my.velocity.length <= s1) {
-            my.velocity.x -= 0.05 * (item2.x - item1.x) / dist / roomSpeed;
-            my.velocity.y -= 0.05 * (item2.y - item1.y) / dist / roomSpeed;
+            my.velocity.x -= .05 * (item2.x - item1.x) / dist / roomSpeed;
+            my.velocity.y -= .05 * (item2.y - item1.y) / dist / roomSpeed;
         } else {
             strike1 = true;
         }
         if (n.velocity.length <= s2) {
-            n.velocity.x += 0.05 * (item2.x - item1.x) / dist / roomSpeed;
-            n.velocity.y += 0.05 * (item2.y - item1.y) / dist / roomSpeed;
+            n.velocity.x += .05 * (item2.x - item1.x) / dist / roomSpeed;
+            n.velocity.y += .05 * (item2.y - item1.y) / dist / roomSpeed;
         } else {
             strike2 = true;
         }
@@ -256,6 +256,12 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     // Now apply it
                     my.damageRecieved += damage._n * deathFactor._n;
                     n.damageRecieved += damage._me * deathFactor._me;
+                    if (my.health.amount - my.damageRecieved > my.health.max) {
+                        my.damageRecieved = my.health.max - my.health.amount;
+                    }
+                    if (n.health.amount - n.damageRecieved > n.health.max) {
+                        n.damageRecieved = n.health.max - n.health.amount;
+                    }
                 }
             }
             /************* DO MOTION ***********/

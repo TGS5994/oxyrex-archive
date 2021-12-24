@@ -1241,7 +1241,7 @@ const sockets = (() => {
                         if (!b) return 0;
                         gui.bodyid = b.id;
                         // Update most things
-                        gui.fps.update(Math.min(1, global.fps / roomSpeed / 1000 * 30));
+                        gui.fps.update(global.mspt);//gui.fps.update(Math.min(1, global.fps / roomSpeed / 1000 * 30));
                         gui.color.update(gui.master.teamColor);
                         gui.label.update(b.index);
                         gui.score.update(b.skill.score);

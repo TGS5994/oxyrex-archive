@@ -156,7 +156,7 @@ room.gauss = function(clustering) {
 };
 room.gaussInverse = function(clustering) {
     let output,
-        i = 15;
+        i = 5;
     do {
         output = {
             x: ran.gaussInverse(0, room.width, clustering),
@@ -168,7 +168,7 @@ room.gaussInverse = function(clustering) {
 };
 room.gaussRing = function(radius, clustering) {
     let output,
-        i = 15;
+        i = 5;
     do {
         output = ran.gaussRing(room.width * radius, clustering);
         output = {
@@ -183,7 +183,7 @@ room.gaussType = function(type, clustering) {
     if (!room[type]) return room.random();
     let selection = room[type][ran.irandom(room[type].length - 1)];
     let location = {},
-        i = 15;
+        i = 5;
     do {
         location = {
             x: ran.gauss(selection.x, room.width / room.xgrid / clustering),

@@ -46,18 +46,20 @@ function nullVector(v) {
     v.y = 0;
 };
 // Gets a priority queue and returns the nearest.
-function nearest(array, location, test = () => true) {
+function nearest(array, location, test = () => { return true; }) {
     let list = new goog.structs.PriorityQueue();
     let d;
-    if (!array.length) return undefined;
-    for (let i = 0; i < array.length; i++) {
-        let instance = array[i];
+    if (!array.length) {
+        return undefined;
+    }
+    array.forEach(function(instance) {
         d = Math.pow(instance.x - location.x, 2) + Math.pow(instance.y - location.y, 2);
-        if (test(instance, d)) list.enqueue(d, instance);
-    };
+        if (test(instance, d)) {
+            list.enqueue(d, instance);
+        }
+    });
     return list.dequeue();
 }
-
 function timeOfImpact(p, v, s) {
     // Requires relative position and velocity to aiming point
     let a = s * s - (v.x * v.x + v.y * v.y);
