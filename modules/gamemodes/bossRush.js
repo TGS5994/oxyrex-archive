@@ -49,7 +49,6 @@ const bossRush = (function() {
     let index = 0;
     function spawnWave() {
         const wave = waves[index];
-        waves.length = 1;
         if (!wave) {
             sockets.broadcast("Your team has beaten the boss rush!");
             if (util.dateCheck("12/23/2021", "01/01/2022")) {
