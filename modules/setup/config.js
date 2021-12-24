@@ -462,7 +462,7 @@ const choiceTable = {
     "Mothership": 5,
     "Tag": 6,
     "Domination": 7,
-    "Naval Battle": 4,
+    "Naval Battle": 2,
     "Infection": 5,
     "Boss Rush": 6,
     "Space": 1,
@@ -480,7 +480,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return "Boss Rush";//global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
+    return global.fingerPrint.herokuVA ? "Boss Rush" : global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

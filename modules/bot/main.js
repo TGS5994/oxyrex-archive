@@ -15,7 +15,9 @@ bot.on("ready", async function() {
     bot.active = true;
     util.log(bot, "status", "Discord bot active.");
     let intervalID = -1;
+    // deactivated
     global.updateStatusMessage = async function(closed) {
+        return;
         if (closed) {
             clearInterval(intervalID);
         }
@@ -54,8 +56,8 @@ bot.on("ready", async function() {
             }
         }
     }
-    setTimeout(global.updateStatusMessage, 3000);
-    intervalID = setInterval(global.updateStatusMessage, 30000);
+    //setTimeout(global.updateStatusMessage, 3000);
+    //intervalID = setInterval(global.updateStatusMessage, 30000);
 });
 // We use folders for our commands so that it is all simple and split up.
 let commands = {};

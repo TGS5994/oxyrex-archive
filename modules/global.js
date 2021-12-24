@@ -9,19 +9,20 @@ goog.require('goog.structs.QuadTree');
 // Global Utilities Requires
 
 global.fingerPrint = (function() {
-    const hsb = process.env.HEROKU_SANDBOX;
-    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX !== "true");
-    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HEROKU_SANDBOX === "true");
+    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "va");
+    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "wa");
+    const herokuHA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "ha");
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
-    const localhost = !herokuVA && !herokuWA && !digitalOcean;
+    const extraVM = process.argv.some(arg => arg.includes("extraVM"));
+    const localhost = !herokuVA && !herokuWA && !herokuHA && !digitalOcean && !extraVM;
     return {
-        hsb,
         herokuVA,
         herokuWA,
+        herokuHA,
         digitalOcean,
+        extraVM,
         localhost,
-        prefix: ["va", "wa", "ba", "xyz"][herokuVA ? 0 : herokuWA ? 1 : digitalOcean ? 2 : 3],
-        statusID: ["913847615106482236", "913847615865634817", "913847618990395423", "913847620085088296"][herokuVA ? 0 : herokuWA ? 1 : digitalOcean ? 2 : 3]
+        prefix: ["va", "wa", "ha", "ba", "ga", "xyz"][herokuVA ? 0 : herokuWA ? 1 : herokuHA ? 2 : digitalOcean ? 3 : extraVM ? 4 : 5]
     }
 })();
 
