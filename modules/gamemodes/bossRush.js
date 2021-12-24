@@ -9,44 +9,69 @@ goog.require('goog.structs.QuadTree');
 
 const bossRush = (function() {
     const escorts = [Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx];
+    let bossTypes = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss, Class.eliteDirector, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.sterilizerBoss, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2, Class.lucrehulk];
+    let celestials = [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.hadesCelestial, Class.pontusCelestial];
+    const finalBosses = [Class.oceanusCelestial, Class.thorCelestial, Class.raCelestial, Class.nyxCelestial, Class.legendaryCrasher, Class.sacredCrasher, Class.mythicalCrasher, Class.legendaryQuadralMachine, Class.catalyst];
     const waves = (function() {
-        let output = [];
-        const types = [
-            [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss, Class.eliteDirector],
-            [Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.sterilizerBoss, Class.lucrehulk],
-            [Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2]
-        ];
-        const finalBosses = [Class.catalyst, Class.legendaryQuadralMachine, Class.mythicalCrasher, Class.oceanusCelestial, Class.thorCelestial, Class.raCelestial];
-        types.push(types.flat());
-        types.forEach((type, i) => types[i] = type.sort(() => 0.5 - Math.random()));
-        for (let type of types) {
-            for (let i = 0; i < 3; i ++) {
-                let wave = [];
-                for (let j = 0; j < 2; j ++) {
-                    wave.push(type[j]);
-                }
-                output.push(wave);
-                type = type.sort(() => 0.5 - Math.random());
+        class Wave {
+            constructor(bosses, message) {
+                this.bosses = bosses;
+                this.message = message;
             }
         }
-        [Class.eggBossTier3, Class.eggPrinceTier3, Class.squareBossTier3, Class.eggBossTier4, Class.eggPrinceTier4, Class.triangleBossTier3, Class.sacredCrasher, Class.legendaryCrasher].sort(() => .5 - Math.random()).forEach(type => output.push([type]));
-        [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial].forEach(celestial => output.push([celestial]));
-        output.push([finalBosses[Math.random() * finalBosses.length | 0]]);
+        const output = [];
+        for (let i = 0; i < 19; i ++) {
+            bossTypes = bossTypes.sort(() => 0.5 - Math.random());
+            const bosses = [];
+            for (let x = 0; x < 1 + (Math.random() * 3 | 0); x ++) {
+                bosses.push(bossTypes[x]);
+            }
+            output.push(new Wave(bosses));
+        }
+        for (let i = 0; i < celestials.length; i ++) {
+            if (i === 0) {
+                output.push(new Wave([celestials[i]], "World will fall, we are back..."));
+            } else {
+                output.push(new Wave([celestials[i]]));
+            }
+        }
+        for (let i = 0; i < 3; i ++) {
+            celestials = celestials.sort(() => .5 - Math.random());
+            const bosses = [];
+            for (let x = 0; x < 2; x ++) {
+                bosses.push(celestials[x]);
+            }
+            output.push(new Wave(bosses));
+        }
+        output.push(new Wave([finalBosses[Math.random() * finalBosses.length | 0]], "It's time I put an end to this, once and for all!"));
         return output;
     })();
     let index = 0;
     function spawnWave() {
         const wave = waves[index];
+        waves.length = 1;
         if (!wave) {
             sockets.broadcast("Your team has beaten the boss rush!");
+            if (util.dateCheck("12/23/2021", "01/01/2022")) {
+                sockets.players.forEach(({ socket }) => {
+                    if (socket.discordID) {
+                        bot.database.makeEntry(bot, bot.config.logs.achievementDatabase, {
+                            id: socket.discordID,
+                            achievement: "Winter Rush|||Win a round of Boss Rush during the holiday season."
+                        });
+                        socket.talk("m", "You won the winter boss rush! You can claim a reward role with the discord bot!");
+                    }
+                });
+            }
             setTimeout(closeArena, 3000);
             return;
         }
-        let bosses = wave.length;
-        global.botScoreboard["Bosses Left"] = wave.length;
-        for (let boss of wave) {
-            let o = new Entity(room.randomType("nest"));
+        let bosses = wave.bosses.length;
+        global.botScoreboard["Bosses Left"] = wave.bosses.length;
+        for (let boss of wave.bosses) {
+            let o = new Entity(room.randomType("boss"));
             o.define(boss);
+            o.controllers.push(new io_bossRushAI(o));
             o.team = -100;
             o.onDead = function() {
                 bosses --;
@@ -59,17 +84,23 @@ const bossRush = (function() {
             }
         }
         for (let i = 0; i < 2; i ++) {
-            let n = new Entity(room.randomType("nest"));
+            let n = new Entity(room.randomType("boss"));
             n.define(ran.choose(escorts));
+            n.controllers.push(new io_bossRushAI(n));
             n.team = -100;
         }
         global.botScoreboard.Wave = (index + 1);
-        sockets.broadcast("Wave " + (index + 1) + " has arrived!");
+        if (wave.message != null) {
+            sockets.broadcast(wave.message);
+            setTimeout(() => sockets.broadcast("Wave " + (index + 1) + " has arrived!"), 2000);
+        } else {
+            sockets.broadcast("Wave " + (index + 1) + " has arrived!");
+        }
     }
     let maxSanctuaries = 0;
     let sanctuaries = 0;
     let spawn = (loc, team, type = false) => {
-        const realType = Class[team === -1 ? type + "Sanctuary" : type];
+        const realType = Class[team === -1 ? type + "Sanctuary" : "dominator"];
         let o = new Entity(loc);
         o.define(realType);
         o.team = team;

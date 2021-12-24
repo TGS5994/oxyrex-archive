@@ -19,11 +19,15 @@ const prizes = [{
     role: "895830022231822336",
     requirement: "Wtf dude.... How much time do you have?",
     searchName: "professional"
+}, {
+    role: "924036949319233566",
+    requirement: "Winter Rush",
+    searchName: "happy holidays"
 }];
 
 module.exports = {
     run: function(bot, message, args) {
-        const request = args[0].toLowerCase();
+        const request = args.join(" ").toLowerCase().replace("!", "");
         if (request === "list") {
             util.info(message, "Here are the prize roles and their required achievement!\n" + prizes.map(entry => `**<@&${entry.role}>** - ${entry.requirement}`).join("\n"));
             return;

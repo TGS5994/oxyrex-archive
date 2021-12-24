@@ -352,7 +352,7 @@ class io_nearestDifferentMaster extends IO {
     checkEntity(e, m, mm, range) {
         // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
         const validType = this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'));
-        if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && (this.body.seeInvisable || e.alpha > 0.25) && validType && e.dangerValue > 0) {
+        if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && (this.body.seeInvisible || e.alpha > 0.25) && validType && e.dangerValue > 0) {
             if ((this.body.aiSettings.blind ? (util.getDistance(e, mm) < mm.fov / 2) : (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range))) {
                 if (!c.SANDBOX || this.body.master.master.sandboxId === e.master.master.sandboxId) {
                     if (this.body.isDominator) {
@@ -748,6 +748,7 @@ class io_botMovement extends IO {
             y: ran.randomRange(0, room.height)
         };
         this.dir = 0;
+        this.defendTick = -1;
     }
     chooseSpot() {
         this.wanderRoom = Math.random() < 0.8 ? "norm" : "nest";
@@ -786,65 +787,75 @@ class io_botMovement extends IO {
                 this.avoidEdge = /*ran.choose(*/ [270 * this.PI180, 180 * this.PI180] //);
                 break;
         }
-        if (input.target != null) {
-            this.wanderGoal = this.chooseSpot();
-            let target = new Vector(input.target.x, input.target.y);
-            if (this.timer > 60) {
-                this.offset = ran.randomRange(30 * Math.PI / 180, 45 * Math.PI / 180) * this.offset2,
-                    this.offset2 *= -1,
-                    this.timer = 0;
+        if (c.SPECIAL_BOSS_SPAWNS && room["bas1"] && room["bas1"].length < 3 && room["bas1"].length > 0) {
+            if ((this.defendTick <= 0 && (!room.isIn("bas1", this.wanderGoal) || !input.target)) || (room.isIn("bas1", this.wanderGoal) && !input.target)) {
+                this.wanderGoal = room.randomType("bas1");
+                this.defendTick = 50 + Math.random() * 150;
             }
-            if (this.body.health.amount / this.body.health.max > 0.4) {
-                if (this.nearEdge === "5") {
-                    if (target.length > this.orbit) {
-                        goal = {
-                            x: (this.body.x) + this.orbit * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                            y: (this.body.y) + this.orbit * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4)
-                        }, power = 1
-                    } else if (target.length > this.orbit2 && target.length < this.orbit) {
-                        goal = {
-                            x: (this.body.x) + this.orbit2 * Math.cos(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
-                            y: (this.body.y) + this.orbit2 * Math.sin(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
-                        }, power = 1
-                    } else {
-                        goal = {
-                            x: (this.body.x) - this.orbit2 * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                            y: (this.body.y) - this.orbit2 * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                        }, power = 1
-                    }
-                } else {
-                    if (target.length > this.orbit2) {
-                        goal = {
-                            x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1]),
-                            y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1])
-                        }, power = 1;
-                    } else {
-                        goal = {
-                            x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0]),
-                            y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0])
-                        }, power = 1;
-                    }
-                }
-            } else {
-                if (this.nearEdge === "5") {
-                    goal = {
-                            x: (this.body.x) + 100 * -Math.cos(this.dir + this.offset),
-                            y: (this.body.y) + 100 * -Math.sin(this.dir + this.offset)
-                        },
-                        power = 1;
-                } else {
-                    goal = {
-                        x: (this.body.x) + 100 * Math.cos(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0]),
-                        y: (this.body.y) + 100 * Math.sin(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0])
-                    }, power = 1;
-                }
-            };
-        } else {
+            this.defendTick --;
             goal = this.wanderGoal, power = 1;
-            if (util.getDistance(this.wanderGoal, this.body) < 10) {
-                this.wanderGoal = this.chooseSpot()
-            };
-        };
+        } else {
+            this.defendTick = -1;
+            if (input.target != null) {
+                this.wanderGoal = this.chooseSpot();
+                let target = new Vector(input.target.x, input.target.y);
+                if (this.timer > 60) {
+                    this.offset = ran.randomRange(30 * Math.PI / 180, 45 * Math.PI / 180) * this.offset2,
+                        this.offset2 *= -1,
+                        this.timer = 0;
+                }
+                if (this.body.health.amount / this.body.health.max > 0.4) {
+                    if (this.nearEdge === "5") {
+                        if (target.length > this.orbit) {
+                            goal = {
+                                x: (this.body.x) + this.orbit * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
+                                y: (this.body.y) + this.orbit * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4)
+                            }, power = 1
+                        } else if (target.length > this.orbit2 && target.length < this.orbit) {
+                            goal = {
+                                x: (this.body.x) + this.orbit2 * Math.cos(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
+                                y: (this.body.y) + this.orbit2 * Math.sin(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
+                            }, power = 1
+                        } else {
+                            goal = {
+                                x: (this.body.x) - this.orbit2 * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
+                                y: (this.body.y) - this.orbit2 * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
+                            }, power = 1
+                        }
+                    } else {
+                        if (target.length > this.orbit2) {
+                            goal = {
+                                x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1]),
+                                y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1])
+                            }, power = 1;
+                        } else {
+                            goal = {
+                                x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0]),
+                                y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0])
+                            }, power = 1;
+                        }
+                    }
+                } else {
+                    if (this.nearEdge === "5") {
+                        goal = {
+                                x: (this.body.x) + 100 * -Math.cos(this.dir + this.offset),
+                                y: (this.body.y) + 100 * -Math.sin(this.dir + this.offset)
+                            },
+                            power = 1;
+                    } else {
+                        goal = {
+                            x: (this.body.x) + 100 * Math.cos(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0]),
+                            y: (this.body.y) + 100 * Math.sin(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0])
+                        }, power = 1;
+                    }
+                };
+            } else {
+                goal = this.wanderGoal, power = 1;
+                if (util.getDistance(this.wanderGoal, this.body) < 10) {
+                    this.wanderGoal = this.chooseSpot();
+                }
+            }
+        }
         return {
             goal: goal,
             power: power,
@@ -1018,6 +1029,42 @@ class io_skipBomb extends IO {
         }
     }
 }
+class io_bossRushAI extends IO {
+    constructor(body) {
+        super(body);
+        this.enabled = true;
+        this.goal = room.randomType("nest");
+    }
+    think(input) {
+        if (room.isIn("nest", this.body)) {
+            this.enabled = false;
+        }
+        if (room.isIn("boss", this.body)) {
+            this.enabled = true;
+        }
+        if (this.enabled) {
+            return {
+                main: false,
+                alt: false,
+                goal: this.goal,
+                target: this.goal
+            }
+        } else if (!input.main && !input.alt) {
+            if (room["bas1"] && room["bas1"].length) {
+                this.goal = room["bas1"][0];
+                return {
+                    main: false,
+                    alt: false,
+                    goal: this.goal,
+                    target: {
+                        x: this.goal.x - this.body.x,
+                        y: this.goal.y - this.body.y
+                    }
+                }
+            }
+        }
+    }
+}
 module.exports = {
     IO,
     io_doNothing,
@@ -1053,5 +1100,6 @@ module.exports = {
     io_spinMissile,
     io_plane,
     io_onlyFireWhenInRange,
-    io_skipBomb
+    io_skipBomb,
+    io_bossRushAI
 };

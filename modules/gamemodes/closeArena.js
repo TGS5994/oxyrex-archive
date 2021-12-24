@@ -26,7 +26,7 @@ function closeArena() {
                 o.team = -100;
                 o.skill.score = 23650;
                 o.isArenaCloser = true;
-                o.seeInvisable = true;
+                o.seeInvisible = true;
                 o.alwaysActive = true;
                 o.sandboxId = id;
                 o.name = "Arena Closer";

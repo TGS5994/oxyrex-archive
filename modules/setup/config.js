@@ -269,55 +269,55 @@ const gamemodes = {
         Y_GRID: 16,
         MAZE: `
             --------------------------------
-            -##############################-
-            -#@@@@@@@@@@@@@@@@@@@@@@@@@@@@#-
-            -#####@@@#@@@@@@@@@@@@#@@@#####-
-            -###------------------------###-
-            -###------------------------###-
-            -#####--------------------#####-
-            -#####--------------------#####-
-            -###------------------------###-
-            -###------------------------###-
-            --##@@@------------------@@@##--
-            --@##@@@----------------@@@##@--
-            --@@##@@@--------------@@@##@@--
-            --@@@#@@@--------------####@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@#@@@@@@@@@@@@@@@@@@@@#@@@--
-            --@@@######################@@@--
-            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
-            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
-            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
             --------------------------------
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --@@########################@@--
+            --@@#@@@@@@@@@@@@@@@@@@@@@@#@@--
+            --@@#@@@@@@@@@@@@@@@@@@@@@@#@@--
+            --@@#@@@@@@----------@@@@@@#@@--
+            --@@#@@@@@@----------@@@@@@#@@--
+            --@@#@@@@@------------@@@@@#@@--
+            --@@#@@@@--------------@@@@#@@--
+            --@@#@@@----------------@@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@------------------@@#@@--
+            --@@#@@@@@@@@@@@@@@@@@@@@@@#@@--
+            --@@#@@@@@@@@@@@@@@@@@@@@@@#@@--
+            --@@########################@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
+            --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
             --------------------------------
             --------------------------------
         `,
         ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "bas1", "nest", "nest", "nest", "nest", "bas1", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "nest", "nest", "nest", "nest", "nest", "nest", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "bas1", "nest", "nest", "nest", "nest", "bas1", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "boss", "boss", "boss", "boss", "boss", "boss", "boss", "boss", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "boss", "boss", "boss", "boss", "boss", "boss", "boss", "boss", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb", "outb"],
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"]
         ],
         secondaryGameMode: "br",
         DO_BASE_DAMAGE: false
@@ -480,7 +480,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
+    return "Boss Rush";//global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

@@ -6,7 +6,7 @@ module.exports = {
     run: function(bot, message, args) {
         return botUtil.info(message, c.gameModeName, [{
             name: "Server Speed:",
-            value: Math.min(1, global.fps / roomSpeed / 1000 * 30) * 100 + "%"
+            value: global.mspt + "mspt"
         }, {
             name: "Players:",
             value: views.length
@@ -16,5 +16,5 @@ module.exports = {
         }]);
     },
     description: "Broadcasts a message to everyone.",
-    usage: "say"
+    usage: "ping"
 };
