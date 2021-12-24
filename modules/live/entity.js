@@ -1890,6 +1890,9 @@ class Entity {
                 let shieldDamage = this.shield.getDamage(this.damageRecieved);
                 this.damageRecieved -= shieldDamage;
                 this.shield.amount -= shieldDamage;
+                if (this.shield.amount > this.shield.max) {
+                    this.shield.amount = this.shield.max;
+                }
             }
         }
         // Health damage
@@ -1897,6 +1900,9 @@ class Entity {
             let healthDamage = this.health.getDamage(this.damageRecieved);
             this.blend.amount = 1;
             this.health.amount -= healthDamage;
+            if (this.health.amount > this.health.max) {
+                this.health.amount = this.health.max;
+            }
         }
         this.damageRecieved = 0;
         // Check for death

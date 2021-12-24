@@ -256,12 +256,6 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     // Now apply it
                     my.damageRecieved += damage._n * deathFactor._n;
                     n.damageRecieved += damage._me * deathFactor._me;
-                    if (my.health.amount - my.damageRecieved > my.health.max) {
-                        my.damageRecieved = my.health.max - my.health.amount;
-                    }
-                    if (n.health.amount - n.damageRecieved > n.health.max) {
-                        n.damageRecieved = n.health.max - n.health.amount;
-                    }
                 }
             }
             /************* DO MOTION ***********/
