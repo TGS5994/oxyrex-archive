@@ -1232,6 +1232,7 @@ class Entity {
             if (this.coreSize == null) {
                 this.coreSize = this.SIZE;
             }
+            this.classSize = set.SIZE;
         }
         if (set.SKILL != null && set.SKILL != []) {
             if (set.SKILL.length != 10) {

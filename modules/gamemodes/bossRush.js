@@ -23,7 +23,7 @@ const bossRush = (function() {
         for (let i = 0; i < 19; i ++) {
             bossTypes = bossTypes.sort(() => 0.5 - Math.random());
             const bosses = [];
-            for (let x = 0; x < 1 + (Math.random() * 3 | 0); x ++) {
+            for (let x = 0; x < 2 + (Math.random() * 2 | 0); x ++) {
                 bosses.push(bossTypes[x]);
             }
             output.push(new Wave(bosses));
@@ -35,11 +35,12 @@ const bossRush = (function() {
                 output.push(new Wave([celestials[i]]));
             }
         }
-        for (let i = 0; i < 3; i ++) {
-            celestials = celestials.sort(() => .5 - Math.random());
-            const bosses = [];
-            for (let x = 0; x < 2; x ++) {
-                bosses.push(celestials[x]);
+        celestials = celestials.sort(() => .5 - Math.random());
+        for (let i = 0; i < 5; i ++) {
+            const bosses = [celestials[i]];
+            bossTypes = bossTypes.sort(() => 0.5 - Math.random());
+            for (let x = 0; x < 1 + (Math.random() * 2 | 0); x ++) {
+                bosses.push(bossTypes[x]);
             }
             output.push(new Wave(bosses));
         }

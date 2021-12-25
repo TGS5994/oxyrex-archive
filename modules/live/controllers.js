@@ -495,9 +495,8 @@ class io_minion extends IO {
         }
         if (input.target != null && (input.alt || input.main)) {
             let sizeFactor = Math.sqrt(this.body.master.size / this.body.master.SIZE);
-            if (this.body.type === "miniboss") sizeFactor = (this.body.master.SIZE / 20) + 0.5;
             let leash = 60 * sizeFactor;
-            let orbit = 120 * sizeFactor;
+            let orbit = this.body.type === "miniboss" ? (360 + this.body.size / 2) : (120 * sizeFactor);
             let repel = 135 * sizeFactor;
             let goal;
             let power = 1;
@@ -718,7 +717,7 @@ class io_dontTurnDominator extends IO {
 class io_fleeAtLowHealth extends IO {
     constructor(b) {
         super(b);
-        this.fear = Math.random() * 0.5;
+        this.fear = Math.random() * .25;
     }
     think(input) {
         if (input.fire && input.target != null && this.body.health.amount < this.body.health.max * this.fear) {
@@ -1047,7 +1046,10 @@ class io_bossRushAI extends IO {
                 main: false,
                 alt: false,
                 goal: this.goal,
-                target: this.goal
+                target: {
+                    x: this.goal.x - this.body.x,
+                    y: this.goal.y - this.body.y
+                }
             }
         } else if (!input.main && !input.alt) {
             if (room["bas1"] && room["bas1"].length) {
