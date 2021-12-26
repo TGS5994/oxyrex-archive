@@ -1,2 +1,4 @@
+.gitignore
 .replit
 nvmins.sh
+node_modules/

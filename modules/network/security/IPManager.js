@@ -24,10 +24,10 @@ class IPManager {
     ban(ip) { // ban("127.0.0.1") or ban({ foo: 1, bar: 2, ip: "127.0.0.1" })
         if (typeof ip === "string") {
             this.bannedIPs.push(ip);
-            this.blockList.addAddress(ip);
+            this.blockList.push(ip);
         } else if (typeof ip === "object" && typeof ip.ip === "string") {
             this.bannedIPs.push(ip);
-            this.blockList.addAddress(ip);
+            this.blockList.push(ip);
         } else {
             throw new Error("Invalid IP specified, IP must be a string or an object with the 'ip' property as a string.");
         }
@@ -73,13 +73,13 @@ class IPManager {
                 resolve(false);
                 return;
             }
-            if (this.blockList.check(ip) || this.knownVPNIPs.includes(ip)) {
+            if (this.blockList.includes(ip) || this.knownVPNIPs.includes(ip)) {
                 resolve(true);
                 return;
             }
             this.ping(ip, options.port, options.timeout).then(open => {
                 if (open && options.saveToLog) {
-                    this.blockList.addAddress(ip);
+                    this.blockList.push(ip);
                     this.knownVPNIPs.push(ip);
                 }
                 resolve(open);
@@ -87,7 +87,7 @@ class IPManager {
         });
     }
     checkIsBanned(ip) { // checkIsBanned("127.0.0.1") Checks if an IP is in the banned database (or a VPN)
-        return this.blockList.check(ip) || this.bannedIPs.includes(ip);
+        return this.blockList.includes(ip) || this.bannedIPs.includes(ip);
     }
     async getHostnamesFromIP(ip) { // getHostnamesFromIP("127.0.0.1").then(console.log) or console.log(await getHostnamesFromIP("127.0.0.1")) Gets the hostnames (like google.com) from an IP (142.251.45.110)
         let hostnames = [];
