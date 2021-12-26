@@ -346,7 +346,7 @@ const sockets = (() => {
                                     player.body.kill();
                                 }
                                 util.remove(disconnections, disconnections.indexOf(disconnection));
-                            }, 30000);
+                            }, 60000);
                             let disconnection = {
                                 body: player.body,
                                 ip: socket.ip,
