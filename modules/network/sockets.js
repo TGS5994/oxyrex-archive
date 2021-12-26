@@ -10,7 +10,8 @@ const fetch = require("node-fetch");
 const sockets = (() => {
     let clients = [],
         players = [],
-        backlog = [];
+        backlog = [],
+        disconnections = [];
     class BacklogData {
         constructor(id) {
             this.id = id;
@@ -312,6 +313,7 @@ const sockets = (() => {
         players: players,
         clients: clients,
         backlog: backlog,
+        disconnections: disconnections,
         broadcast: message => {
             clients.forEach(socket => {
                 socket.talk('m', message);
@@ -333,11 +335,25 @@ const sockets = (() => {
                 if (index != -1) {
                     // Kill the body if it exists
                     if (player.body != null) {
-                        player.body.invuln = false;
-                        setTimeout(() => {
-                            if (player.body.underControl) player.body.giveUp(player);
-                            if (player.body != null) player.body.kill();
-                        }, 5000);
+                        if (player.body.underControl) {
+                            player.body.giveUp(player);
+                        } if (player.body.invuln) {
+                            player.body.invuln = false;
+                            player.body.kill();
+                        } else {
+                            let timeout = setTimeout(function() {
+                                if (player.body != null) {
+                                    player.body.kill();
+                                }
+                                util.remove(disconnections, disconnections.indexOf(disconnection));
+                            }, 30000);
+                            let disconnection = {
+                                body: player.body,
+                                ip: socket.ip,
+                                timeout: timeout
+                            };
+                            disconnections.push(disconnection);
+                        }
                     }
                     // Disconnect everything
                     util.log('[INFO] User ' + socket.name + ' disconnected!');
@@ -1384,21 +1400,36 @@ const sockets = (() => {
                                 else loc = room.gaussInverse(5);
                             } while (dirtyCheck(loc, 50));
                     }
-                    socket.rememberedTeam = player.team;
-                    // Create and bind a body for the player host
-                    let body = new Entity(loc);
+                    let body;
+                    const filter = disconnections.filter(r => r.ip === socket.ip && r.body && !r.body.isDead());
+                    if (filter.length) {
+                        let recover = filter[0];
+                        util.remove(disconnections, disconnections.indexOf(recover));
+                        clearTimeout(recover.timeout);
+                        body = recover.body;
+                        body.become(player);
+                        player.team = -body.team;
+                    } else {
+                        body = new Entity(loc);
+                        body.protect();
+                        body.isPlayer = true;
+                        body.define(c.NAVAL_SHIPS ? Class.navalShips : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
+                        body.name = name; // Define the name
+                        if (c.SURVIVAL && !survival.started) {
+                            survival.players.push(body);
+                            body.onDead = () => survival.removePlayer(body);
+                            body.godmode = true;
+                        }
+                        body.become(player);
+                        body.invuln = true; // Make it safe
+                    }
                     body.socket = socket;
+                    player.body = body;
+                    socket.spectateEntity = null;
+                    socket.rememberedTeam = player.team;
+                    body.skill.maintain();
                     if (socket.sandboxId) {
                         body.sandboxId = socket.sandboxId;
-                    }
-                    body.protect();
-                    body.isPlayer = true;
-                    body.define(c.NAVAL_SHIPS ? Class.navalShips : (c.HIDE_AND_SEEK && player.team == 2) ? Class.landmine : survival.started ? Class.observer : Class.basic); // Start as a basic tank
-                    body.name = name; // Define the name
-                    if (c.SURVIVAL && !survival.started) {
-                        survival.players.push(body);
-                        body.onDead = () => survival.removePlayer(body);
-                        body.godmode = true;
                     }
                     // Dev hax
                     {
@@ -1417,11 +1448,6 @@ const sockets = (() => {
                         }
                     }
                     socket.talk("Z", body.nameColor);
-                    body.addController(new io_listenToPlayer(body, player)); // Make it listen
-                    body.sendMessage = content => messenger(socket, content); // Make it speak
-                    socket.spectateEntity = null;
-                    body.invuln = true; // Make it safe
-                    player.body = body;
                     // Decide how to color and team the body
                     switch (room.gameMode) {
                         case "tdm": {
@@ -1689,13 +1715,16 @@ const sockets = (() => {
                                 // Update our timer
                                 lastVisibleUpdate = camera.lastUpdate;
                                 // And update the nearby list
-                                nearby = [];
-                                for (let i = 0, l = entities.length; i < l; i++) if (check(socket.camera, entities[i])) nearby.push(entities[i]);
+                                nearby = entities.map(e => {
+                                    if (check(socket.camera, e)) {
+                                        return e;
+                                    }
+                                }).filter(r => r);
                             }
                             // Look at our list of nearby entities and get their updates
                             let visible = [];
                             for (let i = 0, l = nearby.length; i < l; i++) {
-                                if (nearby[i].photo) {
+                                if (nearby[i].photo && nearby[i].alpha > .075 && !nearby[i].isGhost) {
                                     //if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
                                     // Grab the photo
                                     if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
