@@ -10,7 +10,7 @@ class IPManager {
         this.bannedIPs = [];
         this.knownVPNIPs = [];
         this.whitelist = [];
-        this.blockList = new net.BlockList();
+        this.blockList = [];//new net.BlockList();
     }
     whitelistIP(ip) { // whitelistIP("127.0.0.1") or whitelistIP({ foo: 1, bar: 2, ip: "127.0.0.1" })
         if (typeof ip === "string") {

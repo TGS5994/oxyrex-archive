@@ -6,15 +6,16 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "google-closure-library": "20180506.0.0",
-        "express-ws": "latest",
-        "express": "latest",
         "cors": "latest",
-        "express-fingerprint": "latest",
-        "ws": "latest",
-        "node-fetch": "2.6.1",
         "discord.js": "12.5.3",
-        "forwarded-for": "latest"
+        "express": "latest",
+        "express-fingerprint": "latest",
+        "express-ws": "latest",
+        "forwarded-for": "latest",
+        "google-closure-library": "20180506.0.0",
+        "net": "^1.0.2",
+        "node-fetch": "2.6.1",
+        "ws": "latest"
     },
     "engines": {
         "node": "17.x"
