@@ -12,6 +12,7 @@ global.fingerPrint = (function() {
     const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "va");
     const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "wa");
     const herokuHA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "ha");
+    const DogatorixDOGA = process.argv.some(arg => arg.includes("Dogatorix")) && (process.env.HASH === "doga");
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
     const extraVM = process.argv.some(arg => arg.includes("extraVM"));
     const localhost = !herokuVA && !herokuWA && !herokuHA && !digitalOcean && !extraVM;
@@ -19,10 +20,11 @@ global.fingerPrint = (function() {
         herokuVA,
         herokuWA,
         herokuHA,
+        DogatorixDOGA,
         digitalOcean,
         extraVM,
         localhost,
-        prefix: ["va", "wa", "ha", "ba", "ga", "xyz"][herokuVA ? 0 : herokuWA ? 1 : herokuHA ? 2 : digitalOcean ? 3 : extraVM ? 4 : 5]
+        prefix: ["va", "wa", "ha", "ba", "ga", "xyz", "doga"][herokuVA ? 0 : herokuWA ? 1 : herokuHA ? 2 : digitalOcean ? 3 : extraVM ? 4 : DogatorixDOGA ? 6 : 5]
     }
 })();
 
