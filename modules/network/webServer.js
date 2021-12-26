@@ -10,8 +10,10 @@ const express = require("express");
 const fingerprint = require("express-fingerprint");
 const expressWs = require("express-ws");
 const cors = require("cors");
+const fs = require("fs");
 const server = express();
 server.use(fingerprint());
+server.use(express.json());
 expressWs(server);
 server.use(cors());
 server.ws("/", sockets.connect);
@@ -28,6 +30,151 @@ server.get("/gamemodeData.json", function(request, response) {
         maxPlayers: c.maxPlayers,
         code: [c.MODE, c.MODE === "ffa" ? "f" : c.TEAMS, c.secondaryGameMode].join("-")
     }));
+});
+const definitionsCode = fs.readFileSync(__dirname + "/../../lib/definitions.js").toString();
+server.get("/edit/lib/definitions.js", function(request, response) {
+    response.send(`
+<html>
+<head>
+    <title>Oxyrex Tank Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
+</head>
+<style>
+    body {
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+        background: linear-gradient(to right bottom, #C8C8C8, #AA0000);
+        font-family: Ubuntu;
+        font-size: 14px;
+    }
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 0;
+    }
+
+    ::-webkit-scrollbar-track {
+        border-radius: 3px;
+        background: rgba(0, 0, 0, .15);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background: rgba(0, 0, 0, .3);
+    }
+    textarea {
+        width: 100%;
+        float: top;
+        height: 75%;
+        overflow: scroll;
+        margin: auto;
+        display: inline-block;
+        background: linear-gradient(to right bottom, #FFFFFF, #FFAAAA);
+        outline: none;
+        font-family: Ubuntu, Courier, sans-serif;
+        font-size: 16px;
+    }
+    iframe {
+        bottom: 0;
+        position: relative;
+        width: 100%;
+        height: 35em;
+    }
+</style>
+<body>
+    <div id="editor" style="display: none;">
+        <textarea id="js" placeholder="Talk to a god..."></textarea>
+        <button id="saveCode">Save Code</button>
+        <span id="serverResponse">...</span>
+    </div>
+    <div id="loginForm">
+        <input id="password" placeholder="Input your token"></input><br/>
+        <button id="login">Login</button>
+    </div>
+</body>
+<script>
+    window.onload = function() {
+        document.getElementById("login").onclick = async function() {
+            document.getElementById("loginForm").style.display = "none";
+            //document.getElementById("js").value = await (await fetch("/code/lib/definitions.js?key=" + document.getElementById("password").value)).text();
+            document.getElementById("editor").style.display = "block";
+            document.getElementById("saveCode").onclick = async function() {
+                console.log(document.getElementById("js").value);
+                document.getElementById("serverResponse").textContent = await (await fetch("/patch/lib/definitions.js", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        key: document.getElementById("password").value,
+                        code: document.getElementById("js").value
+                    })
+                })).text();
+            }
+        }
+    };
+</script>
+</html>`);
+});
+// TODO: Add worker threads for mockup loading (OR TRY ASYNC), auto refreshing mockups clientside
+const unauths = {};
+server.get("/code/lib/definitions.js", function(request, response) {
+    return response.send("Not active.");
+    if (unauths[request.fingerprint.hash] >= 3) {
+        return response.send("Failed to log in");
+    }
+    if (request.query && request.query.key) {
+        if (c.TOKENS.findIndex(entry => entry[0] === request.query.key && entry[3] === 3) !== -1) {
+            response.send(definitionsCode);
+            return;
+        }
+    }
+    response.send("Unauthorized");
+    if (!unauths[request.fingerprint.hash]) {
+        unauths[request.fingerprint.hash] = 1;
+    } else {
+        unauths[request.fingerprint.hash] ++;
+    }
+});
+server.post("/patch/lib/definitions.js", function(request, response) {
+    return response.send("Not active.");
+    if (unauths[request.fingerprint.hash] >= 3) {
+        return response.send("Failed to log in");
+    }
+    if (!request.body || !request.body.key || !request.body.code) {
+        if (!unauths[request.fingerprint.hash]) {
+            unauths[request.fingerprint.hash] = 1;
+        } else {
+            unauths[request.fingerprint.hash] ++;
+        }
+        return response.send("Invalid body");
+    }
+    if (c.TOKENS.findIndex(entry => entry[0] === request.body.key && entry[3] === 3) === -1) {
+        if (!unauths[request.fingerprint.hash]) {
+            unauths[request.fingerprint.hash] = 1;
+        } else {
+            unauths[request.fingerprint.hash] ++;
+        }
+        return response.send("Unauthorized");
+    }
+    let refresh = true;
+    eval(request.body.code);
+    if (refresh) {
+        let newClass = (function() {
+            const def = Class;
+            let i = 0;
+            for (let key in def) {
+                if (!def.hasOwnProperty(key)) continue;
+                def[key].index = i++;
+            }
+            return def;
+        })();
+        Class = newClass;
+        global.mockupJsonData = loadMockupJsonData();
+    }
+    response.send("Changes saved!");
 });
 server.listen(process.env.PORT || c.port, function() {
     console.log("Express + WS server listening on port", process.env.PORT || c.port);

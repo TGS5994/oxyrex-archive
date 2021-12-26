@@ -86,7 +86,7 @@ if (typeof module !== "undefined") {
 } else if (typeof window !== "undefined") {
     window.mockupProtocol = protocol;
 }*/
-let mockupJsonData = (() => {
+const loadMockupJsonData = (() => {
     console.log("Started loading mockups...");
     function rounder(val) {
         if (Math.abs(val) < 0.00001) val = 0;
@@ -444,7 +444,10 @@ let mockupJsonData = (() => {
     console.log("Finished compiling " + mockupData.length + " classes into mockups.");
     mockupsLoaded = true;
     return writeData;
-})();
+});
+
+let mockupJsonData = loadMockupJsonData();
 module.exports = {
-    mockupJsonData
+    mockupJsonData,
+    loadMockupJsonData
 };
