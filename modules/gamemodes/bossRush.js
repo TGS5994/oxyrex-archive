@@ -9,7 +9,7 @@ goog.require('goog.structs.QuadTree');
 
 const bossRush = (function() {
     const escorts = [Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx];
-    let bossTypes = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss, Class.eliteDirector, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.sterilizerBoss, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2, Class.lucrehulk];
+    let bossTypes = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteSprayer2, Class.eliteHunter, Class.eliteSkimmer, Class.sentryFragBoss, Class.eliteDirector, Class.eliteSkimmer, Class.palisade, Class.summoner, Class.guardian, Class.greenGuardian, Class.atrium, Class.quadriatic, Class.sterilizerBoss, Class.eggPrinceTier1, Class.eggPrinceTier2, Class.eggBossTier1, Class.eggBossTier2, Class.squareBossTier1, Class.squareBossTier2, Class.triangleBossTier1, Class.triangleBossTier2];
     let celestials = [Class.apolloCelestial, Class.odinCelestial, Class.artemisCelestial, Class.lokiCelestial, Class.aresCelestial, Class.rheaCelestial, Class.demeterCelestial, Class.athenaCelestial, Class.hadesCelestial, Class.pontusCelestial];
     const finalBosses = [Class.oceanusCelestial, Class.thorCelestial, Class.raCelestial, Class.nyxCelestial, Class.legendaryCrasher, Class.sacredCrasher, Class.mythicalCrasher, Class.legendaryQuadralMachine, Class.catalyst];
     const waves = (function() {
@@ -19,15 +19,17 @@ const bossRush = (function() {
                 this.message = message;
             }
         }
-        const output = [];
+        let output = [];
+        let basicWaves = [];
         for (let i = 0; i < 19; i ++) {
             bossTypes = bossTypes.sort(() => 0.5 - Math.random());
             const bosses = [];
-            for (let x = 0; x < 2 + (Math.random() * 2 | 0); x ++) {
+            for (let x = 0; x < 2 + (Math.random() * 5 | 0); x ++) {
                 bosses.push(bossTypes[x]);
             }
-            output.push(new Wave(bosses));
+            basicWaves.push(new Wave(bosses));
         }
+        output = output.concat(basicWaves.sort((a, b) => a.bosses.length - b.bosses.length));
         for (let i = 0; i < celestials.length; i ++) {
             if (i === 0) {
                 output.push(new Wave([celestials[i]], "World will fall, we are back..."));
@@ -36,14 +38,16 @@ const bossRush = (function() {
             }
         }
         celestials = celestials.sort(() => .5 - Math.random());
+        let celestialWaves = [];
         for (let i = 0; i < 5; i ++) {
             const bosses = [celestials[i]];
             bossTypes = bossTypes.sort(() => 0.5 - Math.random());
-            for (let x = 0; x < 1 + (Math.random() * 2 | 0); x ++) {
+            for (let x = 0; x < 1 + (Math.random() * 3 | 0); x ++) {
                 bosses.push(bossTypes[x]);
             }
-            output.push(new Wave(bosses));
+            celestialWaves.push(new Wave(bosses));
         }
+        output = output.concat(celestialWaves.sort((a, b) => a.bosses.length - b.bosses.length));
         output.push(new Wave([finalBosses[Math.random() * finalBosses.length | 0]], "It's time I put an end to this, once and for all!"));
         return output;
     })();

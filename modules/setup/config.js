@@ -10,9 +10,9 @@ const defaults = require("../../config.json");
 if (global.fingerPrint.digitalOcean) {
     defaults.WIDTH = 6750;
     defaults.HEIGHT = 6750;
-    defaults.maxPlayers = 20;
+    defaults.maxPlayers = 35;
 } else if (global.fingerPrint.herokuWA) {
-    defaults.maxPlayers = 25;
+    defaults.maxPlayers = 35;
 }
 
 function getBaseShuffling(teams) {
@@ -160,14 +160,8 @@ const gamemodes = {
     "Survival": {
         SURVIVAL: true,
         BOTS: -1,
-        WIDTH: 7500,
-        HEIGHT: 7500,
-        X_GRID: 20,
-        Y_GRID: 20,
         ROOM_SETUP: setup({
-            width: 20,
-            height: 20,
-            rockScatter: .5
+            rockScatter: .3
         }),
     },
     "Mothership": {
@@ -320,7 +314,8 @@ const gamemodes = {
             ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"]
         ],
         secondaryGameMode: "br",
-        DO_BASE_DAMAGE: false
+        DO_BASE_DAMAGE: false,
+        FOOD_AMOUNT: .3
     },
     "Center Control": {
         MODE: "tdm",
@@ -480,7 +475,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return global.fingerPrint.herokuHA ? "Boss Rush" : global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
+    return "Boss Rush";//global.fingerPrint.herokuHA ? "Boss Rush" : global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

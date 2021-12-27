@@ -187,7 +187,8 @@ const gameloop = (() => {
                 }
             }
         });
-        for (let e of entitie) entitiesactivationloop(e);
+        //loopThrough(entities, entitiesactivationloop);
+        for (let entity of entities) entitiesactivationloop(entity);
         logs.activation.mark();
         // Do collisions
         logs.collide.set();
@@ -196,12 +197,14 @@ const gameloop = (() => {
             grid.update();
             // Run collisions in each grid
             const pairs = grid.queryForCollisionPairs();
-            for (let p of pairs) collide(p);
+            //loopThrough(pairs, collide);
+            for (let pair of pairs) collide(pair);
         }
         logs.collide.mark();
         // Do entities life
         logs.entities.set();
-        for (let e of entities) entitiesliveloop(e);
+        //loopThrough(entities, entitiesliveloop);
+        for (let entity of entities) entitiesliveloop(entity);
         logs.entities.mark();
         logs.master.mark();
         // Remove dead entities
@@ -717,6 +720,18 @@ const maintainloop = (() => {
                         }
                     }
                     // Slowly upgrade them
+                    /*loopThrough(room.bots, function(o) {
+                        if (o.skill.level < 60) {
+                            o.skill.score += 35;
+                            o.skill.maintain();
+                        }
+                        if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
+                            o.upgrade(Math.floor(Math.random() * o.upgrades.length));
+                            if (Math.random() > .9) {
+                                o.botDoneUpgrading = true;
+                            }
+                        }
+                    });*/
                     for (let o of room.bots) {
                         if (o.skill.level < 60) {
                             o.skill.score += 35;
@@ -736,6 +751,18 @@ const maintainloop = (() => {
                 return !e.isDead();
             });
             // Slowly upgrade them
+            /*loopThrough(bots, function(o) {
+                if (o.skill.level < 60) {
+                    o.skill.score += 35;
+                    o.skill.maintain();
+                }
+                if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
+                    o.upgrade(Math.floor(Math.random() * o.upgrades.length));
+                    if (Math.random() > .9) {
+                        o.botDoneUpgrading = true;
+                    }
+                }
+            });*/
             for (let o of bots) {
                 if (o.skill.level < 60) {
                     o.skill.score += 35;
@@ -826,7 +853,7 @@ const maintainloop = (() => {
                     return;
                 }
             } while (room.isIn("nest", location));
-            for (let i = 0, amount = (Math.random() * 10) | 0; i < amount; i ++) {
+            for (let i = 0, amount = (Math.random() * 20) | 0; i < amount; i ++) {
                 const angle = Math.random() * Math.PI * 2;
                 spawnShape({
                     x: location.x + Math.cos(angle) * (Math.random() * 50),
@@ -855,6 +882,12 @@ const maintainloop = (() => {
             const census = (() => {
                 let food = 0;
                 let nestFood = 0;
+                /*loopThrough(entities, instance => {
+                    if (instance.type === "food") {
+                        if (instance.isNestFood) nestFood ++;
+                        else food ++;
+                    }
+                });*/
                 for (let instance of entities) {
                     if (instance.type === "food") {
                         if (instance.isNestFood) nestFood ++;
@@ -866,7 +899,7 @@ const maintainloop = (() => {
                     nestFood
                 };
             })();
-            if (census.food < maxFood) [spawnGroupedFood, spawnDistributedFood][+(Math.random() < 0.8)]();
+            if (census.food < maxFood) [spawnGroupedFood, spawnDistributedFood][+(Math.random() > .8)]();
             if (census.nestFood < maxNestFood) spawnNestFood();
         };
     })();
@@ -1163,8 +1196,8 @@ setInterval(maintainloop, 1000);
 setInterval(speedcheckloop, 1000);
 setInterval(gamemodeLoop, 1000);
 setInterval(function() {
-    for (let instance of sockets.players) {
-        instance.socket.view.gazeUpon();
-        instance.socket.lastUptime = Infinity;
-    }
+   for (let instance of sockets.players) {
+       instance.socket.view.gazeUpon();
+       instance.socket.lastUptime = Infinity;
+   }
 }, 1000 / 30);
