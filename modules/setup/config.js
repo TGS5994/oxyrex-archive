@@ -444,6 +444,7 @@ const gamemodes = {
         secondaryGameMode: "sb"
     },
     "Closed Beta": {
+        BETA: 1,
         WIDTH: 11111.111111111111,
         HEIGHT: 5000,
         ROOM_SETUP: [

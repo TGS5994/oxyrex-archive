@@ -11,6 +11,7 @@
     "socketWarningLimit": 5,
     "tabLimit": 2,
     "maxPlayers": 20,
+    "BETA": 0,
     "networkFrontlog": 1,
     "networkFallbackTime": 150,
     "visibleListInterval": 500,
