@@ -6,6 +6,7 @@ global.operatingSystem = require("os");
 // Create the bot.
 const bot = new Discord.Client();
 bot.database = require("./database.js");
+bot.Discord = Discord;
 // When our bot is online, we set it's activity.
 bot.on("ready", async function() {
     bot.user.setActivity(`for commands (${config.prefix}prefix)`, {

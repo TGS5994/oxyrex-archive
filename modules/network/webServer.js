@@ -33,6 +33,12 @@ server.get("/gamemodeData.json", function(request, response) {
 });
 const definitionsCode = fs.readFileSync(__dirname + "/../../lib/definitions.js").toString();
 server.get("/edit/lib/definitions.js", function(request, response) {
+    if (!c.EDITOR_ENABLED) {
+        return response.send("Not active.");
+    }
+    if (unauths[request.fingerprint.hash] >= 3) {
+        return response.send("Failed to log in");
+    }
     response.send(`
 <html>
 <head>
@@ -72,7 +78,7 @@ server.get("/edit/lib/definitions.js", function(request, response) {
         display: inline-block;
         background: linear-gradient(to right bottom, #FFFFFF, #FFAAAA);
         outline: none;
-        font-family: Ubuntu, Courier, sans-serif;
+        font-family: Courier, sans-serif;
         font-size: 16px;
     }
     iframe {
@@ -99,6 +105,7 @@ server.get("/edit/lib/definitions.js", function(request, response) {
             document.getElementById("loginForm").style.display = "none";
             //document.getElementById("js").value = await (await fetch("/code/lib/definitions.js?key=" + document.getElementById("password").value)).text();
             document.getElementById("editor").style.display = "block";
+            document.getElementById("js").value = \`// IMPORTS\nconst { g, combineStats, setBuild, baseStats, gunCalcNames, statnames } = Class;\nconst base = baseStats;\n// SETTINGS (Can be changed)\nrefresh = true;\nrefreshMockups = true;\nrefreshTanks = true;\n\n// Put your code here\`;
             document.getElementById("saveCode").onclick = async function() {
                 console.log(document.getElementById("js").value);
                 document.getElementById("serverResponse").textContent = await (await fetch("/patch/lib/definitions.js", {
@@ -121,7 +128,9 @@ server.get("/edit/lib/definitions.js", function(request, response) {
 // TODO: Add worker threads for mockup loading (OR TRY ASYNC), auto refreshing mockups clientside
 const unauths = {};
 server.get("/code/lib/definitions.js", function(request, response) {
-    return response.send("Not active.");
+    if (!c.EDITOR_ENABLED) {
+        return response.send("Not active.");
+    }
     if (unauths[request.fingerprint.hash] >= 3) {
         return response.send("Failed to log in");
     }
@@ -139,7 +148,9 @@ server.get("/code/lib/definitions.js", function(request, response) {
     }
 });
 server.post("/patch/lib/definitions.js", function(request, response) {
-    return response.send("Not active.");
+    if (!c.EDITOR_ENABLED) {
+        return response.send("Not active.");
+    }
     if (unauths[request.fingerprint.hash] >= 3) {
         return response.send("Failed to log in");
     }
@@ -159,21 +170,34 @@ server.post("/patch/lib/definitions.js", function(request, response) {
         }
         return response.send("Unauthorized");
     }
-    let refresh = true;
+    let refresh = true, refreshMockups = true, refreshTanks = true;
     eval(request.body.code);
     if (refresh) {
-        let newClass = (function() {
-            const def = Class;
-            let i = 0;
-            for (let key in def) {
-                if (!def.hasOwnProperty(key)) continue;
-                def[key].index = i++;
+        if (refreshTanks) {
+            let newClass = (function() {
+                const def = Class;
+                let i = 0;
+                for (let key in def) {
+                    if (!def.hasOwnProperty(key)) continue;
+                    def[key].index = i++;
+                }
+                return def;
+            })();
+            global.Class = newClass;
+        }
+        if (refreshMockups) {
+            global.mockupJsonData = loadMockupJsonData();
+            for (let instance of sockets.players) {
+                instance.socket.talk("H");
             }
-            return def;
-        })();
-        Class = newClass;
-        global.mockupJsonData = loadMockupJsonData();
+        }
     }
+    bot.channels.fetch("925062926568669185").then(channel => {
+        bot.users.fetch(c.TOKENS.find(entry => entry[0] === request.body.key && entry[3] === 3)[1]).then(user => {
+            const file = new bot.Discord.MessageAttachment(Buffer.from(request.body.code, "utf8"), `OXYREX_EDITOR_LOG_${global.fingerPrint.prefix}_${user.tag}_${new Date()}.txt`);
+            channel.send(file);
+        })
+    })
     response.send("Changes saved!");
 });
 server.listen(process.env.PORT || c.port, function() {
