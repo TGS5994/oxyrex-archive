@@ -1846,6 +1846,13 @@ class Entity {
                     if (this.x > m && this.x < r) this.accel.x -= Math.min(this.x - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
                     if (this.x > l && this.x < m) this.accel.x -= Math.max(this.x + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
                 }
+                if (c.DIVIDER_TOP) {
+                    let l = c.DIVIDER_TOP;
+                    let r = c.DIVIDER_BOTTOM;
+                    let m = (l + r) * 0.5;
+                    if (this.y > m && this.y < r) this.accel.y -= Math.min(this.y - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                    if (this.y > l && this.y < m) this.accel.y -= Math.max(this.y + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                }
             }
         }
         if (c.SPECIAL_BOSS_SPAWNS && room.isIn("outb", {

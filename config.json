@@ -31,6 +31,8 @@
     "EDITOR_ENABLED": false,
     "DIVIDER_LEFT": false,
     "DIVIDER_RIGHT": false,
+    "DIVIDER_TOP": false,
+    "DIVIDER_BOTTOM": false,
     "BANNED_CHARACTER_REGEX": "/[\uFDFD\u200E\u0000]/gi",
     "ROOM_SETUP": [
         ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm"],
