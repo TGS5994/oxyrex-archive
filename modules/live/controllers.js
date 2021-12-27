@@ -23,7 +23,8 @@ class IO {
         };
     }
 }
-class io_doNothing extends IO {
+const ioTypes = {};
+ioTypes.doNothing = class extends IO {
     constructor(body) {
         super(body);
         this.acceptsFromTop = false;
@@ -32,22 +33,22 @@ class io_doNothing extends IO {
         return {
             goal: {
                 x: this.body.x,
-                y: this.body.y,
+                y: this.body.y
             },
             main: false,
             alt: false,
-            fire: false,
+            fire: false
         };
     }
 }
-class io_moveInCircles extends IO {
+ioTypes.moveInCircles = class extends IO {
     constructor(body) {
         super(body);
         this.acceptsFromTop = false;
         this.timer = ran.irandom(10) + 3;
         this.goal = {
             x: this.body.x + 10 * Math.cos(-this.body.facing),
-            y: this.body.y + 10 * Math.sin(-this.body.facing),
+            y: this.body.y + 10 * Math.sin(-this.body.facing)
         };
     }
     think() {
@@ -55,7 +56,7 @@ class io_moveInCircles extends IO {
             this.timer = 10;
             this.goal = {
                 x: this.body.x + 10 * Math.cos(-this.body.facing),
-                y: this.body.y + 10 * Math.sin(-this.body.facing),
+                y: this.body.y + 10 * Math.sin(-this.body.facing)
             };
         }
         return {
@@ -63,7 +64,7 @@ class io_moveInCircles extends IO {
         };
     }
 }
-class io_listenToPlayer extends IO {
+ioTypes.listenToPlayer = class extends IO {
     constructor(b, p) {
         super(b);
         this.player = p;
@@ -73,13 +74,13 @@ class io_listenToPlayer extends IO {
     think() {
         let targ = {
             x: this.player.target.x,
-            y: this.player.target.y,
+            y: this.player.target.y
         };
         if (this.player.command.autospin) {
             let kk = Math.atan2(this.body.control.target.y, this.body.control.target.x) + 0.02;
             targ = {
                 x: 100 * Math.cos(kk),
-                y: 100 * Math.sin(kk),
+                y: 100 * Math.sin(kk)
             };
         }
         if (this.body.invuln) {
@@ -104,37 +105,27 @@ class io_listenToPlayer extends IO {
             },
             fire: this.player.command.lmb || this.player.command.autofire,
             main: this.player.command.lmb || this.player.command.autospin || this.player.command.autofire,
-            alt: this.player.command.rmb,
+            alt: this.player.command.rmb
         };
     }
 }
-class io_mapTargetToGoal extends IO {
+ioTypes.mapTargetToGoal = class extends IO {
     constructor(b) {
         super(b);
     }
     think(input) {
-        if (this.body.master.master.controllingSquadron && this.body.master.master.control.target && !this.body.settings.independent) {
-            input.target = this.body.master.master.control.target;
-            return {
-                goal: {
-                    x: input.target.x + this.body.x,
-                    y: input.target.y + this.body.y,
-                },
-                power: 1
-            }
-        }
         if (input.main || input.alt) {
             return {
                 goal: {
                     x: input.target.x + this.body.x,
-                    y: input.target.y + this.body.y,
+                    y: input.target.y + this.body.y
                 },
-                power: 1,
+                power: 1
             };
         }
     }
 }
-class io_plane extends IO {
+ioTypes.plane = class extends IO {
     constructor(b) {
         super(b);
     }
@@ -144,57 +135,53 @@ class io_plane extends IO {
             return {
                 goal: {
                     x: input.target.x + this.body.x,
-                    y: input.target.y + this.body.y,
+                    y: input.target.y + this.body.y
                 },
                 power: 1
             }
         }
     }
 }
-class io_boomerang extends IO {
+ioTypes.boomerang = class extends IO {
     constructor(b) {
         super(b);
         this.r = 0;
         this.b = b;
         this.m = b.master;
         this.turnover = false;
-        let len = 10 * util.getDistance({
-            x: 0,
-            y: 0
-        }, b.master.control.target);
         this.myGoal = {
             x: 3 * b.master.control.target.x + b.master.x,
-            y: 3 * b.master.control.target.y + b.master.y,
+            y: 3 * b.master.control.target.y + b.master.y
         };
     }
     think(input) {
         if (this.b.range > this.r) this.r = this.b.range;
-        let t = 1; //1 - Math.sin(2 * Math.PI * this.b.range / this.r) || 1;
+        let t = 1;
         if (!this.turnover) {
             if (this.r && this.b.range < this.r * 0.5) {
                 this.turnover = true;
             }
             return {
                 goal: this.myGoal,
-                power: t,
+                power: t
             };
         } else {
             return {
                 goal: {
                     x: this.m.x,
-                    y: this.m.y,
+                    y: this.m.y
                 },
-                power: t,
+                power: t
             };
         }
     }
 }
-class io_goToMasterTarget extends IO {
+ioTypes.goToMasterTarget = class extends IO {
     constructor(body) {
         super(body);
         this.myGoal = {
             x: body.master.control.target.x + body.master.x,
-            y: body.master.control.target.y + body.master.y,
+            y: body.master.control.target.y + body.master.y
         };
         this.countdown = 5;
     }
@@ -206,13 +193,13 @@ class io_goToMasterTarget extends IO {
             return {
                 goal: {
                     x: this.myGoal.x,
-                    y: this.myGoal.y,
-                },
+                    y: this.myGoal.y
+                }
             };
         }
     }
 }
-class io_canRepel extends IO {
+ioTypes.canRepel = class extends IO {
     constructor(b) {
         super(b);
     }
@@ -221,24 +208,24 @@ class io_canRepel extends IO {
             return {
                 target: {
                     x: -input.target.x,
-                    y: -input.target.y,
+                    y: -input.target.y
                 },
-                main: true,
+                main: true
             };
         }
     }
 }
-class io_alwaysFire extends IO {
+ioTypes.alwaysFire = class extends IO {
     constructor(body) {
         super(body);
     }
     think() {
         return {
-            fire: true,
+            fire: true
         };
     }
 }
-class io_targetSelf extends IO {
+ioTypes.targetSelf = class extends IO {
     constructor(body) {
         super(body);
     }
@@ -247,24 +234,24 @@ class io_targetSelf extends IO {
             main: true,
             target: {
                 x: 0,
-                y: 0,
-            },
+                y: 0
+            }
         };
     }
 }
-class io_mapAltToFire extends IO {
+ioTypes.mapAltToFire = class extends IO {
     constructor(body) {
         super(body);
     }
     think(input) {
         if (input.alt) {
             return {
-                fire: true,
+                fire: true
             };
         }
     }
 }
-class io_onlyAcceptInArc extends IO {
+ioTypes.onlyAcceptInArc = class extends IO {
     constructor(body) {
         super(body);
     }
@@ -274,13 +261,13 @@ class io_onlyAcceptInArc extends IO {
                 return {
                     fire: false,
                     alt: false,
-                    main: false,
+                    main: false
                 };
             }
         }
     }
 }
-class io_onlyFireWhenInRange extends IO {
+ioTypes.onlyFireWhenInRange = class extends IO {
     constructor(body) {
         super(body);
     }
@@ -294,7 +281,7 @@ class io_onlyFireWhenInRange extends IO {
         }
     }
 }
-class io_nearestDifferentMaster extends IO {
+ioTypes.nearestDifferentMaster = class extends IO {
     constructor(body) {
         super(body);
         this.targetLock = undefined;
@@ -317,9 +304,10 @@ class io_nearestDifferentMaster extends IO {
         if (this.body.aiSettings.blind) range = mm.fov / 2;
         let mostDangerous = 0,
             sqrRange = range * range,
+            sqrRangeMaster = range * range * 4 / 3,
             keepTarget = false;
         // Filter through everybody...
-        let out = [];
+        /*let out = [];
         for (let i = 0, length = entities.length; i < length; i ++) if (this.checkEntity(entities[i], m, mm, range) != null) out.push(entities[i]);
         if (!out.length) return [];
         out = out.map((e) => {
@@ -344,6 +332,24 @@ class io_nearestDifferentMaster extends IO {
                     return e;
                 }
             }
+        });*/
+        let out = entities.filter(e => {
+            // Only look at those within our view, and our parent's view, not dead, not invisible, not our kind, not a bullet/trap/block etc
+            return !!this.checkEntity(e, m, mm, range);
+        }).filter((e) => {
+            // Only look at those within range and arc (more expensive, so we only do it on the few)
+            if (this.body.firingArc == null || this.body.aiSettings.view360 || Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) {
+                mostDangerous = Math.max(e.dangerValue, mostDangerous)
+                return true
+            }
+            return false
+        }).filter((e) => {
+            // Only return the highest tier of danger
+            if (this.body.aiSettings.farm || e.dangerValue === mostDangerous) {
+                if (this.targetLock && e.id === this.targetLock.id) keepTarget = true
+                return true
+            }
+            return false
         });
         // Reset target if it's not in there
         if (!keepTarget) this.targetLock = undefined;
@@ -388,49 +394,50 @@ class io_nearestDifferentMaster extends IO {
         }
         // Check if my target's alive
         if (this.targetLock) {
-            if (this.targetLock.health.amount <= 0) {
+            if (this.targetLock.health.amount <= 0 || (this.targetLock.passive || this.body.master.passive) || (!this.body.seeInvisible && this.targetLock.alpha < .25)) {
                 this.targetLock = undefined;
                 this.tick = 100;
             }
         }
         // Think damn hard
-        if (this.body.aiSettings.blind && this.targetLock != null) { // Always run if we rely on the control center for instructions
-            const e = this.targetLock;
-            const mm = this.body.master.master;
-            if (util.getDistance(e, mm) > mm.fov / 2) { // Range limiting effects
-                this.targetLock = null;
-            }
-        }
-        if (this.tick ++ > 15 * roomSpeed) {
-            this.tick = 0;
-            this.validTargets = this.buildList(range);
+        if (this.tick++ > 15 * roomSpeed) {
+            this.tick = 0
+            this.validTargets = this.buildList(range)
             // Ditch our old target if it's invalid
             if (this.targetLock && this.validTargets.indexOf(this.targetLock) === -1) {
-                this.targetLock = undefined;
+                this.targetLock = undefined
             }
             // Lock new target if we still don't have one.
             if (this.targetLock == null && this.validTargets.length) {
                 this.targetLock = (this.validTargets.length === 1) ? this.validTargets[0] : nearest(this.validTargets, {
                     x: this.body.x,
                     y: this.body.y
-                });
-                this.tick = -90;
+                })
+                this.tick = -90
             }
         }
+        // Lock onto whoever's shooting me.
+        // let damageRef = (this.body.bond == null) ? this.body : this.body.bond
+        // if (damageRef.collisionArray.length && damageRef.health.display() < this.oldHealth) {
+        //     this.oldHealth = damageRef.health.display()
+        //     if (this.validTargets.indexOf(damageRef.collisionArray[0]) === -1) {
+        //         this.targetLock = (damageRef.collisionArray[0].master.id === -1) ? damageRef.collisionArray[0].source : damageRef.collisionArray[0].master
+        //     }
+        // }
         // Consider how fast it's moving and shoot at it
         if (this.targetLock != null) {
-            let radial = this.targetLock.velocity;
+            let radial = this.targetLock.velocity
             let diff = {
                 x: this.targetLock.x - this.body.x,
                 y: this.targetLock.y - this.body.y,
-            };
+            }
             /// Refresh lead time
             if (this.tick % 4 === 0) {
-                this.lead = 0;
+                this.lead = 0
                 // Find lead time (or don't)
                 if (!this.body.aiSettings.chase) {
-                    let toi = timeOfImpact(diff, radial, tracking);
-                    this.lead = toi;
+                    let toi = timeOfImpact(diff, radial, tracking)
+                    this.lead = toi
                 }
             }
             // And return our aim
@@ -440,51 +447,51 @@ class io_nearestDifferentMaster extends IO {
                     y: diff.y + this.lead * radial.y,
                 },
                 fire: true,
-                main: true,
+                main: true
             };
         }
         return {};
     }
 }
-class io_avoid extends IO {
+ioTypes.avoid = class extends IO {
     constructor(body) {
-        super(body);
+        super(body)
     }
     think(input) {
-        let masterId = this.body.master.id;
-        let range = this.body.size * this.body.size * 100;
+        let masterId = this.body.master.id
+        let range = this.body.size * this.body.size * 100
         this.avoid = nearest(entities, {
             x: this.body.x,
             y: this.body.y
-        }, function(test, sqrdst) {
-            return (test.master.id !== masterId && (test.type === "tank" || test.type === 'bullet' || test.type === 'drone' || test.type === 'swarm' || test.type === 'trap' || test.type === 'block') && sqrdst < range);
-        });
+        }, function (test, sqrdst) {
+            return (test.master.id !== masterId && (test.type === 'bullet' || test.type === 'drone' || test.type === 'swarm' || test.type === 'trap' || test.type === 'block') && sqrdst < range);
+        })
         // Aim at that target
         if (this.avoid != null) {
             // Consider how fast it's moving.
-            let delt = new Vector(this.body.velocity.x - this.avoid.velocity.x, this.body.velocity.y - this.avoid.velocity.y);
+            let delt = new Vector(this.body.velocity.x - this.avoid.velocity.x, this.body.velocity.y - this.avoid.velocity.y)
             let diff = new Vector(this.avoid.x - this.body.x, this.avoid.y - this.body.y);
-            let comp = (delt.x * diff.x + delt.y * diff.y) / delt.length / diff.length;
-            let goal = {};
+            let comp = (delt.x * diff.x + delt.y * diff.y) / delt.length / diff.length
+            let goal = {}
             if (comp > 0) {
                 if (input.goal) {
-                    let goalDist = Math.sqrt(range / (input.goal.x * input.goal.x + input.goal.y * input.goal.y));
+                    let goalDist = Math.sqrt(range / (input.goal.x * input.goal.x + input.goal.y * input.goal.y))
                     goal = {
                         x: input.goal.x * goalDist - diff.x * comp,
-                        y: input.goal.y * goalDist - diff.y * comp,
-                    };
+                        y: input.goal.y * goalDist - diff.y * comp
+                    }
                 } else {
                     goal = {
                         x: -diff.x * comp,
-                        y: -diff.y * comp,
-                    };
+                        y: -diff.y * comp
+                    }
                 }
-                return goal;
+                return goal
             }
         }
     }
 }
-class io_minion extends IO {
+ioTypes.minion = class extends IO {
     constructor(body) {
         super(body);
         this.turnwise = 1;
@@ -540,7 +547,7 @@ class io_minion extends IO {
         }
     }
 }
-class io_hangOutNearMaster extends IO {
+ioTypes.hangOutNearMaster = class extends IO {
     constructor(body) {
         super(body);
         this.acceptsFromTop = false;
@@ -586,7 +593,7 @@ class io_hangOutNearMaster extends IO {
         }
     }
 }
-class io_spin extends IO {
+ioTypes.spin = class extends IO {
     constructor(b) {
         super(b);
         this.a = 0;
@@ -606,7 +613,7 @@ class io_spin extends IO {
         };
     }
 }
-class io_fastspin extends IO {
+ioTypes.fastspin = class extends IO {
     constructor(b) {
         super(b);
         this.a = 0;
@@ -626,7 +633,7 @@ class io_fastspin extends IO {
         };
     }
 }
-class io_reversespin extends IO {
+ioTypes.reversespin = class extends IO {
     constructor(b) {
         super(b);
         this.a = 0;
@@ -646,7 +653,7 @@ class io_reversespin extends IO {
         };
     }
 }
-class io_slowSpin extends IO {
+ioTypes.slowSpin = class extends IO {
     constructor(b) {
         super(b);
         this.a = 0;
@@ -666,7 +673,7 @@ class io_slowSpin extends IO {
         };
     }
 }
-class io_reverseSlowSpin extends IO {
+ioTypes.reverseSlowSpin = class extends IO {
     constructor(body) {
         super(body)
         this.a = 0
@@ -686,7 +693,7 @@ class io_reverseSlowSpin extends IO {
         };
     }
 }
-class io_dontTurn extends IO {
+ioTypes.dontTurn = class extends IO {
     constructor(b) {
         super(b);
     }
@@ -700,7 +707,7 @@ class io_dontTurn extends IO {
         };
     }
 }
-class io_dontTurnDominator extends IO {
+ioTypes.dontTurnDominator = class extends IO {
     constructor(b) {
         super(b);
     }
@@ -714,7 +721,7 @@ class io_dontTurnDominator extends IO {
         };
     }
 }
-class io_fleeAtLowHealth extends IO {
+ioTypes.fleeAtLowHealth = class extends IO {
     constructor(b) {
         super(b);
         this.fear = Math.random() * .25;
@@ -730,7 +737,7 @@ class io_fleeAtLowHealth extends IO {
         }
     }
 }
-class io_botMovement extends IO {
+ioTypes.botMovement = class extends IO {
     constructor(body) {
         super(body);
         this.nearEdge = 1;
@@ -861,34 +868,7 @@ class io_botMovement extends IO {
         };
     }
 }
-class io_droneStabilizer extends IO {
-    constructor(b) {
-        super(b);
-        this.e = false;
-    }
-    think(input) {
-        if (input.alt && !this.e) {
-            this.e = true;
-            this.body.controllers = this.body.controllers.filter(entry => entry !== this);
-            this.body.define(Class.redistributorBullet);
-            this.body.skill.set([9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
-            this.body.damage *= 10;
-            this.body.health.max *= 10;
-            this.body.health.amount = this.body.health.max;
-        }
-    }
-}
-class io_droneTrap extends IO {
-    constructor(b) {
-        super(b);
-    }
-    think(input) {
-        if (input.alt) {
-            return this.body.define(Class.trap)
-        }
-    }
-}
-class io_listenToPlayerStatic extends IO {
+ioTypes.listenToPlayerStatic = class extends IO {
     constructor(b, p) {
         super(b);
         this.player = p;
@@ -927,7 +907,7 @@ class io_listenToPlayerStatic extends IO {
         };
     }
 }
-class io_spinWhenIdle extends IO {
+ioTypes.spinWhenIdle = class extends IO {
     constructor(b) {
         super(b);
         this.a = 0;
@@ -951,7 +931,7 @@ class io_spinWhenIdle extends IO {
         };
     }
 }
-class io_multiboxClone extends IO {
+ioTypes.multiboxClone = class extends IO {
     constructor(b) {
         super(b);
     }
@@ -967,7 +947,7 @@ class io_multiboxClone extends IO {
         }
     }
 }
-class io_taurusPortal extends IO {
+ioTypes.taurusPortal = class extends IO {
     constructor(body) {
         super(body);
         this.myGoal = {
@@ -980,7 +960,7 @@ class io_taurusPortal extends IO {
         this.body.y = this.myGoal.y;
     }
 }
-class io_spinMissile extends IO {
+ioTypes.spinMissile = class extends IO {
     constructor(body) {
         super(body);
         this.angle = 0;
@@ -1001,7 +981,7 @@ class io_spinMissile extends IO {
     }
 }
 const skipBombVariation = Math.PI / 3;
-class io_skipBomb extends IO {
+ioTypes.skipBomb = class extends IO {
     constructor(body) {
         super(body);
         this.goal = {
@@ -1028,7 +1008,7 @@ class io_skipBomb extends IO {
         }
     }
 }
-class io_bossRushAI extends IO {
+ioTypes.bossRushAI = class extends IO {
     constructor(body) {
         super(body);
         this.enabled = true;
@@ -1069,39 +1049,5 @@ class io_bossRushAI extends IO {
 }
 module.exports = {
     IO,
-    io_doNothing,
-    io_moveInCircles,
-    io_listenToPlayer,
-    io_mapTargetToGoal,
-    io_boomerang,
-    io_goToMasterTarget,
-    io_canRepel,
-    io_alwaysFire,
-    io_targetSelf,
-    io_mapAltToFire,
-    io_onlyAcceptInArc,
-    io_nearestDifferentMaster,
-    io_avoid,
-    io_minion,
-    io_hangOutNearMaster,
-    io_spin,
-    io_fastspin,
-    io_reversespin,
-    io_slowSpin,
-    io_reverseSlowSpin,
-    io_dontTurn,
-    io_dontTurnDominator,
-    io_fleeAtLowHealth,
-    io_botMovement,
-    io_droneStabilizer,
-    io_droneTrap,
-    io_listenToPlayerStatic,
-    io_spinWhenIdle,
-    io_multiboxClone,
-    io_taurusPortal,
-    io_spinMissile,
-    io_plane,
-    io_onlyFireWhenInRange,
-    io_skipBomb,
-    io_bossRushAI
+    ioTypes
 };

@@ -187,7 +187,7 @@ const gameloop = (() => {
                 }
             }
         });
-        loopThrough(entities, entitiesactivationloop);
+        for (let e of entitie) entitiesactivationloop(e);
         logs.activation.mark();
         // Do collisions
         logs.collide.set();
@@ -196,12 +196,12 @@ const gameloop = (() => {
             grid.update();
             // Run collisions in each grid
             const pairs = grid.queryForCollisionPairs();
-            loopThrough(pairs, collide);
+            for (let p of pairs) collide(p);
         }
         logs.collide.mark();
         // Do entities life
         logs.entities.set();
-        loopThrough(entities, entitiesliveloop);
+        for (let e of entities) entitiesliveloop(e);
         logs.entities.mark();
         logs.master.mark();
         // Remove dead entities
@@ -717,7 +717,7 @@ const maintainloop = (() => {
                         }
                     }
                     // Slowly upgrade them
-                    loopThrough(room.bots, function(o) {
+                    for (let o of room.bots) {
                         if (o.skill.level < 60) {
                             o.skill.score += 35;
                             o.skill.maintain();
@@ -728,7 +728,7 @@ const maintainloop = (() => {
                                 o.botDoneUpgrading = true;
                             }
                         }
-                    });
+                    }
                 }
             }
             // Remove dead ones
@@ -736,7 +736,7 @@ const maintainloop = (() => {
                 return !e.isDead();
             });
             // Slowly upgrade them
-            loopThrough(bots, function(o) {
+            for (let o of bots) {
                 if (o.skill.level < 60) {
                     o.skill.score += 35;
                     o.skill.maintain();
@@ -747,7 +747,7 @@ const maintainloop = (() => {
                         o.botDoneUpgrading = true;
                     }
                 }
-            });
+            }
         };
     })();
     const createFood = (() => {
@@ -855,12 +855,12 @@ const maintainloop = (() => {
             const census = (() => {
                 let food = 0;
                 let nestFood = 0;
-                loopThrough(entities, instance => {
+                for (let instance of entities) {
                     if (instance.type === "food") {
                         if (instance.isNestFood) nestFood ++;
                         else food ++;
                     }
-                });
+                }
                 return {
                     food,
                     nestFood
@@ -1163,8 +1163,8 @@ setInterval(maintainloop, 1000);
 setInterval(speedcheckloop, 1000);
 setInterval(gamemodeLoop, 1000);
 setInterval(function() {
-    loopThrough(sockets.players, function(instance) {
+    for (let instance of sockets.players) {
         instance.socket.view.gazeUpon();
         instance.socket.lastUptime = Infinity;
-    });
+    }
 }, 1000 / 30);

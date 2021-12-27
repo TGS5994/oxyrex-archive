@@ -46,29 +46,45 @@ function nullVector(v) {
     v.y = 0;
 };
 // Gets a priority queue and returns the nearest.
-function nearest(array, location, test = () => { return true; }) {
-    let list = new goog.structs.PriorityQueue();
-    let d;
-    if (!array.length) {
-        return undefined;
-    }
-    array.forEach(function(instance) {
-        d = Math.pow(instance.x - location.x, 2) + Math.pow(instance.y - location.y, 2);
-        if (test(instance, d)) {
-            list.enqueue(d, instance);
+function nearest(array, location, test) {
+    if (!array.length) return
+    let priority = Infinity,
+        lowest
+    if (test) {
+        for (let instance of array) {
+            let x = instance.x - location.x
+            let y = instance.y - location.y
+            let d = x * x + y * y
+            if (d < priority && test(instance, d)) {
+                priority = d
+                lowest = instance
+            }
         }
-    });
-    return list.dequeue();
+    } else {
+        for (let instance of array) {
+            let x = instance.x - location.x
+            let y = instance.y - location.y
+            let d = x * x + y * y
+            if (d < priority) {
+                priority = d
+                lowest = instance
+            }
+        }
+    }
+    return lowest
 }
+
 function timeOfImpact(p, v, s) {
     // Requires relative position and velocity to aiming point
-    let a = s * s - (v.x * v.x + v.y * v.y);
-    let b = p.x * v.x + p.y * v.y;
-    let c = p.x * p.x + p.y * p.y;
-    let d = b * b + a * c;
-    let t = 0;
-    if (d >= 0) t = Math.max(0, (b + Math.sqrt(d)) / a);
-    return t * 0.9;
+    let a = s * s - (v.x * v.x + v.y * v.y)
+    let b = p.x * v.x + p.y * v.y
+    let c = p.x * p.x + p.y * p.y
+    let d = b * b + a * c
+    let t = 0
+    if (d >= 0) {
+        t = Math.max(0, (b + Math.sqrt(d)) / a)
+    }
+    return t * 0.9
 }
 module.exports = {
     Vector,

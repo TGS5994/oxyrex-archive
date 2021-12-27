@@ -39,8 +39,8 @@ let mothershipLoop = (function() {
             o.team = -i - 1;
             o.name = "Mothership";
             o.isMothership = true;
-            o.controllers.push(new io_nearestDifferentMaster(o));
-            o.controllers.push(new io_botMovement(o));
+            o.controllers.push(new ioTypes.nearestDifferentMaster(o));
+            o.controllers.push(new ioTypes.botMovement(o));
             o.refreshBodyAttributes();
             motherships.push([o.id, i]);
         }

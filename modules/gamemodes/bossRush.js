@@ -71,7 +71,7 @@ const bossRush = (function() {
         for (let boss of wave.bosses) {
             let o = new Entity(room.randomType("boss"));
             o.define(boss);
-            o.controllers.push(new io_bossRushAI(o));
+            o.controllers.push(new ioTypes.bossRushAI(o));
             o.team = -100;
             o.onDead = function() {
                 bosses --;
@@ -86,7 +86,7 @@ const bossRush = (function() {
         for (let i = 0; i < 2; i ++) {
             let n = new Entity(room.randomType("boss"));
             n.define(ran.choose(escorts));
-            n.controllers.push(new io_bossRushAI(n));
+            n.controllers.push(new ioTypes.bossRushAI(n));
             n.team = -100;
         }
         global.botScoreboard.Wave = (index + 1);
@@ -109,7 +109,7 @@ const bossRush = (function() {
         o.name = "Dominator";
         //o.SIZE = c.WIDTH / c.X_GRID / 10;
         o.isDominator = true;
-        o.controllers = [new io_nearestDifferentMaster(o), new io_spinWhenIdle(o)];
+        o.controllers = [new ioTypes.nearestDifferentMaster(o), new ioTypes.spinWhenIdle(o)];
         o.onDead = function() {
             if (o.team === -100) {
                 spawn(loc, -1, type);

@@ -22,7 +22,7 @@ const dominatorLoop = (function() {
         o.name = "Dominator";
         //o.SIZE = 37.5;
         o.isDominator = true;
-        o.controllers = [new io_nearestDifferentMaster(o), new io_spinWhenIdle(o)];
+        o.controllers = [new ioTypes.nearestDifferentMaster(o), new ioTypes.spinWhenIdle(o)];
         o.onDead = function() {
             if (o.team === -100 && o.collisionArray.length) {
                 let killers = [];

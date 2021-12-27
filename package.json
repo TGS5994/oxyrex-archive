@@ -15,7 +15,7 @@
         "google-closure-library": "20180506.0.0",
         "net": "^1.0.2",
         "node-fetch": "2.6.1",
-        "ws": "latest"
+        "ws": "6.1.x"
     },
     "engines": {
         "node": "17.x"

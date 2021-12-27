@@ -12,15 +12,17 @@ const room = {
     width: c.WIDTH,
     height: c.HEIGHT,
     setup: c.ROOM_SETUP,
-    xgrid: c.X_GRID,
-    ygrid: c.Y_GRID,
+    xgrid: c.ROOM_SETUP[0].length,
+    ygrid: c.ROOM_SETUP.length,
+    xgridWidth: c.WIDTH / c.ROOM_SETUP[0].length,
+    ygridHeight: c.HEIGHT / c.ROOM_SETUP.length,
     gameMode: c.MODE,
     skillBoost: c.SKILL_BOOST,
     scale: {
         square: c.WIDTH * c.HEIGHT / 100000000,
         linear: Math.sqrt(c.WIDTH * c.HEIGHT / 100000000),
     },
-    maxFood: c.WIDTH * c.HEIGHT / 20000 * c.FOOD_AMOUNT,
+    maxFood: c.WIDTH * c.HEIGHT / 100000 * c.FOOD_AMOUNT,
     isInRoom: c.ARENA_TYPE === "cirlce" ? location => util.getDistance(location, {
         x: c.WIDTH / 2,
         y: c.HEIGHT / 2

@@ -970,13 +970,13 @@ class Entity {
         }
     }
     become(player, dom = false) {
-        this.addController(dom ? new io_listenToPlayerStatic(this, player) : new io_listenToPlayer(this, player));
+        this.addController(dom ? new ioTypes.listenToPlayerStatic(this, player) : new ioTypes.listenToPlayer(this, player));
         this.sendMessage = (content, color) => player.socket.talk("m", content);
         this.kick = (reason) => player.socket.kick(reason);
     }
     giveUp(player, name = "Mothership") {
-        if (!player.body.isMothership) player.body.controllers = [new io_nearestDifferentMaster(player.body), new io_spinWhenIdle(player.body)];
-        else if (player.body.isMothership) player.body.controllers = [new io_nearestDifferentMaster(player.body), new io_botMovement(player.body), new io_mapTargetToGoal(player.body)];
+        if (!player.body.isMothership) player.body.controllers = [new ioTypes.nearestDifferentMaster(player.body), new ioTypes.spinWhenIdle(player.body)];
+        else if (player.body.isMothership) player.body.controllers = [new ioTypes.nearestDifferentMaster(player.body), new ioTypes.botMovement(player.body), new ioTypes.mapTargetToGoal(player.body)];
         player.body.name = player.body.label;
         player.body.underControl = false;
         player.body.sendMessage = content => {};
@@ -1033,9 +1033,7 @@ class Entity {
         }
         if (set.CONTROLLERS != null && mockupsLoaded) {
             let toAdd = [];
-            set.CONTROLLERS.forEach((ioName) => {
-                toAdd.push(eval('new io_' + ioName + '(this)'));
-            });
+            for (let ioName of set.CONTROLLERS) toAdd.push(new ioTypes[ioName](this))
             this.addController(toAdd);
         }
         if (set.MOTION_TYPE != null) {

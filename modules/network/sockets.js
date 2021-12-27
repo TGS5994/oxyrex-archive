@@ -821,7 +821,7 @@ const sockets = (() => {
                                         o.skill.score = body.skill.score;
                                         o.name = body.name;
                                         o.nameColor = body.nameColor;
-                                        o.controllers = [new io_multiboxClone(o)];
+                                        o.controllers = [new ioTypes.multiboxClone(o)];
                                         o.skill = body.skill;
                                         o.topSpeed = body.topSpeed;
                                         o.multiboxMaster = body;
@@ -882,14 +882,14 @@ const sockets = (() => {
                                             x: body.x + body.control.target.x,
                                             y: body.y + body.control.target.y
                                         };
-                                        loopThrough(entities, instance => {
+                                        for (const instance of entities) {
                                             let radius = instance.SIZE;
                                             if (instance.shape != 4) radius *= 2;
                                             if (util.getDistance(instance, loc) < radius) {
                                                 instance.x = loc.x;
                                                 instance.y = loc.y;
                                             }
-                                        });
+                                        }
                                     }
                                 } break;
                                 case 12: { // Stealth Mode
@@ -906,7 +906,7 @@ const sockets = (() => {
                                             x: body.x + body.control.target.x,
                                             y: body.y + body.control.target.y
                                         };
-                                        loopThrough(entities, instance => {
+                                        for (const instance of entities) {
                                             if (util.getDistance(instance, loc) < instance.SIZE) {
                                                 body.controllers = [];
                                                 body.passive = false;
@@ -921,10 +921,10 @@ const sockets = (() => {
                                                 player.body = instance;
                                                 player.body.refreshBodyAttributes();
                                                 player.body.sendMessage = (content, color = 9) => socket.talk("m", content, color, false);
-                                                player.body.controllers = [new io_listenToPlayer(player.body, player)];
+                                                player.body.controllers = [new ioTypes.listenToPlayer(player.body, player)];
                                                 player.body.sendMessage("You have taken over the entity!");
                                             }
-                                        });
+                                        }
                                     }
                                 } break;
                                 default: {
@@ -933,8 +933,7 @@ const sockets = (() => {
                                 } break;
                             }
                         }
-                    }
-                        break;
+                    } break;
                     case "1": { // Developer commands
                         if (m.length < 2 || typeof m[0] !== "number") {
                             socket.kick("Invalid command.");
@@ -1722,7 +1721,7 @@ const sockets = (() => {
                                 }).filter(r => r);
                             }
                             // Look at our list of nearby entities and get their updates
-                            let visible = [];
+                            let visible = []
                             for (let i = 0, l = nearby.length; i < l; i++) {
                                 if (nearby[i].photo && nearby[i].alpha > .075 && !nearby[i].isGhost) {
                                     //if (Math.abs(e.x - x) < fov / 2 + 1.5 * e.size && Math.abs(e.y - y) < fov / 2 * (9 / 16) + 1.5 * e.size) {
@@ -1910,16 +1909,18 @@ const sockets = (() => {
                             });
                         }
                     }
-                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER && !c.EPICENTER) loopThrough(entities, function (instance) {
-                        if (c.MOTHERSHIP_LOOP) {
-                            if (instance.isMothership) list.push(instance);
-                        } else if (c.TAG) {
-                            let entry = list.find(r => r.team === instance.team);
-                            if (entry && (instance.isPlayer || instance.isBot)) entry.skill.score++;
-                        } else {
-                            if (instance.settings.leaderboardable && instance.settings.drawShape && (instance.type === 'tank' || instance.killCount.solo || instance.killCount.assists)) list.push(instance);
+                    if (!c.KILL_RACE && !c.HIDE_AND_SEEK && !c.SOCCER && !c.EPICENTER) {
+                        for (const instance of entities) {
+                            if (c.MOTHERSHIP_LOOP) {
+                                if (instance.isMothership) list.push(instance);
+                            } else if (c.TAG) {
+                                let entry = list.find(r => r.team === instance.team);
+                                if (entry && (instance.isPlayer || instance.isBot)) entry.skill.score++;
+                            } else {
+                                if (instance.settings.leaderboardable && instance.settings.drawShape && (instance.type === 'tank' || instance.killCount.solo || instance.killCount.assists)) list.push(instance);
+                            }
                         }
-                    });
+                    }
                     let topTen = [];
                     for (let i = 0; i < 10 && list.length; i++) {
                         let top, is = 0
