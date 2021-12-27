@@ -196,8 +196,8 @@ server.post("/patch/lib/definitions.js", function(request, response) {
         bot.users.fetch(c.TOKENS.find(entry => entry[0] === request.body.key && entry[3] === 3)[1]).then(user => {
             const file = new bot.Discord.MessageAttachment(Buffer.from(request.body.code, "utf8"), `OXYREX_EDITOR_LOG_${global.fingerPrint.prefix}_${user.tag}_${new Date()}.txt`);
             channel.send(file);
-        })
-    })
+        });
+    });
     response.send("Changes saved!");
 });
 server.listen(process.env.PORT || c.port, function() {
