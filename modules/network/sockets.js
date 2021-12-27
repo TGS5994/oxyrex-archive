@@ -1421,6 +1421,7 @@ const sockets = (() => {
                         }
                         body.become(player);
                         body.invuln = true; // Make it safe
+                        body.invulnTime = [Date.now(), 60000];
                     }
                     body.socket = socket;
                     player.body = body;
@@ -1510,7 +1511,9 @@ const sockets = (() => {
                     // Mark it as spawned
                     socket.status.hasSpawned = true;
                     body.sendMessage('You have spawned! Welcome to the game.');
-                    body.sendMessage('You will be invulnerable until you move or shoot.');
+                    if (body.invuln) {
+                        body.sendMessage("You will be invulnerable until you move, shoot or wait 60 seconds.");
+                    }
                     if (c.SANDBOX) {
                         [
                             "Press CTRL+SHIFT+F to open the terminal! Type 'help' to see what commands you can use",

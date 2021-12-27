@@ -171,7 +171,7 @@ server.post("/patch/lib/definitions.js", function(request, response) {
         return response.send("Unauthorized");
     }
     let refresh = true, refreshMockups = true, refreshTanks = true;
-    eval(request.body.code);
+    eval(request.body.code.replace(/exports./ig, "Class."));
     if (refresh) {
         if (refreshTanks) {
             let newClass = (function() {

@@ -738,6 +738,7 @@ class Entity {
         this.damp = 0.05;
         this.collisionArray = [];
         this.invuln = false;
+        this.invulnTime = [-1, -1];
         this.alpha = 1;
         this.invisible = [0, 0];
         this.dangerValue = 5;
@@ -857,6 +858,12 @@ class Entity {
                                 }
                             }
                         }
+                    }
+                }
+                if (this.invuln && this.invulnTime[1] > -1) {
+                    if (Date.now() - this.invulnTime[0] > this.invulnTime[1]) {
+                        this.invuln = false;
+                        this.sendMessage("Your invulnerability has expired.");
                     }
                 }
                 if (this.submarine && this.submarine.maxAir > 0) {
@@ -1409,7 +1416,7 @@ class Entity {
     }
     camera(tur = false) {
         const out = {
-            type: 0 + tur * 0x01 + this.settings.drawHealth * 0x02 + (this.type === 'tank') * 0x04,
+            type: 0 + tur * 0x01 + this.settings.drawHealth * 0x02 + (this.type === 'tank') * 0x04 + this.invuln * 0x08,
             id: this.id,
             index: this.index,
             x: this.x,
@@ -1775,15 +1782,15 @@ class Entity {
             };
             if (room.isIn("port", loc) && !this.passive && !this.settings.goThruObstacle && this.facingType !== "bound") {
                 let myRoom = room.isAt(loc);
-                let otherPortals = room.port.map(e => e).filter(r => (r.x !== myRoom.x && r.y !== myRoom.y));
                 let dx = loc.x - myRoom.x;
                 let dy = loc.y - myRoom.y;
                 let dist2 = dx * dx + dy * dy;
                 let force = c.ROOM_BOUND_FORCE;
                 let portals = {
-                    launchForce: 1250,
-                    gravity: 13500,
-                    threshold: 200
+                    launchForce: 5000,
+                    gravity: 20000,
+                    threshold: 15 * 15,
+                    spawnMe: (room.width / room.xgrid) / 2 + this.SIZE
                 };
                 if (this.type === "miniboss" || this.isMothership) {
                     this.accel.x += 3e4 * dx / dist2 * force / roomSpeed;
@@ -1791,19 +1798,21 @@ class Entity {
                 } else if (this.type === "tank") {
                     if (dist2 <= portals.threshold) {
                         let angle = Math.random() * Math.PI * 2;
-                        let ax = Math.cos(angle);
-                        let ay = Math.sin(angle);
-                        this.velocity.x = portals.launchForce * ax * force / roomSpeed;
-                        this.velocity.y = portals.launchForce * ay * force / roomSpeed;
-                        let portTo = (otherPortals.length ? ran.choose(otherPortals) : room.random());
-                        let rx = ax * (room.width / room.xgrid) + (this.size * 2);
-                        let ry = ay * (room.width / room.ygrid) + (this.size * 2);
-                        this.x = portTo.x + rx;
-                        this.y = portTo.y + ry;
-                        for (let o of entities)
-                            if (o.id !== this.id && o.master.id === this.id && (o.type === "drone" || o.type === "minion")) {
-                                o.x = this.x + (ay * 30 * (Math.random() - .5));
-                                o.y = portTo.y + (ay * 30 * (Math.random() - .5));
+                        this.accel.x = portals.launchForce * Math.sin(angle) * c.ROOM_BOUND_FORCE / roomSpeed;
+                        this.accel.y = portals.launchForce * Math.cos(angle) * c.ROOM_BOUND_FORCE / roomSpeed;
+                        let portTo;
+                        do {
+                            portTo = room['port'][Math.floor(Math.random() * room['port'].length)];
+                        } while (portTo.id === myRoom.id && room['port'].length > 1);
+                        this.x = portTo.x + portals.spawnMe * Math.sin(angle);
+                        this.y = portTo.y + portals.spawnMe * Math.cos(angle);
+                        this.invuln = true;
+                        this.invulnTime = [Date.now(), 30000];
+                        this.sendMessage("You will be invulnerable until you move, shoot or wait 30 seconds.");
+                        for (let i of this.children)
+                            if (i.type === 'drone') {
+                                i.x = portTo.x + 320 * Math.sin(angle) + portals.spawnMe * (Math.random() - 0.5);
+                                i.y = portTo.y + 320 * Math.cos(angle) + portals.spawnMe * (Math.random() - 0.5);
                             }
                     } else {
                         this.velocity.x -= portals.gravity * dx / dist2 * force / roomSpeed;
@@ -1830,6 +1839,13 @@ class Entity {
                 this.accel.x -= Math.max(this.x + this.realSize - room.width - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
                 this.accel.y -= Math.min(this.y - this.realSize + 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
                 this.accel.y -= Math.max(this.y + this.realSize - room.height - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                if (c.DIVIDER_LEFT) {
+                    let l = c.DIVIDER_LEFT;
+                    let r = c.DIVIDER_RIGHT;
+                    let m = (l + r) * 0.5;
+                    if (this.x > m && this.x < r) this.accel.x -= Math.min(this.x - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                    if (this.x > l && this.x < m) this.accel.x -= Math.max(this.x + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                }
             }
         }
         if (c.SPECIAL_BOSS_SPAWNS && room.isIn("outb", {

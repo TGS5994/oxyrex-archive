@@ -11,8 +11,6 @@ if (global.fingerPrint.digitalOcean) {
     defaults.WIDTH = 6750;
     defaults.HEIGHT = 6750;
     defaults.maxPlayers = 35;
-} else if (global.fingerPrint.herokuWA) {
-    defaults.maxPlayers = 35;
 }
 
 function getBaseShuffling(teams) {
@@ -444,6 +442,23 @@ const gamemodes = {
         ],
         SANDBOX: true,
         secondaryGameMode: "sb"
+    },
+    "Closed Beta": {
+        WIDTH: 11111.111111111111,
+        HEIGHT: 5000,
+        ROOM_SETUP: [
+            ["roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm", "edge", "edge", "norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid"]
+        ],
+        DIVIDER_LEFT: 5000,
+        DIVIDER_RIGHT: 6111.111111111111,
     }
 };
 
@@ -475,7 +490,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return global.fingerPrint.herokuWA ? "Sandbox" : table[Math.floor(Math.random() * table.length)];
+    return global.fingerPrint.herokuC ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

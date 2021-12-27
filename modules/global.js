@@ -9,22 +9,26 @@ goog.require('goog.structs.QuadTree');
 // Global Utilities Requires
 
 global.fingerPrint = (function() {
-    const herokuVA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "va");
-    const herokuWA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "wa");
+    const herokuOA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "oa");
+    const herokuOB = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "ob");
     const herokuHA = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "ha");
+    const herokuHB = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "hb");
+    const herokuC = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "c");
     const DogatorixDOGA = process.argv.some(arg => arg.includes("Dogatorix")) && (process.env.HASH === "doga");
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
     const extraVM = process.argv.some(arg => arg.includes("extraVM"));
-    const localhost = !herokuVA && !herokuWA && !herokuHA && !digitalOcean && !extraVM;
+    const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuK && !digitalOcean && !extraVM && !DogatorixDOGA;
     return {
-        herokuVA,
-        herokuWA,
+        herokuOA,
+        herokuOB,
         herokuHA,
+        herokuHB,
+        herokuC,
         DogatorixDOGA,
         digitalOcean,
         extraVM,
         localhost,
-        prefix: ["va", "wa", "ha", "ba", "ga", "xyz", "doga"][herokuVA ? 0 : herokuWA ? 1 : herokuHA ? 2 : digitalOcean ? 3 : extraVM ? 4 : DogatorixDOGA ? 6 : 5]
+        prefix: ["oa", "ob", "ha", "hb", "c", "ba", "ga", "doga", "xyz"][herokuOA ? 0 : herokuOB ? 1 : herokuHA ? 2 : herokuHB ? 3 : herokuC ? 4 : digitalOcean ? 5 : extraVM ? 6 : DogatorixDOGA ? 7 : 8]
     }
 })();
 
