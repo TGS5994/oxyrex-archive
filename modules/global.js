@@ -17,7 +17,7 @@ global.fingerPrint = (function() {
     const DogatorixDOGA = process.argv.some(arg => arg.includes("Dogatorix")) && (process.env.HASH === "doga");
     const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
     const extraVM = process.argv.some(arg => arg.includes("extraVM"));
-    const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuK && !digitalOcean && !extraVM && !DogatorixDOGA;
+    const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuC && !digitalOcean && !extraVM && !DogatorixDOGA;
     return {
         herokuOA,
         herokuOB,
