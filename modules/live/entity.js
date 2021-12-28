@@ -504,8 +504,7 @@ class Gun {
                 break;
             }
         } else {
-            if (this.onShoot && this.onShoot.animation && !this.body.master.animating) {
-                this.body.master.animating = true;
+            if (this.onShoot && this.onShoot.animation) {
                 const frames = this.onShoot.frames;
                 for (let i = 1; i <= frames; i++) setTimeout(() => {
                     if (this.body.health.amount <= 0) {
@@ -521,7 +520,6 @@ class Gun {
                         console.log(id);
                     }
                 }, 20 * i);
-                setTimeout(() => this.body.master.animating = false, 20 * (frames + 1));
             }
         }
     }
@@ -1807,8 +1805,8 @@ class Entity {
                         this.x = portTo.x + portals.spawnMe * Math.sin(angle);
                         this.y = portTo.y + portals.spawnMe * Math.cos(angle);
                         this.invuln = true;
-                        this.invulnTime = [Date.now(), 30000];
-                        this.sendMessage("You will be invulnerable until you move, shoot or wait 30 seconds.");
+                        this.invulnTime = [Date.now(), 15000];
+                        this.sendMessage("You will be invulnerable until you move, shoot or wait 15 seconds.");
                         for (let i of this.children)
                             if (i.type === 'drone') {
                                 i.x = portTo.x + 320 * Math.sin(angle) + portals.spawnMe * (Math.random() - 0.5);

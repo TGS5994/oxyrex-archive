@@ -694,7 +694,7 @@ const maintainloop = (() => {
                 spawnBosses(census);
                 spawnSanctuaries(census);
                 // Bots
-                if (bots.length + views.length < Math.ceil(c.maxPlayers / 2) && !global.arenaClosed) {
+                if ((room.botAmount != null ? (bots.length < room.botAmount) : (bots.length + views.length < Math.ceil(c.maxPlayers / 2))) && !global.arenaClosed) {
                     if (c.SPECIAL_BOSS_SPAWNS && (!(room["bas1"] || []).length)) {} else {
                         for (let i = bots.length + views.length; i < Math.ceil(c.maxPlayers / 2); i ++) {
                             if (Math.random() > .5) {

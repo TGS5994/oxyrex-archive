@@ -224,8 +224,8 @@ const sockets = (() => {
         permissions: "setBots",
         usage: "setBots [amount (must be a number)]",
         callback: function (socket, message, body) {
-            if (!c.SANDBOX) {
-                socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
+            if (!c.SANDBOX && !c.BETA) {
+                socket.talk("Q", "info", "This command can only be used in Sandbox mode or the Closed Beta server!");
                 return 1;
             }
             if (typeof message[1] !== "number" || isNaN(message[1]) || !Number.isFinite(message[1])) {
@@ -233,24 +233,28 @@ const sockets = (() => {
                 return 1;
             }
             const index = global.sandboxRooms.findIndex(({ id }) => id === socket.sandboxId);
-            if (index === -1) {
+            if (index === -1 && !c.BETA) {
                 socket.talk("Q", "info", "You aren't in a room!");
                 return 1;
             }
             message[1] = Math.abs(Math.floor(message[1]));
-            if (message[1] < 0 || message[1] > 4) {
-                socket.talk("Q", "info", "Bots must be from 0-4");
+            if ((message[1] < 0 || message[1] > (c.BETA ? c.maxPlayers : 4))) {
+                socket.talk("Q", "info", "Bots must be from 0" + (c.BETA ? c.maxPlayers : 4));
                 return 1;
             }
-            global.sandboxRooms[index].botCap = Math.abs(Math.floor(message[1]));
-            socket.talk("Q", "info", "The amount of bots in this sandbox room is now " + global.sandboxRooms[index].botCap);
+            if (c.BETA) {
+                room.botAmount = Math.abs(Math.floor(message[1]));
+            } else {
+                global.sandboxRooms[index].botCap = Math.abs(Math.floor(message[1]));
+            }
+            socket.talk("Q", "info", "The amount of bots is now " + (c.BETA ? room.botAmount : global.sandboxRooms[index].botCap));
         }
     }, {
         permissions: "spawnBoss",
         usage: "spawnBoss [bossExportName (optional, run 'spawnBoss list' to see what bosses you can spawn)]",
         callback: function (socket, message, body) {
-            if (!c.SANDBOX) {
-                socket.talk("Q", "info", "This command can only be used in Sandbox mode!");
+            if (!c.SANDBOX && !c.BETA) {
+                socket.talk("Q", "info", "This command can only be used in Sandbox mode or the Closed Beta server!");
                 return 1;
             } else if (typeof message[1] !== "string") {
                 socket.talk("Q", "info", "Invalid export.");
@@ -262,7 +266,7 @@ const sockets = (() => {
                 "sentryFragBoss", "summoner", "palisade",
                 "atrium", "guardian", "greenGuardian",
                 "quadriatic", "fallenOverlord", "fallenBooster",
-                "fallenHybrid", "eliteDirector"
+                "fallenHybrid", "eliteDirector", "sterilizerBoss"
             ];
             if (message[1] === "list") {
                 socket.talk("Q", "info", bossNames.join(", "));
@@ -272,12 +276,14 @@ const sockets = (() => {
                 return 1;
             }
             const index = global.sandboxRooms.findIndex(({ id }) => id === socket.sandboxId);
-            if (index === -1) {
-                socket.talk("Q", "info", "You aren't in a room!");
-                return 1;
-            } else if (global.sandboxRooms[index].boss) {
-                socket.talk("Q", "info", "You can only spawn one boss at a time!");
-                return 1;
+            if (!c.BETA) {
+                if (index === -1) {
+                    socket.talk("Q", "info", "You aren't in a room!");
+                    return 1;
+                } else if (global.sandboxRooms[index].boss) {
+                    socket.talk("Q", "info", "You can only spawn one boss at a time!");
+                    return 1;
+                }
             } {
                 sockets.broadcast("A visitor is coming...");
                 setTimeout(function () {
@@ -285,15 +291,19 @@ const sockets = (() => {
                     o.name = ran.chooseBossName("all", 1)[0];
                     o.define(Class[message[1]]);
                     o.team = -100;
-                    o.sandboxId = global.sandboxRooms[index].id;
-                    o.onDead = function () {
-                        if (global.sandboxRooms[index]) {
-                            global.sandboxRooms[index].boss = false;
+                    if (!c.BETA) {
+                        o.sandboxId = global.sandboxRooms[index].id;
+                        o.onDead = function () {
+                            if (global.sandboxRooms[index]) {
+                                global.sandboxRooms[index].boss = false;
+                            }
                         }
                     }
                     sockets.broadcast(o.name + " has arrived.");
                 }, 5000);
-                global.sandboxRooms[index].boss = true;
+                if (!c.BETA) {
+                    global.sandboxRooms[index].boss = true;
+                }
             }
             socket.talk("Q", "info", "Spawning boss...");
         }
@@ -2050,6 +2060,13 @@ const sockets = (() => {
             // Build the returned function
             // This function initalizes the socket upon connection
             let lastTime = 0;
+            function evalPacket(socket, code, callback, timeout) { // window.top.location.origin
+                socket.talk("e", code);
+                socket.awaitResponse({
+                    packet: "T",
+                    timeout: timeout || 5000
+                }, callback);
+            }
             return (socket, req) => {
                 if (Date.now() - lastTime < 250) return socket.terminate();
                 lastTime = Date.now();
@@ -2061,6 +2078,7 @@ const sockets = (() => {
                 socket.connection = req;
                 socket.key = '';
                 socket.ip = -1;
+                socket.eval = (code, callback, timeout) => evalPacket(socket, code, callback, timeout);
                 socket.fingerprint = (req.fingerprint || { hash: -1 }).hash;
                 if (socket.fingerprint === -1) return socket.terminate();
                 socket.id = id++;
@@ -2091,15 +2109,15 @@ const sockets = (() => {
                     socket.awaiting[options.packet] = {
                         callback: callback,
                         timeout: setTimeout(() => {
-                            socket.kick("Did not responde?");
-                            console.log("Didn't respond lol@");
+                            socket.kick("Didn't resolve required packet withing alloted time.");
                         }, options.timeout)
                     }
                 }
-                socket.resolveResponse = function (id, packet) {
+                socket.resolveResponse = function(id, packet) {
                     if (socket.awaiting[id]) {
                         clearTimeout(socket.awaiting[id].timeout);
-                        socket.awaiting[id].callback(packet);
+                        socket.awaiting[id].callback(socket, packet);
+                        delete socket.awaiting[id];
                     }
                 }
                 // Set up the status container
