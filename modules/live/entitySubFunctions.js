@@ -60,11 +60,16 @@ const botSets = [{ // Smasher Ram Bots
     ai: "bot",
     build: [3, 8, 8, 8, 7, 0, 3, 3, 0, 7],
     startClass: "director"
+}, { // Lancer Bots
+    ai: "ramBot",
+    build: [0, 4, 4, 5, 0, 3, 6, 7, 3, 8],
+    startClass: "lancer"
 }];
 for (let build of botBuilds) botSets.push({ // All the builds that bots have.
     ai: "bot",
     build: build,
-    startClass: "basic"
+    startClass: "basic",
+    ignore: ["Lancer", "Smasher"]
 });
 class Skill {
     constructor(inital = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) { // Just skill stuff.

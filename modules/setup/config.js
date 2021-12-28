@@ -445,9 +445,24 @@ const gamemodes = {
     },
     "Closed Beta": {
         MODE: "tdm",
-        TEAMS: 4,
+        TEAMS: 2,
         BETA: 1,
         WIDTH: 8000,
+        HEIGHT: 3600,
+        ROOM_SETUP: [
+            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
+            ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "bas2"],
+            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
+            ["bas1", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "roid", "bas2"],
+            ["bas1", "roid", "roid", "nest", "port", "nest", "roid", "norm", "roid", "edge", "edge", "roid", "norm", "roid", "nest", "port", "nest", "roid", "norm", "bas2"],
+            ["bas1", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "roid", "bas2"],
+            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
+            ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "bas2"],
+            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"]
+        ],
+        DIVIDER_LEFT: 3600,
+        DIVIDER_RIGHT: 4400,
+        /*WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [
             ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
@@ -474,7 +489,8 @@ const gamemodes = {
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
         DIVIDER_TOP: 3600,
-        DIVIDER_BOTTOM: 4400
+        DIVIDER_BOTTOM: 4400,*/
+        maxPlayers: 40
     }
 };
 
@@ -506,7 +522,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return global.fingerPrint.herokuC ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
+    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];

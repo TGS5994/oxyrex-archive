@@ -587,6 +587,7 @@ const maintainloop = (() => {
         o.color = color;
         o.invuln = true;
         o.define(Class[set.startClass]);
+        o.botSet = set;
         o.name += botName;
         o.refreshBodyAttributes();
         o.color = color;
@@ -769,9 +770,20 @@ const maintainloop = (() => {
                     o.skill.maintain();
                 }
                 if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
-                    o.upgrade(Math.floor(Math.random() * o.upgrades.length));
-                    if (Math.random() > .9) {
+                    let index = Math.floor(Math.random() * o.upgrades.length), i = 10;
+                    if (o.botSet.includes != null) {
+                        while (o.botSet.ignore.includes(o.upgrades[index].class.LABEL) && i > 0) {
+                            index = Math.floor(Math.random() * o.upgrades.length);
+                            i --;
+                        }
+                    }
+                    if (i <= 0) {
                         o.botDoneUpgrading = true;
+                    } else {
+                        o.upgrade(index);
+                        if (Math.random() > .9) {
+                            o.botDoneUpgrading = true;
+                        }
                     }
                 }
             }

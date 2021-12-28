@@ -1804,9 +1804,11 @@ class Entity {
                         } while (portTo.id === myRoom.id && room['port'].length > 1);
                         this.x = portTo.x + portals.spawnMe * Math.sin(angle);
                         this.y = portTo.y + portals.spawnMe * Math.cos(angle);
-                        this.invuln = true;
-                        this.invulnTime = [Date.now(), 15000];
-                        this.sendMessage("You will be invulnerable until you move, shoot or wait 15 seconds.");
+                        if (this.isPlayer) {
+                            this.invuln = true;
+                            this.invulnTime = [Date.now(), 15000];
+                            this.sendMessage("You will be invulnerable until you move, shoot or wait 15 seconds.");
+                        }
                         for (let i of this.children)
                             if (i.type === 'drone') {
                                 i.x = portTo.x + 320 * Math.sin(angle) + portals.spawnMe * (Math.random() - 0.5);
