@@ -190,7 +190,7 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     if (n.settings.isNecromancer && necroTypes.includes(my.type)) bail = n.necro(my, necroTypes.length > 1);
                 }
                 if (!bail) {
-                    if (my.poison.status == true && n.poison.timeLeft == 0) {
+                    /*if (my.poison.status == true && n.poison.timeLeft == 0) {
                         n.poison.amplification = my.poison.amplification
                         n.poison.timeLeft += my.poison.duration;
                     }
@@ -206,6 +206,14 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                         my.ice.amplification = n.ice.amplification
                         my.ice.timeLeft += n.ice.duration;
                     }
+                    if (my.emp.status == true && n.emp.timeLeft == 0) {
+                        n.emp.amplification = my.emp.amplification
+                        n.emp.timeLeft += my.emp.duration;
+                    }
+                    if (n.emp.status == true && my.emp.timeLeft == 0) {
+                        my.emp.amplification = n.emp.amplification
+                        my.emp.timeLeft += n.emp.duration;
+                    }
                     if (my.confusion.status == true && n.confusion.timeLeft == 0) {
                         n.confusion.amplification = my.confusion.amplification
                         n.confusion.timeLeft += my.confusion.duration;
@@ -213,7 +221,9 @@ function advancedcollide(my, n, doDamage, doInelastic, nIsFirmCollide = false) {
                     if (n.confusion.status == true && my.confusion.timeLeft == 0) {
                         my.confusion.amplification = n.confusion.amplification
                         my.confusion.timeLeft += n.confusion.duration;
-                    }
+                    }*/
+                    my.transferEffects(n);
+                    n.transferEffects(my);
                     // Calculate base damage
                     let resistDiff = my.health.resist - n.health.resist,
                         damage = {

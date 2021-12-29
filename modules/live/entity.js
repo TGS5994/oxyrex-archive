@@ -226,6 +226,9 @@ class Gun {
         }
     }
     fire(gx, gy, sk, carrier = false) {
+        if (this.body.emp.timeLeft > 0 || this.body.master.emp.timeLeft > 0 || this.body.master.master.emp.timeLeft > 0) {
+            return;
+        }
         if (this.launchSquadron && this.launchSquadron !== "yes" && !carrier) return;
         if (c.MODE === "tdm" && c.DO_BASE_DAMAGE && this.master.master.isPlayer) {
             for (let i = 1; i <= c.TEAMS; i ++) {
@@ -646,22 +649,41 @@ class Entity {
                 this.sandboxId = this.master.sandboxId;
             }
         }
-        this.poison = { //Poison effect
+        this.poison = { // Poison effect
+            // My settings
             status: false,
-            timeLeft: 0,
             duration: 0,
-            amplification: 1
+            amplification: 1,
+            // What other people give me
+            timeLeft: 0,
+            strength: 1
         };
-        this.ice = { //Ice effect
+        this.ice = { // Ice effect
+            // My settings
             status: false,
-            timeLeft: 0,
             duration: 0,
-            amplification: 1
+            amplification: 1,
+            // What other people give me
+            timeLeft: 0,
+            strength: 1
         };
-        this.confusion = { //Confusion effect
+        this.emp = { // EMP effect
+            // My settings
             status: false,
-            timeLeft: 0,
             duration: 0,
+            // What other people give me
+            timeLeft: 0
+        };
+        this.confusion = { // Confusion effect
+            // My settings
+            status: false,
+            duration: 0,
+            // What other people give me
+            timeLeft: 0
+        };
+        this.tesla = { // Tesla effect
+            // My settings
+            status: false,
             amplification: 1
         };
         this.isInGrid = false;
@@ -886,29 +908,7 @@ class Entity {
                         this.submarine.lastTick = Date.now();
                     }
                 }
-                if (!this.passive && !this.invuln && !this.godmode) {
-                    if (this.poison.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
-                        if (this.health.amount > (this.health.max / 10)) {
-                            this.health.amount -= (.75 * this.poison.amplification);
-                        }
-                        if (this.shield.amount > (this.shield.max / 10)) {
-                            this.shield.amount -= (.75 * this.poison.amplification);
-                        }
-                        this.poison.timeLeft --;
-                    }
-                    if (this.ice.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
-                        this.velocity.x -= (this.velocity.x * (this.ice.amplification / 4.25));
-                        this.velocity.y -= (this.velocity.y * (this.ice.amplification / 4.25));
-                        this.ice.timeLeft --;
-                    }
-                    if (this.confusion.timeLeft > 0 && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
-                        this.confusion.timeLeft --;
-                    }
-                } else {
-                    this.poison.timeLeft = 0;
-                    this.ice.timeLeft = 0;
-                    this.confusion.timeLeft = 0;
-                }
+                this.effectTick();
                 if (this.shield.max) this.shield.regenerate();
                 if (this.health.amount) this.health.regenerate(this.shield.max && this.shield.max === this.shield.amount);
                 // Get bounds
@@ -963,6 +963,79 @@ class Entity {
         this.updateAABB(true);
         entities.push(this); // everything else
         views.forEach(v => v.add(this));
+    }
+    transferEffects(instance) {
+        if (instance.poison.status && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
+            this.poison.strength = instance.poison.amplification;
+            if (instance.poison.duration > this.poison.timeLeft) {
+                this.poison.timeLeft = instance.poison.duration;
+            }
+        }
+        if (instance.ice.status && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
+            this.ice.strength = instance.ice.amplification;
+            if (instance.ice.duration > this.ice.timeLeft) {
+                this.ice.timeLeft = instance.ice.duration;
+            }
+        }
+        if (instance.emp.status) {
+            if (instance.emp.duration > this.emp.timeLeft) {
+                this.emp.timeLeft = instance.emp.duration;
+            }
+        }
+        if (instance.confusion.status) {
+            if (instance.confusion.duration > this.confusion.timeLeft) {
+                this.confusion.timeLeft = instance.confusion.duration;
+            }
+        }
+    }
+    effectTick() {
+        if (this.passive || this.invuln || this.godmode) {
+            this.poison.timeLeft = 0;
+            this.ice.timeLeft = 0;
+            this.emp.timeLeft = 0;
+            this.confusion.timeLeft = 0;
+            return;
+        }
+        if (this.poison.timeLeft > 0) {
+            if ((this.health.amount - (.3 * this.poison.strength)) > (this.health.max / 10)) {
+                this.health.amount -= (.3 * this.poison.strength);
+                this.health.lastDamage = Date.now();
+            }
+            if ((this.shield.amount - (.3 * this.poison.strength)) > (this.shield.max / 10)) {
+                this.shield.amount -= (.3 * this.poison.strength);
+                this.shield.lastDamage = Date.now();
+            }
+            this.poison.timeLeft --;
+        }
+        if (this.ice.timeLeft > 0) {
+            this.velocity.x -= (this.velocity.x * (this.ice.strength / 4.25));
+            this.velocity.y -= (this.velocity.y * (this.ice.strength / 4.25));
+            this.ice.timeLeft --;
+        }
+        if (this.emp.timeLeft > 0) {
+            this.emp.timeLeft --;
+        }
+        if (this.confusion.timeLeft > 0) {
+            this.confusion.timeLeft --;
+        }
+        if (this.tesla.status && this.type === "tank") {
+            for (let instance of entities) {
+                if (util.getDistance(instance, this) < (this.size * 8) && instance.master.team !== this.master.team && instance.master.master !== this.master.master && !instance.passive && !instance.invuln && !instance.godmode) {
+                    if (instance.type === "tank" || instance.type === "crasher" || instance.type === "miniboss" || instance.type === "food") {
+                        if ((instance.health.amount - (.15 * this.tesla.amplification)) > (instance.health.max / 10)) {
+                            instance.health.amount -= (.15 * this.tesla.amplification);
+                            instance.health.lastDamage = Date.now();
+                        }
+                        if ((instance.shield.amount - (.15 * this.tesla.amplification)) > (instance.shield.max / 10)) {
+                            instance.shield.amount -= (.15 * this.tesla.amplification);
+                            instance.shield.lastDamage = Date.now();
+                        }
+                        instance.velocity.x -= (instance.velocity.x * (this.tesla.amplification / 6));
+                        instance.velocity.y -= (instance.velocity.y * (this.tesla.amplification / 6));
+                    }
+                }
+            }
+        }
     }
     life() {
         bringToLife(this);
@@ -1084,6 +1157,14 @@ class Entity {
                 this.ice.amplification = set.ICE.AMPLIFY;
             }
         }
+        if (set.EMP != null) {
+            if (set.EMP.STATUS != null) {
+                this.emp.status = set.EMP.STATUS;
+            }
+            if (set.EMP.TIME != null) {
+                this.emp.duration = set.EMP.TIME;
+            }
+        }
         if (set.CONFUS != null) {
             if (set.CONFUS.STATUS != null) {
                 this.confusion.status = set.CONFUS.STATUS;
@@ -1091,8 +1172,13 @@ class Entity {
             if (set.CONFUS.TIME != null) {
                 this.confusion.duration = set.CONFUS.TIME;
             }
-            if (set.CONFUS.AMPLIFY != null) {
-                this.confusion.amplification = set.CONFUS.AMPLIFY;
+        }
+        if (set.TESLA != null) {
+            if (set.TESLA.STATUS != null) {
+                this.tesla.status = set.TESLA.STATUS;
+            }
+            if (set.TESLA.AMPLIFY != null) {
+                this.tesla.amplification = set.TESLA.AMPLIFY;
             }
         }
         if (set.ACCEPTS_SCORE != null) {
