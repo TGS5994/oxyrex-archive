@@ -138,19 +138,20 @@ class Skill {
             }
         }
         this.rld = Math.pow(0.5, attrib[skcnv.rld]);
-        this.pen = apply(2.5, attrib[skcnv.pen]);
-        this.str = apply(2, attrib[skcnv.str]);
-        this.dam = apply(1.5, attrib[skcnv.dam]);
+        this.pen = apply(2.7, attrib[skcnv.pen]);
+        this.str = apply(2.2, attrib[skcnv.str]);
+        this.dam = apply(3.2, attrib[skcnv.dam]);
         this.spd = 0.5 + apply(1.5, attrib[skcnv.spd]);
         this.acl = apply(0.5, attrib[skcnv.rld]);
         this.rst = 0.5 * attrib[skcnv.str] + 2.5 * attrib[skcnv.pen];
         this.ghost = attrib[skcnv.pen];
-        this.shi = c.GLASS_HEALTH_FACTOR * apply(8 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.shi]);
-        this.atk = apply(.3, attrib[skcnv.atk]);
-        this.hlt = c.GLASS_HEALTH_FACTOR * apply(2.25 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.hlt]);
-        this.mob = apply(.9, attrib[skcnv.mob]);
-        this.rgn = apply(30, attrib[skcnv.rgn]);
-        this.brst = 0.325 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt]);
+        // this.shi = c.GLASS_HEALTH_FACTOR * apply(8 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.shi]);
+        this.shi = apply(0.3, attrib[skcnv.shi]);
+        this.atk = apply(0.085, attrib[skcnv.atk]);
+        this.hlt = apply(0.3, attrib[skcnv.hlt]); // c.GLASS_HEALTH_FACTOR * apply(2.25 / c.GLASS_HEALTH_FACTOR - 1, attrib[skcnv.hlt]);
+        this.mob = apply(.8, attrib[skcnv.mob]);
+        this.rgn = apply(10, attrib[skcnv.rgn]);
+        this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt]);
         this.lancer = {
             pen: apply(1.2, attrib[skcnv.pen]),
             str: apply(1.2, attrib[skcnv.str]),

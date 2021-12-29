@@ -2082,7 +2082,7 @@ const sockets = (() => {
                 socket.fingerprint = (req.fingerprint || { hash: -1 }).hash;
                 if (socket.fingerprint === -1) return socket.terminate();
                 socket.id = id++;
-                socket.spawnEntity = Class.icosagon;
+                socket.spawnEntity = Class.eliteDestroyer;
                 socket.name = "Unnamed";
                 socket.player = {
                     camera: {},

@@ -450,18 +450,19 @@ const gamemodes = {
         WIDTH: 8000,
         HEIGHT: 3600,
         ROOM_SETUP: [
-            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
-            ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "bas2"],
-            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
-            ["bas1", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "roid", "bas2"],
-            ["bas1", "roid", "roid", "nest", "port", "nest", "roid", "norm", "roid", "edge", "edge", "roid", "norm", "roid", "nest", "port", "nest", "roid", "norm", "bas2"],
-            ["bas1", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "roid", "bas2"],
-            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"],
-            ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "bas2"],
-            ["bas1", "roid", "norm", "norm", "roid", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "bas2"]
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "roid", "norm", "norm", "roid", "norm", "norm", "dom0", "norm", "edge", "edge", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "bas2", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "roid", "norm", "nest", "port", "nest", "norm", "roid", "norm", "edge", "edge", "norm", "roid", "norm", "nest", "port", "nest", "norm", "roid", "norm"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "bas1", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "edge", "edge", "norm", "dom0", "norm", "norm", "roid", "norm", "norm", "roid", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
         ],
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
+        DOMINATOR_LOOP: true,
         /*WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [

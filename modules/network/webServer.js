@@ -18,7 +18,7 @@ expressWs(server);
 server.use(cors());
 server.ws("/", sockets.connect);
 server.get("/", function(request, response) {
-    response.send(`<script>location.href = "${c.clientAddresses[0]}"</script>`);
+    response.send(`<script>location.href = "https://${c.clientAddresses[0]}"</script>`);
 });
 server.get("/mockups.json", function(request, response) {
     response.send(mockupJsonData);
@@ -31,7 +31,6 @@ server.get("/gamemodeData.json", function(request, response) {
         code: [c.MODE, c.MODE === "ffa" ? "f" : c.TEAMS, c.secondaryGameMode].join("-")
     }));
 });
-const definitionsCode = fs.readFileSync(__dirname + "/../../lib/definitions.js").toString();
 server.get("/edit/lib/definitions.js", function(request, response) {
     if (!c.EDITOR_ENABLED) {
         return response.send("Not active.");
@@ -136,7 +135,7 @@ server.get("/code/lib/definitions.js", function(request, response) {
     }
     if (request.query && request.query.key) {
         if (c.TOKENS.findIndex(entry => entry[0] === request.query.key && entry[3] === 3) !== -1) {
-            response.send(definitionsCode);
+            response.send(fs.readFileSync(__dirname + "/../../lib/definitions.js").toString());
             return;
         }
     }

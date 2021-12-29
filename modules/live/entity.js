@@ -239,15 +239,16 @@ class Gun {
         this.motion += this.lastShot.power;
         // Find inaccuracy
         let ss = ran.gauss(0, Math.sqrt(this.settings.shudder)), sd = ran.gauss(0, this.settings.spray * this.settings.shudder);
-        /*let loops = 0;
+        let loops = 0;
         do {
+            loops ++;
             ss = ran.gauss(0, Math.sqrt(this.settings.shudder));
-            if (loops ++ > 60) break;
-        } while (Math.abs(ss) >= this.settings.shudder * 2);
+        } while ((Math.abs(ss) >= this.settings.shudder * 2) && loops < 5);
+        loops = 0;
         do {
+            loops ++;
             sd = ran.gauss(0, this.settings.spray * this.settings.shudder);
-            if (loops ++ > 60) break;
-        } while (Math.abs(sd) >= this.settings.spray / 2);*/
+        } while ((Math.abs(sd) >= this.settings.spray / 2) && loops < 5);
         sd *= Math.PI / 180;
         // Find speed
         let s = new Vector(
@@ -536,41 +537,40 @@ class Gun {
         // Defaults
         let out = {
             SPEED: shoot.maxSpeed * sk.spd,
-            HEALTH: shoot.health * sk.str ,
+            HEALTH: shoot.health * sk.str,
             RESIST: shoot.resist + sk.rst,
             DAMAGE: shoot.damage * sk.dam,
             PENETRATION: Math.max(1, shoot.pen * sk.pen),
             RANGE: shoot.range / Math.sqrt(sk.spd),
             DENSITY: shoot.density * sk.pen * sk.pen / sizeFactor,
-            PUSHABILITY: 1 * sk.pen,
+            PUSHABILITY: 1 / sk.pen,
             HETERO: 3 - 2.8 * sk.ghost,
-        };
+        }
         // Special cases
         switch (this.calculator) {
-            case 'thruster':
-                this.trueRecoil = shoot.recoil * Math.sqrt(sk.rld * sk.spd);
-                break;
-            case 'sustained':
-                out.RANGE = shoot.range;
-                break;
-            case 'swarm':
-                out.PENETRATION = Math.max(1, shoot.pen * (0.5 * (sk.pen - 1) + 1));
-                out.HEALTH /= shoot.pen * sk.pen;
-                break;
-            case 'trap':
-            case 'block':
-                out.PUSHABILITY = 1 / Math.pow(sk.pen, 0.5);
-                out.RANGE = shoot.range;
-                out.HETERO = 100;
-                break;
-            case 'necro':
-            case 'drone':
-                out.PUSHABILITY = 1;
-                out.PENETRATION = Math.max(1, shoot.pen * (0.5 * (sk.pen - 1) + 1));
-                out.HEALTH = (shoot.health * sk.str + sizeFactor) / Math.pow(sk.pen, 0.8);
-                out.DAMAGE = shoot.damage * sk.dam * Math.sqrt(sizeFactor) * shoot.pen * sk.pen;
-                out.RANGE = shoot.range * Math.sqrt(sizeFactor);
-                break;
+        case 'thruster':
+            this.trueRecoil = this.settings.recoil * Math.sqrt(sk.rld * sk.spd)
+            break
+        case 'sustained':
+            out.RANGE = shoot.range
+            break
+        case 'swarm':
+            out.PENETRATION = Math.max(1, shoot.pen * (0.5 * (sk.pen - 1) + 1))
+            out.HEALTH /= shoot.pen * sk.pen
+            break
+        case 'trap':
+        case 'block':
+            out.PUSHABILITY = 1 / Math.sqrt(sk.pen);
+            out.RANGE = shoot.range
+            break
+        case 'necro':
+        case 'drone':
+            out.PUSHABILITY = 1
+            out.PENETRATION = Math.max(1, shoot.pen * (0.5 * (sk.pen - 1) + 1))
+            out.HEALTH = (shoot.health * sk.str + sizeFactor) / Math.pow(sk.pen, 0.8)
+            out.DAMAGE = shoot.damage * sk.dam * Math.sqrt(sizeFactor) * shoot.pen * sk.pen
+            out.RANGE = shoot.range * Math.sqrt(sizeFactor)
+            break
         }
         // Go through and make sure we respect its natural properties
         for (let property in out) {
@@ -1353,21 +1353,21 @@ class Entity {
         }
     }
     refreshBodyAttributes() {
-        let speedReduce = Math.pow(this.size / (this.coreSize || this.SIZE), 1);
+        let speedReduce = this.size / (this.coreSize || this.SIZE);
         this.acceleration = c.runSpeed * this.ACCELERATION / speedReduce;
         if (this.settings.reloadToAcceleration) this.acceleration *= this.skill.acl;
         this.topSpeed = c.runSpeed * this.SPEED * this.skill.mob / speedReduce;
         if (this.settings.reloadToAcceleration) this.topSpeed /= Math.sqrt(this.skill.acl);
-        this.health.set((((this.settings.healthWithLevel) ? 2 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
+        this.health.set((((this.settings.healthWithLevel) ? 1.5 * this.skill.level : 0) + this.HEALTH) * this.skill.hlt);
         this.health.resist = 1 - 1 / Math.max(1, this.RESIST + this.skill.brst);
-        this.shield.set((((this.settings.healthWithLevel) ? 0.6 * this.skill.level : 0) + this.SHIELD) * this.skill.shi, Math.max(0, ((((this.settings.healthWithLevel) ? 0.006 * this.skill.level : 0) + 1) * this.REGEN) * (this.skill.rgn * 6)));
-        this.damage = this.DAMAGE * (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk);
+        this.shield.set((this.SHIELD) * (1 + this.skill.shi), Math.max(0, this.REGEN * this.skill.rgn));
+        this.damage = this.DAMAGE * (1 + (this.settings.hitsOwnType === 'everything' ? this.skill.lancer.dam : this.skill.atk));
         this.penetration = this.PENETRATION + 1.5 * ((this.settings.hitsOwnType === 'everything' ? this.skill.lancer.pen : this.skill.brst) + 0.8 * (this.skill.atk - 1));
         if (!this.settings.dieAtRange || !this.range) {
             this.range = this.RANGE;
         }
-        this.fov = this.FOV * 250 * Math.sqrt(this.size) * (1 + 0.003 * this.skill.level);
-        this.density = (1 + 0.08 * this.skill.level) * this.DENSITY * this.settings.hitsOwnType === "everything" ? this.skill.lancer.str : 1;
+        this.fov = this.FOV * 250 * Math.sqrt(this.size) * (1 + 0.005 * this.skill.level);
+        this.density = (1 + 0.08 * this.skill.level) * this.DENSITY * (this.settings.hitsOwnType === "everything" ? this.skill.lancer.str : 1);
         this.stealth = this.STEALTH;
         this.pushability = this.PUSHABILITY;
     }

@@ -753,6 +753,7 @@ ioTypes.botMovement = class extends IO {
             x: ran.randomRange(0, room.width),
             y: ran.randomRange(0, room.height)
         };
+        this.wanderStart = Date.now();
         this.dir = 0;
         this.defendTick = -1;
     }
@@ -796,6 +797,7 @@ ioTypes.botMovement = class extends IO {
         if (c.SPECIAL_BOSS_SPAWNS && room["bas1"] && room["bas1"].length < 3 && room["bas1"].length > 0) {
             if ((this.defendTick <= 0 && (!room.isIn("bas1", this.wanderGoal) || !input.target)) || (room.isIn("bas1", this.wanderGoal) && !input.target)) {
                 this.wanderGoal = room.randomType("bas1");
+                this.wanderStart = Date.now();
                 this.defendTick = 50 + Math.random() * 150;
             }
             this.defendTick --;
@@ -804,6 +806,7 @@ ioTypes.botMovement = class extends IO {
             this.defendTick = -1;
             if (input.target != null) {
                 this.wanderGoal = this.chooseSpot();
+                this.wanderStart = Date.now();
                 let target = new Vector(input.target.x, input.target.y);
                 if (this.timer > 60) {
                     this.offset = ran.randomRange(30 * Math.PI / 180, 45 * Math.PI / 180) * this.offset2,
@@ -857,8 +860,9 @@ ioTypes.botMovement = class extends IO {
                 };
             } else {
                 goal = this.wanderGoal, power = 1;
-                if (util.getDistance(this.wanderGoal, this.body) < 10) {
+                if (util.getDistance(this.wanderGoal, this.body) < 10 || Date.now() - this.wanderStart > 20000) {
                     this.wanderGoal = this.chooseSpot();
+                    this.wanderStart = Date.now();
                 }
             }
         }

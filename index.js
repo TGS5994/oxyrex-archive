@@ -824,8 +824,8 @@ const maintainloop = (() => {
             ], ["scale", 5], 1),
             new FoodType("Nest Food", [
                 Class.pentagon, Class.scaleneTriangle, Class.rhombus, Class.bigPentagon, Class.hugePentagon,
-                Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon,
-                Class.alphaNonagon, Class.alphaDecagon, Class.icosagon
+                /*Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon,
+                Class.alphaNonagon, Class.alphaDecagon, Class.icosagon*/ // Commented out because stats aren't done yet.
             ], ["scale", 5], 1, true)
         ];
         function getFoodType(isNestFood = false) {
