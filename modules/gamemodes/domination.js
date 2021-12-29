@@ -28,7 +28,7 @@ const dominatorLoop = (function() {
                 let killers = [];
                 for (let instance of o.collisionArray)
                     if (instance.team > -5 && instance.team < 0 && o.team !== instance.team) killers.push(instance);
-                let killer = ran.choose(killers);
+                let killer = ran.choose(killers) || { team: o.team };
                 let newTeam = killer.team;
                 spawn(loc, newTeam, type);
                 room.setType("dom" + -killer.team, loc);

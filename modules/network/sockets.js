@@ -622,9 +622,7 @@ const sockets = (() => {
                             player.command.lmb = (commands & 16) >> 4;
                             player.command.mmb = (commands & 32) >> 5;
                             player.command.rmb = (commands & 64) >> 6;
-
-                            let reverse = player.body.confusion.status;
-                            if (reverse) {
+                            if (player.body.confusion.timeLeft > 0) {
                                 player.command.up = !player.command.up;
                                 player.command.down = !player.command.down;
                                 player.command.left = !player.command.left;

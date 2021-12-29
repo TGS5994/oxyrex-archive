@@ -1084,6 +1084,17 @@ class Entity {
                 this.ice.amplification = set.ICE.AMPLIFY;
             }
         }
+        if (set.CONFUS != null) {
+            if (set.CONFUS.STATUS != null) {
+                this.confusion.status = set.CONFUS.STATUS;
+            }
+            if (set.CONFUS.TIME != null) {
+                this.confusion.duration = set.CONFUS.TIME;
+            }
+            if (set.CONFUS.AMPLIFY != null) {
+                this.confusion.amplification = set.CONFUS.AMPLIFY;
+            }
+        }
         if (set.ACCEPTS_SCORE != null) {
             this.settings.acceptsScore = set.ACCEPTS_SCORE;
         }
