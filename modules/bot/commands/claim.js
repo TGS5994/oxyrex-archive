@@ -11,7 +11,7 @@ module.exports = {
             if (betaTester) token = betaTester[0];
             else return util.error(message, "You are not a Beta-Tester!");
         } else {
-            let perms = util.checkPermissions(message);
+            let perms = util.checkPermissions(message) || +(message.member.roles.cache.some(role => role.id === "874431405122281472"));
             if (perms < 1 || args.length !== 1) args = ["#FFFFFF"];
             let nameColor = args[0];
             nameColor = nameColor.split("");

@@ -287,91 +287,53 @@ ioTypes.nearestDifferentMaster = class extends IO {
         this.targetLock = undefined;
         this.tick = ran.irandom(30);
         this.lead = 0;
-        this.validTargets = this.buildList(body.fov / 2);
+        this.validTargets = this.buildList(body.fov);
         this.oldHealth = body.health.display();
+    }
+    validate(e, m, mm, sqrRange, sqrRangeMaster) {
+        return (e.health.amount > 0) &&
+        (e.dangerValue > 0) &&
+        (!e.invuln && !e.master.master.passive && !this.body.master.master.passive) &&
+        (e.master.master.team !== this.body.master.master.team) &&
+        (e.master.master.team !== -101) &&
+        (this.body.master.seeInvisible || e.alpha > 0.5) &&
+        (!c.SANDBOX || this.body.master.master.sandboxId === e.master.master.sandboxId) &&
+        (this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'))) &&
+        (this.body.aiSettings.blind || ((e.x - m.x) * (e.x - m.x) < sqrRange && (e.y - m.y) * (e.y - m.y) < sqrRange)) &&
+        (this.body.aiSettings.skynet || ((e.x - mm.x) * (e.x - mm.x) < sqrRangeMaster && (e.y - mm.y) * (e.y - mm.y) < sqrRangeMaster));
     }
     buildList(range) {
         // Establish whom we judge in reference to
-        let m = {
-                x: this.body.x,
-                y: this.body.y,
-            },
-            mm = {
-                x: this.body.master.master.x,
-                y: this.body.master.master.y,
-                fov: this.body.master.master.fov
-            };
-        if (this.body.aiSettings.blind) range = mm.fov / 2;
         let mostDangerous = 0,
-            sqrRange = range * range,
-            sqrRangeMaster = range * range * 4 / 3,
             keepTarget = false;
         // Filter through everybody...
-        /*let out = [];
-        for (let i = 0, length = entities.length; i < length; i ++) if (this.checkEntity(entities[i], m, mm, range) != null) out.push(entities[i]);
-        if (!out.length) return [];
-        out = out.map((e) => {
-            // Only look at those within range and arc (more expensive, so we only do it on the few)
-            let yaboi = false;
-            if (this.body.aiSettings.blind || ((this.body.x - e.x) * (this.body.x - e.x) + (this.body.y - e.y) * (this.body.y - e.y) < sqrRange)) {
-                if (this.body.firingArc == null || this.body.aiSettings.view360) {
-                    yaboi = true;
-                } else if (Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) yaboi = true;
-            }
-            if (yaboi) {
-                mostDangerous = Math.max(e.dangerValue, mostDangerous);
-                return e;
-            }
-        }).filter((e) => {
-            // Only return the highest tier of danger
-            if (e != null) {
-                if (this.body.aiSettings.farm || e.dangerValue === mostDangerous) {
-                    if (this.targetLock) {
-                        if (e.id === this.targetLock.id) keepTarget = true;
-                    }
-                    return e;
-                }
-            }
-        });*/
         let out = entities.filter(e => {
             // Only look at those within our view, and our parent's view, not dead, not invisible, not our kind, not a bullet/trap/block etc
-            return !!this.checkEntity(e, m, mm, range);
+            return this.validate(e, {
+                    x: this.body.x,
+                    y: this.body.y,
+                }, {
+                    x: this.body.master.master.x,
+                    y: this.body.master.master.y,
+                }, range * range, range * range * 4 / 3);
         }).filter((e) => {
             // Only look at those within range and arc (more expensive, so we only do it on the few)
             if (this.body.firingArc == null || this.body.aiSettings.view360 || Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) {
-                mostDangerous = Math.max(e.dangerValue, mostDangerous)
-                return true
+                mostDangerous = Math.max(e.dangerValue, mostDangerous);
+                return true;
             }
-            return false
+            return false;
         }).filter((e) => {
             // Only return the highest tier of danger
             if (this.body.aiSettings.farm || e.dangerValue === mostDangerous) {
-                if (this.targetLock && e.id === this.targetLock.id) keepTarget = true
-                return true
+                if (this.targetLock && e.id === this.targetLock.id) keepTarget = true;
+                return true;
             }
-            return false
+            return false;
         });
         // Reset target if it's not in there
         if (!keepTarget) this.targetLock = undefined;
         return out;
-    }
-    checkEntity(e, m, mm, range) {
-        // Only look at those within our view, and our parent's view, not dead, not our kind, not a bullet/trap/block etc
-        const validType = this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'));
-        if (e.master.master.team !== this.body.master.master.team && e.health.amount > 0 && e.master.master.team !== 101 && !e.invuln && !e.passive && (this.body.seeInvisible || e.alpha > 0.25) && validType && e.dangerValue > 0) {
-            if ((this.body.aiSettings.blind ? (util.getDistance(e, mm) < mm.fov / 2) : (Math.abs(e.x - m.x) < range && Math.abs(e.y - m.y) < range))) {
-                if (!c.SANDBOX || this.body.master.master.sandboxId === e.master.master.sandboxId) {
-                    if (this.body.isDominator) {
-                        if (!e.isDominator) {
-                            return e;
-                        }
-                    } else {
-                        return e;
-                    }
-                }
-            }
-        }
-        return null;
     }
     think(input) {
         // Override target lock upon other commands
@@ -381,7 +343,7 @@ ioTypes.nearestDifferentMaster = class extends IO {
         }
         // Otherwise, consider how fast we can either move to ram it or shoot at a potiential target.
         let tracking = this.body.topSpeed,
-            range = this.body.fov / 2;
+            range = this.body.fov;
         // Use whether we have functional guns to decide
         for (let i = 0; i < this.body.guns.length; i++) {
             if (this.body.guns[i].canShoot && !this.body.aiSettings.skynet) {
@@ -394,26 +356,32 @@ ioTypes.nearestDifferentMaster = class extends IO {
         }
         // Check if my target's alive
         if (this.targetLock) {
-            if (this.targetLock.health.amount <= 0 || (this.targetLock.passive || this.body.master.passive) || (!this.body.seeInvisible && this.targetLock.alpha < .25)) {
+            if (!this.validate(this.targetLock, {
+                    x: this.body.x,
+                    y: this.body.y,
+                }, {
+                    x: this.body.master.master.x,
+                    y: this.body.master.master.y,
+                }, range * range, range * range * 4 / 3)) {
                 this.targetLock = undefined;
                 this.tick = 100;
             }
         }
         // Think damn hard
         if (this.tick++ > 15 * roomSpeed) {
-            this.tick = 0
-            this.validTargets = this.buildList(range)
+            this.tick = 0;
+            this.validTargets = this.buildList(range);
             // Ditch our old target if it's invalid
             if (this.targetLock && this.validTargets.indexOf(this.targetLock) === -1) {
-                this.targetLock = undefined
+                this.targetLock = undefined;
             }
             // Lock new target if we still don't have one.
             if (this.targetLock == null && this.validTargets.length) {
                 this.targetLock = (this.validTargets.length === 1) ? this.validTargets[0] : nearest(this.validTargets, {
                     x: this.body.x,
                     y: this.body.y
-                })
-                this.tick = -90
+                });
+                this.tick = -90;
             }
         }
         // Lock onto whoever's shooting me.
@@ -870,6 +838,51 @@ ioTypes.botMovement = class extends IO {
             goal: goal,
             power: power,
         };
+    }
+}
+ioTypes.botMovement = class extends IO {
+    constructor(body) {
+        super(body);
+        this.goal = room.randomType("norm");
+        this.timer = Math.random() * 500 | 0;
+        this.defendTick = -1;
+        this.state = 1;
+    }
+    think(input) {
+        if (c.SPECIAL_BOSS_SPAWNS && room["bas1"] && room["bas1"].length < 3 && room["bas1"].length > 0) {
+            if ((this.defendTick <= 0 && (!room.isIn("bas1", this.goal) || !input.target)) || (room.isIn("bas1", this.goal) && !input.target)) {
+                this.goal = room.randomType("bas1");
+                this.defendTick = 50 + Math.random() * 150;
+            }
+            this.defendTick --;
+        } else {
+            this.timer --;
+            if (input.target) {
+                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 1) {
+                    const target = {
+                        x: input.target.x + this.body.x,
+                        y: input.target.y + this.body.y
+                    };
+                    const angle = Math.atan2(target.y - this.body.y, target.x - this.body.x) + (Math.PI / 2 * (Math.random() - .5));
+                    const dist = Math.random() * this.body.fov;
+                    this.timer = Math.random() * 100 | 0;
+                    this.goal = {
+                        x: target.x + Math.cos(angle) * dist,
+                        y: target.y + Math.sin(angle) * dist
+                    };
+                    this.state = 0;
+                }
+            } else {
+                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 0) {
+                    this.timer = Math.random() * 500 | 0;
+                    this.state = 1;
+                    this.goal = room.randomType(Math.random() > .9 ? "nest" : "norm");
+                }
+            }
+        }
+        return {
+            goal: this.goal
+        }
     }
 }
 ioTypes.listenToPlayerStatic = class extends IO {

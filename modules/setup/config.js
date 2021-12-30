@@ -447,25 +447,9 @@ const gamemodes = {
         /*GROUPS: 5,
         secondaryGameMode: "Groups",
         tabLimit: 5,*/
-        MODE: "tdm",
-        TEAMS: 2,
+        WIDTH: 7500,
+        HEIGHT: 7500,
         BETA: 1,
-        WIDTH: 8000,
-        HEIGHT: 3600,
-        ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "roid", "norm", "norm", "roid", "norm", "norm", "dom0", "norm", "edge", "edge", "norm", "roid", "norm", "norm", "roid", "norm", "norm", "bas2", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "roid", "norm", "nest", "port", "nest", "norm", "roid", "norm", "edge", "edge", "norm", "roid", "norm", "nest", "port", "nest", "norm", "roid", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "bas1", "norm", "norm", "roid", "norm", "norm", "roid", "norm", "edge", "edge", "norm", "dom0", "norm", "norm", "roid", "norm", "norm", "roid", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
-        ],
-        DIVIDER_LEFT: 3600,
-        DIVIDER_RIGHT: 4400,
-        DOMINATOR_LOOP: true,
         /*WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [

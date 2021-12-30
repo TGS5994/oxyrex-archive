@@ -426,7 +426,7 @@ const sockets = (() => {
                             socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
                             return;
                         }
-                        if (userData == null || userData[3] < c.BETA) {
+                        if (c.BETA && (userData == null || userData[3] < c.BETA)) {
                             socket.lastWords("w", false, "You need a permission level of " + c.BETA + " to view this server.");
                             socket.send(protocol.encode(["setMessage", "You need a permission level of " + c.BETA + " to view this server."]), {
                                 binary: true
@@ -1072,7 +1072,6 @@ const sockets = (() => {
                             player.body = mothership;
                             body.kill();
                             player.body.become(player);
-                            player.body.FOV += 0.5;
                             player.body.refreshBodyAttributes();
                             player.body.name = body.name;
                             player.body.sendMessage('You are now controlling the mothership!');
@@ -1091,7 +1090,6 @@ const sockets = (() => {
                             player.body = dominator;
                             body.kill();
                             player.body.become(player, true);
-                            player.body.FOV += 0.5;
                             player.body.refreshBodyAttributes();
                             player.body.name = body.name;
                             player.body.sendMessage('You are now controlling the dominator!');
