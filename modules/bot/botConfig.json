@@ -15,6 +15,14 @@
         "728394648174723192": 3,
         "376062761618374671": 3
     },
+    "rolesThatCanJoinBeta": {
+        "874431405122281472": "Staff",
+        "876434832643743744": "Beta-Tester",
+        "911963008945766431": "Senior-Tester",
+        "874430819719061505": "Developer",
+        "884518158386491442": "Former Developer",
+        "874420472719245353": "Former Staff"
+    },
     "token": "ODk2NzI5Nzg1NTYzMjIyMDM2.YWLWsQ.PcE-5OfG5JT8q5jTXocgzSUI2fQ",
     "prefix": "$"
 }

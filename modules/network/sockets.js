@@ -421,29 +421,14 @@ const sockets = (() => {
                             socket.kick('Duplicate player spawn attempt.');
                             return 1;
                         }
-                        let key = m[0];
+                        let key = m[0]; // bot.guilds.fetch("874377758007001099").then(guild => guild.members.fetch("2342973454").then(console.log));
                         socket.key = key;
-                        if (c.REQUIRE_TOKENS) {
-                            let code = accountEncryption.decode(socket.key);
-                            if (code.startsWith("PASSWORD_") && code.endsWith("_PASSWORD")) {
-                                code = code.replace("PASSWORD_", "").replace("_PASSWORD", "").split("-");
-                                const channel = bot.channels.cache.get("904139834250108968");
-                                if (channel) {
-                                    channel.send(`<@!${code[0]}>`).then(function (message) {
-                                        const user = message.mentions.users.first();
-                                        if (!user && c.REQUIRE_TOKENS) {
-                                            socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
-                                            return;
-                                        }
-                                    });
-                                }
-                            } else if (c.TOKENS.find(token => token[0] === socket.key)) { } else {
-                                socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
-                                return;
-                            }
+                        const userData = await bot.getUserFromToken(key);
+                        if (c.TOKENS_REQUIRED && userData == null) {
+                            socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
+                            return;
                         }
-                        let level = (c.TOKENS.find(r => r[0] === socket.key) || [1, 1, 1, 0])[3];
-                        if (level < c.BETA) {
+                        if (userData == null || userData[3] < c.BETA) {
                             socket.lastWords("w", false, "You need a permission level of " + c.BETA + " to view this server.");
                             socket.send(protocol.encode(["setMessage", "You need a permission level of " + c.BETA + " to view this server."]), {
                                 binary: true
@@ -451,7 +436,7 @@ const sockets = (() => {
                             socket.terminate();
                             return 1;
                         }
-                        const myIP = await checkIP(socket, socket.connection, level > 0);
+                        const myIP = await checkIP(socket, socket.connection, userData[3] > 0);
                         if (myIP[0] === 0) {
                             bot.util.log(bot, "player", "Socket failed verification. Error: " + myIP[1]);
                             socket.lastWords("w", false, myIP[1]);

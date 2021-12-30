@@ -182,6 +182,37 @@ process.on("uncaughtException", async error => {
 bot.login(config.token);
 bot.util = util;
 bot.config = config;
+bot.getUserFromToken = async function(token) {
+    const beta = c.TOKENS.findIndex(entry => entry[0] === token);
+    if (beta > -1) {
+        return c.TOKENS[beta];
+    }
+    const decoded = accountEncryption.decode(token);
+    if (decoded.startsWith("PASSWORD_") && decoded.endsWith("_PASSWORD")) {
+        const [discordID, nameColor] = decoded.replace("PASSWORD_", "").replace("_PASSWORD", "").split("-");
+        let guild, member, canJoin = 0;
+        try {
+            guild = await bot.guilds.fetch("874377758007001099");
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
+        try {
+            member = await guild.members.fetch(discordID);
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
+        for (const id of member._roles) {
+            if (config.rolesThatCanJoinBeta[id] != null) {
+                canJoin = 1;
+            }
+        }
+        console.log(token, discordID, nameColor, canJoin, `${member.user.username}#${member.user.discriminator}`);
+        return [token, discordID, nameColor, canJoin, `${member.user.username}#${member.user.discriminator}`];
+    }
+    return null;
+}
 module.exports = {
     bot
 };
