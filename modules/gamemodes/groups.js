@@ -22,8 +22,23 @@ class Group {
         this.size = size;
         this.teamID = getID();
         this.color = (100 + (this.teamID % 85)) | 0;
+        this.private = false;
         activeGroups.push(this);
         console.log("New group created.");
+    }
+    check() {
+        let bots = this.members.map(e => e).filter(r => r.isBot).length;
+        return bots > 0 || this.members.length < this.size;
+    }
+    removeBot() {
+        const bot = this.members.find(entry => entry.isBot);
+        if (bot) {
+            this.removeMember(bot);
+            if (bot.body) {
+                bot.body.onDead = null;
+                bot.body.kill();
+            }
+        }
     }
     addMember(socket) {
         if (this.members.length === this.size) return false;
@@ -55,9 +70,15 @@ class Group {
     }
 }
 const addMember = (socket, party = -1) => {
-    let group = activeGroups.find(entry => entry.members.length < entry.size);
-    if (party !== -1) group = activeGroups.find(entry => (entry.teamID === party / room.partyHash && entry.members.length < entry.size));
-    if (!group) group = new Group(c.GROUPS || 0);
+    let index = -1;
+    if (party !== -1) {
+        index = activeGroups.findIndex(entry => (entry.teamID === party / room.partyHash && entry.check()));
+    }
+    if (index === -1) {
+        index = activeGroups.findIndex(entry => (!entry.private && entry.check()));
+    }
+    const group = activeGroups[index] || new Group(c.GROUPS || index);
+    group.removeBot();
     group.addMember(socket);
 };
 const removeMember = socket => {

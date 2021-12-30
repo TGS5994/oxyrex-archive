@@ -444,7 +444,10 @@ const gamemodes = {
         secondaryGameMode: "sb"
     },
     "Closed Beta": {
-        MODE: "tdm",
+        GROUPS: 5,
+        secondaryGameMode: "Groups",
+        tabLimit: 5,
+        /*MODE: "tdm",
         TEAMS: 2,
         BETA: 1,
         WIDTH: 8000,
@@ -462,7 +465,7 @@ const gamemodes = {
         ],
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
-        DOMINATOR_LOOP: true,
+        DOMINATOR_LOOP: true,*/
         /*WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [

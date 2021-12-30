@@ -102,7 +102,7 @@ commands.help = (function() {
 })();
 const whitelistedChannels = [
     "874395524894187531", // Bot Commands
-    "876435248903229532", // Beta Tester Chat
+    "925770287230890046", // Beta Tester Commands
     "874413621206212668", // Staff Chat
     "874446523059044452" // Admin Chat
 ];

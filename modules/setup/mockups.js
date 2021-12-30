@@ -6,7 +6,7 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-/*const atlas = ["name", "index", "x", "y", "color", "shape", "size", "realSize", "facing", "position", "middle", "axis", "points", "upgrades", "guns", "turrets", "offset", "direction", "length", "width", "aspect", "angle", "skin", "layer", "sizeFactor", "body", "Health", "Body Damage", "Movement Speed", "Regeneration", "Shield", "Acceleration", "Density", "Penetration", "Pushability"];
+const atlas = ["name", "index", "x", "y", "color", "shape", "size", "realSize", "facing", "position", "middle", "axis", "points", "upgrades", "guns", "turrets", "offset", "direction", "length", "width", "aspect", "angle", "skin", "layer", "sizeFactor", "body", "Health", "Body Damage", "Movement Speed", "Regeneration", "Shield", "Acceleration", "Density", "Penetration", "Pushability"];
 
 function encode(json) {
     let output = [];
@@ -82,10 +82,11 @@ const protocol = {
 };
 
 if (typeof module !== "undefined") {
-    module.exports = protocol;
+    //module.exports = protocol;
 } else if (typeof window !== "undefined") {
-    window.mockupProtocol = protocol;
-}*/
+    //window.mockupProtocol = protocol;
+}
+
 const loadMockupJsonData = (() => {
     console.log("Started loading mockups...");
     function rounder(val) {

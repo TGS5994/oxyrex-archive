@@ -325,9 +325,7 @@ const sockets = (() => {
         backlog: backlog,
         disconnections: disconnections,
         broadcast: message => {
-            clients.forEach(socket => {
-                socket.talk('m', message);
-            });
+            for (let socket of clients) socket.talk('m', message);
         },
         broadcastRoom: () => {
             for (let socket of clients) socket.talk("r", room.width, room.height, JSON.stringify(c.ROOM_SETUP));
@@ -483,7 +481,7 @@ const sockets = (() => {
                             socket.kick('Bad spawn request.');
                             return 1;
                         }
-                        if (encodeURI(name).split(/%..|./).length > 48) {
+                        if (name.length > 24) {
                             socket.kick('Overly-long name.');
                             return 1;
                         }
@@ -491,6 +489,7 @@ const sockets = (() => {
                             socket.kick('Bad spawn request.');
                             return 1;
                         }
+                        name = name.replace(/[\x00\u200B\u200E\u200F\u202A-\u202E\uFDFD\uFFFD-\uFFFF]/g, '')
                         if (global.arenaClosed) return 1;
                         // Bring to life
                         socket.status.deceased = false;
@@ -1022,7 +1021,17 @@ const sockets = (() => {
                         }
                     } break;
                     case "A": {
-                        if (player.body != null) return 1;
+                        if (player.body != null) {
+                            if (c.GROUPS > 0) {
+                                if (socket.group) {
+                                    socket.group.private = !socket.group.private;
+                                    socket.group.members.forEach(member => {
+                                        member.talk("m", "Your group is " + (socket.group.private ? "now" : "no longer") + " private.");
+                                    });
+                                }
+                            }
+                            return 1;
+                        }
                         let possible = entities.map(entry => {
                             if (entry.type === "miniboss") return entry;
                             if (entry.isDominator || entry.isMothership || entry.isArenaCloser) return entry;
@@ -1459,14 +1468,14 @@ const sockets = (() => {
                         default: {
                             if (socket.group) {
                                 body.team = -player.team;
-                                body.color = socket.group.color;
+                                body.color = 11;//socket.group.color;
                                 //socket.talk("J", player.team * 12345);
                                 // col
                             } else body.color = (c.RANDOM_COLORS) ? ran.choose([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]) : 11; // red
                         }
                     }
                     // Decide what to do about colors when sending updates and stuff
-                    player.teamColor = (!c.RANDOM_COLORS && room.gameMode === 'ffa' && !socket.group) ? 10 : body.color; // blue
+                    player.teamColor = (!c.RANDOM_COLORS && room.gameMode === 'ffa') ? 10 : body.color; // blue
                     // Set up the targeting structure
                     player.target = {
                         x: 0,
@@ -1771,7 +1780,6 @@ const sockets = (() => {
                 let readlb;
                 // Util
                 let getBarColor = entry => {
-                    if (c.GROUPS && entry.isPlayer) return entry.color;
                     switch (entry.team) {
                         case -100:
                             return entry.color
@@ -1885,7 +1893,7 @@ const sockets = (() => {
                             data: [
                                 util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
                                 util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
-                                my.color
+                                (my.socket && my.socket.group) ? 10 : my.color
                             ]
                         });
                     return all;
@@ -2159,6 +2167,7 @@ const sockets = (() => {
                         });
                     }
                 }
+                socket.talk("H", mockupJsonData);
                 socket.lastWords = (...message) => {
                     if (socket.readyState === socket.OPEN) {
                         socket.send(protocol.encode(message), {

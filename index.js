@@ -597,12 +597,14 @@ const maintainloop = (() => {
         o.nameColor = "#7289DA";
         /*if (c.GROUPS) {
             let master = {
+                isBot: true,
                 player: {
                     body: o
                 }
             };
             groups.addMember(master);
             o.team = -master.rememberedTeam;
+            o.color = master.group.color;
             o.ondead = function() {
                 groups.removeMember(master);
             }
