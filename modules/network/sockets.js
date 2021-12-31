@@ -426,7 +426,7 @@ const sockets = (() => {
                             socket.kick("Tokens are currently required. Please join the discord for more info or check back later.");
                             return;
                         }
-                        if (c.BETA && (userData == null || userData[3] < c.BETA)) {
+                        if (c.BETA > 0 && (userData == null || userData[3] < c.BETA)) {
                             socket.lastWords("w", false, "You need a permission level of " + c.BETA + " to view this server.");
                             socket.send(protocol.encode(["setMessage", "You need a permission level of " + c.BETA + " to view this server."]), {
                                 binary: true
@@ -434,7 +434,7 @@ const sockets = (() => {
                             socket.terminate();
                             return 1;
                         }
-                        const myIP = await checkIP(socket, socket.connection, userData[3] > 0);
+                        const myIP = await checkIP(socket, socket.connection, userData != null && userData[3] > 0);
                         if (myIP[0] === 0) {
                             bot.util.log(bot, "player", "Socket failed verification. Error: " + myIP[1]);
                             socket.lastWords("w", false, myIP[1]);

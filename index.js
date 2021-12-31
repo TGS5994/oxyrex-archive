@@ -414,7 +414,7 @@ const maintainloop = (() => {
                         break;
                     case 1:
                         choice = [
-                            [Class.summoner, Class.eliteSkimmer, Class.palisade, Class.atrium, Class.guardian, Class.greenGuardian, Class.quadriatic], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                            [Class.summoner, Class.eliteSkimmer, Class.palisade, Class.atrium, Class.guardian, Class.quadriatic], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("A strange trembling...");
                         break;
@@ -504,14 +504,11 @@ const maintainloop = (() => {
             max: 25,
             chance: 0.8,
             sentryChance: 0.95,
-            nestDefenderChance: 0.999,
-            crashers: [Class.crasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.greenSentrySwarm, Class.sentryOmission],
-            nestDefenders: [Class.nestDefenderKrios, Class.nestDefenderTethys]
+            crashers: [Class.crasher, Class.fragment, Class.dartCrasher],
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission]
         };
         function getType() {
             const seed = Math.random();
-            if (seed > config.nestDefenderChance && !nestDefenderSpawned) return ran.choose(config.nestDefenders);
             if (seed > config.sentryChance) return ran.choose(config.sentries);
             return ran.choose(config.crashers);
         }
@@ -530,17 +527,10 @@ const maintainloop = (() => {
                         } while (dirtyCheck(spot, 250));
                         let o = new Entity(spot);
                         o.define(getType());
+                        o.controllers.push(new ioTypes.nestNPC(o));
                         o.team = -100;
                         if (c.SANDBOX) {
                             o.sandboxId = ran.choose(global.sandboxRooms).id;
-                        }
-                        if (o.label === "Nest Defender") {
-                            nestDefenderSpawned = true;
-                            sockets.broadcast("The nest cries out for help!");
-                            setTimeout(sockets.broadcast, 2500, "The call was answered.");
-                            o.onDead = () => {
-                                setTimeout(() => nestDefenderSpawned = false, 60000 * 3);
-                            }
                         }
                     }
                 }

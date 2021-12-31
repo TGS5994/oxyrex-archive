@@ -1025,6 +1025,25 @@ ioTypes.skipBomb = class extends IO {
         }
     }
 }
+ioTypes.nestNPC = class extends IO {
+    constructor(body) {
+        super(body);
+        this.goal = room.randomType("nest");
+    }
+    think(input) {
+        if (!input.main && !input.alt && !room.isIn("nest", this.body)) {
+            return {
+                main: false,
+                alt: false,
+                goal: this.goal,
+                target: {
+                    x: this.goal.x - this.body.x,
+                    y: this.goal.y - this.body.y
+                }
+            }
+        }
+    }
+}
 ioTypes.bossRushAI = class extends IO {
     constructor(body) {
         super(body);

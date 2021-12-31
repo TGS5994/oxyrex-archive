@@ -493,7 +493,6 @@ const choiceTable = {
     "Tag": 6,
     "Domination": 7,
     "Naval Battle": 2,
-    "Infection": 5,
     "Boss Rush": 6,
     "Space": 1,
     "Center Control": 5
