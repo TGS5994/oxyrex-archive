@@ -450,6 +450,12 @@ const gamemodes = {
         WIDTH: 7500,
         HEIGHT: 7500,
         BETA: 1,
+        MAZE: 32,
+        ROOM_SETUP: setup({
+            width: 16,
+            height: 16,
+            rockScatter: 0
+        }),
         /*WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [
