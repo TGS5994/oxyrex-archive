@@ -527,6 +527,7 @@ ioTypes.hangOutNearMaster = class extends IO {
         this.timer = 0;
     }
     think(input) {
+        if (this.body.invisible[1]) return;
         if (this.body.source != this.body) {
             let bound1 = this.orbit * 0.8 + this.body.source.size + this.body.size;
             let bound2 = this.orbit * 1.5 + this.body.source.size + this.body.size;

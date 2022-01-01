@@ -1367,6 +1367,26 @@ const sockets = (() => {
                     socket.talk('m', content);
                 }
                 // The returned player definition function
+                const factoryTanks = (function() {
+                    const output = [];
+                    const upgradeKeys = ["UPGRADES_TIER_1", "UPGRADES_TIER_2", "UPGRADES_TIER_3", "UPGRADES_TIER_4"];
+                    function put(up) {
+                        output.push(up.index);
+                        for (const key of upgradeKeys) {
+                            if (up[key] instanceof Array) {
+                                for (const upgrade of up[key]) {
+                                    put(upgrade);
+                                }
+                            }
+                        }
+                    }
+                    if (typeof Class.spawner !== "object") {
+                        throw new Error("Cannot initiate factory spawning, please change the proper export in sockets.js");
+                        return;
+                    }
+                    put(Class.spawner);
+                    return output;
+                })();
                 return (socket, name) => {
                     let player = {},
                         loc = {};
@@ -1375,6 +1395,7 @@ const sockets = (() => {
                     player.team = socket.rememberedTeam;
                     switch (room.gameMode) {
                         case "tdm": {
+                            let i = 10;
                             if (player.team <= c.TEAMS && player.team > 0 || player.team == null) {
                                 let team = getTeam();
                                 // Choose from one of the least ones
@@ -1386,21 +1407,32 @@ const sockets = (() => {
                                         console.log("Party Code with team:", team, "Party:", socket.party);
                                     }
                                 }
-                                // Make sure you're in a base
-                                if (room['bas' + player.team].length)
-                                    do {
-                                        loc = room.randomType('bas' + player.team);
-                                    } while (dirtyCheck(loc, 50));
-                                else
-                                    do {
-                                        loc = room.gaussInverse(5);
-                                    } while (dirtyCheck(loc, 50));
-                            } else
+                                const factory = entities.find(entry => entry.team === -team && factoryTanks.includes(entry.index));
+                                if (factory && Math.random() > .9) {
+                                    loc = {
+                                        x: factory.x + factory.SIZE * 1.5 * Math.cos(factory.facing),
+                                        y: factory.y + factory.SIZE * 1.5 * Math.cos(factory.facing)
+                                    };
+                                } else {
+                                    if (room["bas" + player.team] && room["bas" + player.team].length) {
+                                        do {
+                                            loc = room.randomType("bas" + player.team);
+                                            i --;
+                                        } while (dirtyCheck(loc, 50) && i);
+                                    } else {
+                                        do {
+                                            loc = room.gaussInverse(5);
+                                            i --;
+                                        } while (dirtyCheck(loc, 50) && i);
+                                    }
+                                }
+                            } else {
                                 do {
                                     loc = room.gaussInverse(5);
-                                } while (dirtyCheck(loc, 50));
-                        }
-                            break;
+                                    i --;
+                                } while (dirtyCheck(loc, 50) && i);
+                            }
+                        } break;
                         default:
                             do {
                                 if (socket.group) loc = room.near(socket.group.getSpawn(), 300);
@@ -1430,6 +1462,7 @@ const sockets = (() => {
                         body.become(player);
                         body.invuln = true; // Make it safe
                         body.invulnTime = [Date.now(), 60000];
+                        body.skill.score = socket.status.spawnWithScore;
                     }
                     body.socket = socket;
                     player.body = body;
@@ -1546,7 +1579,37 @@ const sockets = (() => {
                             // 2: layer
                             data.layer);
                     } else {
-                        output.push(
+                        const stuff = [data.id, 0, data.index, data.x, data.y, data.vx, data.vy, data.size, data.facing];
+                        if (data.twiggle) {
+                            stuff[1] += 1;
+                        }
+                        if (data.layer !== 0) {
+                            stuff[1] += 2;
+                            stuff.push(data.layer);
+                        }
+                        stuff.push(data.color);
+                        if (data.health < .975) {
+                            stuff[1] += 4;
+                            stuff.push(Math.ceil(255 * data.health));
+                        }
+                        if (data.shield < .975) {
+                            stuff[1] += 8;
+                            stuff.push(Math.ceil(255 * data.shield));
+                        }
+                        if (data.alpha < .975) {
+                            stuff[1] += 16;
+                            stuff.push(Math.ceil(255 * data.alpha));
+                        }
+                        if (data.sizeRatio[0] !== 1) {
+                            stuff[1] += 32;
+                            stuff.push(data.sizeRatio[0]);
+                        }
+                        if (data.sizeRatio[1] !== 1) {
+                            stuff[1] += 64;
+                            stuff.push(data.sizeRatio[1]);
+                        }
+                        output.push(...stuff);
+                        /*output.push(
                             // 1: id
                             data.id,
                             // 2: index
@@ -1581,13 +1644,9 @@ const sockets = (() => {
                             data.sizeRatio[0],
                             // 17: height
                             data.sizeRatio[1]
-                        );
+                        );*/
                         if (data.type & 0x04) {
-                            output.push(
-                                // 17: name
-                                data.name,
-                                // 18: score
-                                data.score);
+                            output.push(data.name, data.score);
                         }
                     }
                     // Add the gun data to the array
@@ -1603,7 +1662,7 @@ const sockets = (() => {
                     return output;
                 }
 
-                function perspective(e, player, data) {
+                /*function perspective(e, player, data) {
                     if (player.body != null) {
                         if (player.body.id === e.master.id) {
                             data = data.slice(); // So we don't mess up references to the original
@@ -1621,6 +1680,30 @@ const sockets = (() => {
                         if (player.body.team === e.source.team && c.GROUPS) { // GROUPS
                             data = data.slice();
                             data[12] = player.teamColor;
+                        }
+                    }
+                    return data;
+                }*/
+
+                function perspective(e, player, data) {
+                    if (player.body != null) {
+                        if (player.body.id === e.master.id) {
+                            data = data.slice();
+                            let colorOverride = false;
+                            if (player.rainbowInterval != null || player.body.type !== "tank") colorOverride = true;
+                            if (room.gameMode === "ffa" && player.body.color !== 11) colorOverride = true;
+                            if (room.gameMode === "tdm" && player.body.color !== player.teamColor) colorOverride = true;
+                            data[(data[2] & 2) ? 11 : 10] = colorOverride ? e.color : player.teamColor;
+                            // And make it force to our mouse if it ought to
+                            if (player.command.autospin || player.body.facingType === "smoothWithMotion") {
+                                if (data[2] & 1 === 0) {
+                                    data[2] += 1;
+                                }
+                            }
+                        }
+                        if (player.body.team === e.source.team && c.GROUPS) { // GROUPS
+                            data = data.slice();
+                            data[(data[2] & 2) ? 11 : 10] = player.teamColor;
                         }
                     }
                     return data;
@@ -1668,6 +1751,7 @@ const sockets = (() => {
                                 if (player.body.isDead()) {
                                     socket.status.deceased = true;
                                     // Let the client know it died
+                                    socket.status.spawnWithScore = Math.min(player.body.skill.score * 2 / 3, 39454);
                                     const records = player.records();
                                     if (!socket.awaitingSpawn) {
                                         socket.talk('F', ...records);
@@ -2119,6 +2203,7 @@ const sockets = (() => {
                     needsFullMap: true,
                     needsNewBroadcast: true,
                     lastHeartbeat: util.time(),
+                    spawnWithScore: 0
                 };
                 // Set up loops
                 socket.loops = (() => {

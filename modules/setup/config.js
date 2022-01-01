@@ -447,6 +447,8 @@ const gamemodes = {
         /*GROUPS: 5,
         secondaryGameMode: "Groups",
         tabLimit: 5,*/
+        MODE: "tdm",
+        TEAMS: 2,
         WIDTH: 7500,
         HEIGHT: 7500,
         BETA: 1,
