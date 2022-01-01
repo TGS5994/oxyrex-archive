@@ -71,7 +71,8 @@ function setup(options = {}) {
 
 const gamemodes = {
     "FFA": {
-        ALLOW_MAZE: true
+        ALLOW_MAZE: true,
+        RANDOM_COLORS: Math.random() > .8
     }, // "defaults" is already FFA.
     "TDM": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
