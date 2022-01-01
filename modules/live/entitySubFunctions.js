@@ -260,14 +260,14 @@ class Skill {
 }
 class HealthType {
     constructor(health, type, resist = 0) {
-        this.max = health;
-        this.amount = health;
+        this.max = health || .01;
+        this.amount = health || .01;
         this.type = type;
         this.resist = resist;
         this.regen = 0;
         this.lastDamage = 0;
-        this.rMax = health;
-        this.rAmount = health;
+        this.rMax = health || .01;
+        this.rAmount = health || .01;
     }
     get max() {
         return this.rMax;
@@ -286,6 +286,9 @@ class HealthType {
         }
     }
     set(health, regen = 0) {
+        if (health <= 0) {
+            health = .01;
+        }
         this.amount = (this.max) ? this.amount / this.max * health : health;
         this.max = health;
         this.regen = regen;

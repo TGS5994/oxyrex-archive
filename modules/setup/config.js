@@ -70,7 +70,9 @@ function setup(options = {}) {
 }
 
 const gamemodes = {
-    "FFA": {}, // "defaults" is already FFA.
+    "FFA": {
+        ALLOW_MAZE: true
+    }, // "defaults" is already FFA.
     "TDM": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
         let width = 15,
@@ -86,7 +88,7 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = Math.round(Math.random());
+                const mapType = (Math.random() > .1);
                 const bases = getBaseShuffling(teams);
                 width --;
                 height --;
@@ -443,6 +445,11 @@ const gamemodes = {
         SANDBOX: true,
         secondaryGameMode: "sb"
     },
+    "Trios": {
+        GROUPS: 3,
+        secondaryGameMode: "Groups",
+        ALLOW_MAZE: true
+    },
     "Closed Beta": {
         /*GROUPS: 5,
         secondaryGameMode: "Groups",
@@ -493,17 +500,16 @@ const gamemodes = {
 const choiceTable = {
     "FFA": 10,
     "TDM": 9,
-    "Kill Race": 4,
-    "Hide and Seek": 2,
+    "Kill Race": 5,
     "Soccer": 6,
     "Survival": 3,
-    "Mothership": 5,
-    "Tag": 6,
-    "Domination": 7,
-    "Naval Battle": 2,
-    "Boss Rush": 6,
-    "Space": 1,
-    "Center Control": 5
+    "Mothership": 4,
+    "Tag": 4,
+    "Domination": 8,
+    "Boss Rush": 9,
+    "Center Control": 5,
+    "Trios": 7,
+    "Sandbox": 7
 };
 
 const gamemode = (function() {

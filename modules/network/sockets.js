@@ -1696,7 +1696,7 @@ const sockets = (() => {
                             data[(data[2] & 2) ? 11 : 10] = colorOverride ? e.color : player.teamColor;
                             // And make it force to our mouse if it ought to
                             if (player.command.autospin || player.body.facingType === "smoothWithMotion") {
-                                if (data[2] & 1 === 0) {
+                                if (data[2] % 2 === 0) {
                                     data[2] += 1;
                                 }
                             }
