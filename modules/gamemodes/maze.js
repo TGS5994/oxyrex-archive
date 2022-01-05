@@ -146,7 +146,7 @@ function generateMaze(size) {
             }
             return best;
         }
-        const newMaze = [];
+        let newMaze = [];
         let biggest;
         while ((biggest = findBiggest()) && !newMaze.includes(biggest) && biggest.size > 0) {
             for (let i = 0; i < biggest.size; i ++) {
@@ -156,15 +156,42 @@ function generateMaze(size) {
             }
             newMaze.push(biggest);
         }
-        /*function getNeighbors(cell) {
-            return newMaze.filter(entry => {
-                return (entry.x === cell.x && (entry.y === cell.y + 1 || entry.y === cell.y - 1)) || (entry.y === cell.y && (entry.x === cell.x + 1 || entry.x === cell.x - 1));
-            });
+        function cellLookup(x, y, size = 1) {
+            return newMaze.find(cell => (cell.x === x && cell.y === y && cell.size === size));
+        }
+        function removeCell(cell) {
+            newMaze = newMaze.filter(entry => entry != cell);
         }
         let i = 0;
         while (i < newMaze.length) {
+            const my = newMaze[i];
+            let width = 1;
+            for (let x = my.x + my.size; x < size - 1; x += my.size) {
+                const other = cellLookup(x, my.y, my.size);
+                if (!other) {
+                    break;
+                }
+                removeCell(other);
+                width ++;
+            }
+            my.width = width;
             i ++;
-        }*/
+        }
+        i = 0;
+        while (i < newMaze.length) {
+            const my = newMaze[i];
+            let height = 1;
+            for (let y = my.y + my.size; y < size - 1; y += my.size) {
+                const other = cellLookup(my.x, y, my.size);
+                if (!other) {
+                    break;
+                }
+                removeCell(other);
+                height ++;
+            }
+            my.height = height;
+            i ++;
+        }
         /*for (let x = 0; x < size - 1; x++) {
             for (let y = 0; y < size - 1; y++) {
                 if (maze[x][y] && maze[x + 1][y] && maze[x + 2][y] && maze[x][y + 1] && maze[x][y + 2] && maze[x + 1][y + 2] && maze[x + 2][y + 1] && maze[x + 1][y + 1] && maze[x + 2][y + 2]) {
@@ -218,12 +245,16 @@ function generateMaze(size) {
             }
         }*/
         for (const placement of newMaze) {
+            const width = placement.width || 1;
+            const height = placement.height || 1;
             let o = new Entity({
-                x: placement.x * scale + (scale / 2 * placement.size),
-                y: placement.y * scale + (scale / 2 * placement.size)
+                x: placement.x * scale + (scale / 2 * placement.size * width),
+                y: placement.y * scale + (scale / 2 * placement.size * height)
             });
             o.define(Class.mazeWall);
             o.SIZE = placement.size * scale / 2 + placement.size * 2;
+            o.width = width;
+            o.height = height;
             o.team = -101;
             o.alwaysActive = true;
             o.protect();
