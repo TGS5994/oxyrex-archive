@@ -1036,6 +1036,7 @@ const sockets = (() => {
                             if (entry.type === "miniboss") return entry;
                             if (entry.isDominator || entry.isMothership || entry.isArenaCloser) return entry;
                             if (c.MODE === "tdm" && -socket.rememberedTeam === entry.team && entry.type === "tank" && entry.bond == null) return entry;
+                            if (c.GROUPS > 0 && -socket.rememberedTeam === entry.team && entry.type === "tank" && entry.bond == null) return entry;
                             return false;
                         }).filter(instance => !!instance);
                         if (!possible.length) {

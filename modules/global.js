@@ -54,26 +54,26 @@ global.arenaClosed = false;
 global.mockupsLoaded = false;
 global.nextTagBotTeam = [];
 global.getTeam = () => {
-    let teamData = {};
-    for (let i = 1; i < c.TEAMS + 1; i++) teamData[i] = 0;
-    for (let o of entities) {
-        if (o.type !== "tank") continue;
-        if (![-1, -2, -3, -4].includes(o.team)) continue;
-        teamData[-o.team]++;
+    const teamData = {};
+    for (let i = 0; i < c.TEAMS; i ++) teamData[i + 1] = 0;
+    for (const o of entities) {
+        if ((o.isBot) && (-o.team > 0 && -o.team <= c.TEAMS)) {
+            teamData[-o.team] ++;
+        }
     }
-    let toSort = [];
-    for (let team in teamData) toSort.push([team, teamData[team]]);
-    toSort = toSort.filter(e => !global.defeatedTeams.includes(-e[0])).sort((a, b) => a[1] - b[1]);
-    if (!toSort.length) return (Math.random() * c.TEAMS | 0) + 1;
-    return toSort[0][0];
+    for (const socket of sockets.clients) {
+        if (socket.rememberedTeam > 0 && socket.rememberedTeam <= c.TEAMS) {
+            teamData[socket.rememberedTeam] ++;
+        }
+    }
+    const toSort = Object.keys(teamData).map(key => [key, teamData[key]]).filter(e => !global.defeatedTeams.includes(-e[0])).sort((a, b) => a[1] - b[1]);
+    return toSort.length === 0 ? ((Math.random() * c.TEAMS | 0) + 1) : toSort[0][0];
 };
 global.loopThrough = function(array, callback = () => {}) {
     for (let index = 0, length = array.length; index < length; index ++) callback(array[index], index);
 };
 global.isEven = function isEven(number) {
-    let string = number.toString();
-    let last = string[string.length - 1];
-    return [0, 2, 4, 6, 8].includes(Number(last));
+    return number % 2 === 0;
 };
 global.rotatePoint = function rotatePoint({
     x,
@@ -119,11 +119,15 @@ const requires = [
     "./bot/main.js" // Discord Bot
 ];
 for (let file of requires) {
+    const start = Date.now();
     const module = require(file);
-    for (let key in module)
-        if (module.hasOwnProperty(key)) global[key] = module[key];
+    for (let key in module) {
+        if (module.hasOwnProperty(key)) {
+            global[key] = module[key];
+        }
+    }
+    console.log(`Loaded ${file} in ${Date.now() - start}ms`);
 }
-//global.viewGrid = new QuadTree(room, 16, 16);
 module.exports = {
     creationDate: new Date(),
     creationTime: new Date().getTime()

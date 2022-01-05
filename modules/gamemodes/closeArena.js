@@ -7,7 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
-let arenaClosers = ["arenaCloser", "twinCloser", "machineCloser", "sniperCloser", "flankCloser", "directorCloser", "pounderCloser", "trapperCloser", "growerCloser", "pelleterCloser", "propellerCloser", "smasherCloser", "closerCeption", "closer5", "closerCeptionist2"].map(entry => Class[entry + "AI"]);
+let arenaClosers = ["arenaCloser", "twinCloser", "machineCloser", "sniperCloser", "flankCloser", "directorCloser", "pounderCloser", "trapperCloser", "growerCloser", "pelleterCloser", "propellerCloser", "closerCeption", "closer5", "closerCeptionist2"].map(entry => Class[entry + "AI"]);
 function closeArena() {
     if (arenaClosed) return;
     sockets.broadcast("Arena Closed: No players may join!");
@@ -26,7 +26,7 @@ function closeArena() {
                 o.team = -100;
                 o.skill.score = 23650;
                 o.isArenaCloser = true;
-                o.seeInvisible = true;
+                o.aiSettings.seeInvisible = true;
                 o.alwaysActive = true;
                 o.sandboxId = id;
                 o.name = "Arena Closer";
@@ -44,7 +44,7 @@ function closeArena() {
             o.team = -100;
             o.skill.score = 23650;
             o.isArenaCloser = true;
-            o.seeInvisable = true;
+            o.aiSettings.seeInvisible = true;
             o.alwaysActive = true;
             o.name = "Arena Closer";
         }

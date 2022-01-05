@@ -296,7 +296,7 @@ ioTypes.nearestDifferentMaster = class extends IO {
         (!e.invuln && !e.master.master.passive && !this.body.master.master.passive) &&
         (e.master.master.team !== this.body.master.master.team) &&
         (e.master.master.team !== -101) &&
-        (this.body.master.seeInvisible || e.alpha > 0.5) &&
+        (this.body.aiSettings.seeInvisible || e.alpha > 0.5) &&
         (!c.SANDBOX || this.body.master.master.sandboxId === e.master.master.sandboxId) &&
         (this.body.settings.targetPlanes ? e.isPlane : this.body.settings.targetMissiles ? e.settings.missile : this.body.settings.targetAmmo ? (e.type === "drone" || e.type === "minion" || e.type === "swarm" || e.type === "crasher") : (e.type === "tank" || e.type === "crasher" || e.type === "miniboss" || (!this.body.aiSettings.shapefriend && e.type === 'food'))) &&
         (this.body.aiSettings.blind || ((e.x - m.x) * (e.x - m.x) < sqrRange && (e.y - m.y) * (e.y - m.y) < sqrRange)) &&

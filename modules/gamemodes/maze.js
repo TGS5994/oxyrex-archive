@@ -66,8 +66,8 @@ function generateMaze(size) {
     let eroded = 1;
     let toErode = cells * 0.525;
     function path(x, y, direction, length) {
-        for (let pathdistance = 0; pathdistance < length; pathdistance++) {
-            if (Math.random() > 0.5) {
+        for (let pathdistance = 0; pathdistance < length; pathdistance ++) {
+            if (Math.random() > Math.random()) {
                 const newDirs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).filter(entry => {
                     if (entry !== direction) {
                         const tx = entry === 0 ? x + 1 : entry === 2 ? x - 1 : x;
@@ -81,7 +81,11 @@ function generateMaze(size) {
                 });
                 if (newDirs.length) {
                     direction = newDirs.shift();
-                    while (newDirs.length) if (Math.random() > 0.9) path(x, y, newDirs.shift(), Math.random() * 5);
+                    newDirs.forEach(dir => {
+                        if (Math.random() > .999) {
+                            path(x, y, dir, Math.random() * 3);
+                        }
+                    });
                 }
             }
             const tx = direction === 0 ? x + 1 : direction === 2 ? x - 1 : x;
@@ -114,8 +118,54 @@ function generateMaze(size) {
         }
     }
     if (eroded) {
-        // Group 2x2 and 3x3 walls together
-        for (let x = 0; x < size - 1; x++) {
+        // Group rectangles...
+        function findBiggest() {
+            let best = {
+                x: 0,
+                y: 0,
+                size: 0
+            };
+            for (let x = 0; x < size - 1; x ++) {
+                for (let y = 0; y < size - 1; y ++) {
+                    if (!maze[x][y]) {
+                        continue;
+                    }
+                    let sqrArea = 1;
+                    loop: while (x + sqrArea < size - 1 && y + sqrArea < size - 1) {
+                        for (let i = 0; i < sqrArea; i ++) {
+                            if (!maze[x + sqrArea][y + i] || !maze[x + i][y + sqrArea]) {
+                                break loop;
+                            }
+                            sqrArea ++;
+                        }
+                    }
+                    if (sqrArea > best.size) {
+                        best = { x, y, size: sqrArea };
+                    }
+                }
+            }
+            return best;
+        }
+        const newMaze = [];
+        let biggest;
+        while ((biggest = findBiggest()) && !newMaze.includes(biggest) && biggest.size > 0) {
+            for (let i = 0; i < biggest.size; i ++) {
+                for (let j = 0; j < biggest.size; j ++) {
+                    maze[biggest.x + i][biggest.y + j] = false;
+                }
+            }
+            newMaze.push(biggest);
+        }
+        /*function getNeighbors(cell) {
+            return newMaze.filter(entry => {
+                return (entry.x === cell.x && (entry.y === cell.y + 1 || entry.y === cell.y - 1)) || (entry.y === cell.y && (entry.x === cell.x + 1 || entry.x === cell.x - 1));
+            });
+        }
+        let i = 0;
+        while (i < newMaze.length) {
+            i ++;
+        }*/
+        /*for (let x = 0; x < size - 1; x++) {
             for (let y = 0; y < size - 1; y++) {
                 if (maze[x][y] && maze[x + 1][y] && maze[x + 2][y] && maze[x][y + 1] && maze[x][y + 2] && maze[x + 1][y + 2] && maze[x + 2][y + 1] && maze[x + 1][y + 1] && maze[x + 2][y + 2]) {
                     maze[x][y] = 3;
@@ -134,9 +184,9 @@ function generateMaze(size) {
                     maze[x + 1][y + 1] = false;
                 }
             }
-        }
+        }*/
         // Group walls...
-        if (groupWalls) {
+        /*if (groupWalls) {
             for (let x = 0; x < size; x ++) {
                 for (let y = 0; y < size; y ++) {
                     if (maze[x][y] && maze[x][y] != 1.5) {
@@ -166,21 +216,43 @@ function generateMaze(size) {
                     }
                 }
             }
+        }*/
+        for (const placement of newMaze) {
+            let o = new Entity({
+                x: placement.x * scale + (scale / 2 * placement.size),
+                y: placement.y * scale + (scale / 2 * placement.size)
+            });
+            o.define(Class.mazeWall);
+            o.SIZE = placement.size * scale / 2 + placement.size * 2;
+            o.team = -101;
+            o.alwaysActive = true;
+            o.protect();
+            o.life();
         }
-        for (let x = 0; x < size; x++) {
+        /*for (let x = 0; x < size; x++) {
             for (let y = 0; y < size; y++) {
                 let spawnWall = true;
                 let d = {};
                 if (Array.isArray(maze[x][y])) {
-                    const [X, Y, W, H] = maze[x][y];
-                    d = {
-                        x: (X * scale) + (scale * 0.5),
-                        y: (Y * scale) + (scale * 0.5),
-                        s: scale,
-                        sS: 1,
-                        width: W,
-                        height: H
-                    };
+                    if (maze[x][y].length === 3) {
+                        const [xx, yy, ss] = maze[x][y];
+                        d = {
+                            x: (xx * scale) + (scale * ss / 2),
+                            y: (yy * scale) + (scale * ss / 2),
+                            s: scale * ss,
+                            sS: ss === 1 ? 1 : ((ss - 1) * 2.5)
+                        }
+                    } else {
+                        const [X, Y, W, H] = maze[x][y];
+                        d = {
+                            x: (X * scale) + (scale * 0.5),
+                            y: (Y * scale) + (scale * 0.5),
+                            s: scale,
+                            sS: 1,
+                            width: W,
+                            height: H
+                        };
+                    }
                 } else if (maze[x][y] === 3) {
                     d = {
                         x: (x * scale) + (scale * 1.5),
@@ -220,7 +292,7 @@ function generateMaze(size) {
                     o.life();
                 }
             }
-        }
+        }*/
     }
 };
 module.exports = {
