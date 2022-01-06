@@ -41,7 +41,7 @@ function antiLagbot() {
             {
                 let newName = socket.player.body.name.split(" ");
                 const NaNCheck = newName.map(spot => isNaN(+spot));
-                if (NaNCheck[0] === NaNCheck[NaNCheck.length - 1] && isNaN(NaNCheck[0])) flags.numericalName += 3;
+                if (NaNCheck[0] === NaNCheck[NaNCheck.length - 1] && Number.isFinite(NaNCheck[0])) flags.numericalName += 3;
             }
         }
         //evalPacket(socket);

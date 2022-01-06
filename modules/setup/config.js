@@ -509,8 +509,8 @@ const choiceTable = {
     "Domination": 8,
     "Boss Rush": 9,
     "Center Control": 5,
-    "Trios": 7,
-    "Sandbox": 7
+    "Trios": 5,
+    "Sandbox": 5
 };
 
 const gamemode = (function() {
