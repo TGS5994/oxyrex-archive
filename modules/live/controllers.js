@@ -706,6 +706,30 @@ ioTypes.fleeAtLowHealth = class extends IO {
         }
     }
 }
+ioTypes.orion = class extends IO {
+    constructor(b) {
+        super(b);
+        this.turnwise = 1;
+        this.r = 0;
+        this.turnover = false;
+    }
+    think(input) {
+        let sizeFactor = Math.sqrt(this.body.master.size / this.body.master.SIZE),
+            orbit = 45 * sizeFactor,
+            power = 1;
+        this.body.x += this.body.source.velocity.x;
+        this.body.y += this.body.source.velocity.y;
+        let dir = this.turnwise * util.getDirection(this.body, this.body.source) + .01,
+            goal = {
+                x: this.body.source.x - orbit * Math.cos(dir),
+                y: this.body.source.y - orbit * Math.sin(dir)
+            };
+        return {
+            goal: goal,
+            power: power
+        };
+    }
+}
 ioTypes.botMovement = class extends IO {
     constructor(body) {
         super(body);
