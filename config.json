@@ -6,7 +6,7 @@
         "ip": true,
         "fingerprint": true
     },
-    "clientAddresses": ["woomy.surge.sh"],
+    "clientAddresses": ["oxyrex.io", "6ibui.glitch.me"],
     "networkUpdateFactor": 24,
     "socketWarningLimit": 5,
     "tabLimit": 2,
