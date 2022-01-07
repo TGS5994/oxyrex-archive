@@ -454,10 +454,11 @@ const gamemodes = {
         ALLOW_MAZE: true
     },
     "Closed Beta": {
+        BETA: 1,
+        RANDOM_COLORS: Math.random() > .8,
+        /*MAZE: 32,
         MODE: "tdm",
         TEAMS: 2,
-        BETA: 1,
-        MAZE: 32,
         WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [
@@ -485,7 +486,7 @@ const gamemodes = {
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
         DIVIDER_TOP: 3600,
-        DIVIDER_BOTTOM: 4400,
+        DIVIDER_BOTTOM: 4400,*/
         maxPlayers: 40
     }
 };

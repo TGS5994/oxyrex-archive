@@ -354,6 +354,12 @@ ioTypes.nearestDifferentMaster = class extends IO {
                 break;
             }
         }
+        if (!Number.isFinite(tracking)) {
+            tracking = this.body.topSpeed + .01;
+        }
+        if (!Number.isFinite(range)) {
+            range = 640 * this.body.FOV;
+        }
         // Check if my target's alive
         if (this.targetLock) {
             if (!this.validate(this.targetLock, {
@@ -394,7 +400,7 @@ ioTypes.nearestDifferentMaster = class extends IO {
         // }
         // Consider how fast it's moving and shoot at it
         if (this.targetLock != null) {
-            let radial = this.targetLock.velocity
+            let radial = this.targetLock.velocity;
             let diff = {
                 x: this.targetLock.x - this.body.x,
                 y: this.targetLock.y - this.body.y,
@@ -407,6 +413,9 @@ ioTypes.nearestDifferentMaster = class extends IO {
                     let toi = timeOfImpact(diff, radial, tracking)
                     this.lead = toi
                 }
+            }
+            if (!Number.isFinite(this.lead)) {
+                this.lead = 0;
             }
             // And return our aim
             return {

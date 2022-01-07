@@ -17,8 +17,9 @@ function convertMapString(mapString) {
 function generateMaze(size) {
     const groupWalls = (typeof size !== "string");
     let maze;
+
     function clearRing(ring) {
-        for (let i = ring; i < size - ring - 1; i ++) {
+        for (let i = ring; i < size - ring - 1; i++) {
             maze[ring][i] = false;
             maze[size - ring - 1][i] = false;
             maze[i][ring] = false;
@@ -26,9 +27,10 @@ function generateMaze(size) {
         }
         maze[size - ring - 1][size - ring - 1] = false;
     }
+
     function randomPosition(typeSearch) {
         let x = Math.floor(Math.random() * size),
-        y = Math.floor(Math.random() * size);
+            y = Math.floor(Math.random() * size);
         while (maze[x][y] != typeSearch) {
             x = Math.floor(Math.random() * size);
             y = Math.floor(Math.random() * size);
@@ -40,7 +42,7 @@ function generateMaze(size) {
         size = maze.length;
     } else {
         maze = JSON.parse(JSON.stringify(Array(size).fill(Array(size).fill(true))));
-        for (let i = 0; i < size; i ++) {
+        for (let i = 0; i < size; i++) {
             maze[0][i] = false;
             maze[size - 1][i] = false;
             maze[i][0] = false;
@@ -49,13 +51,13 @@ function generateMaze(size) {
         clearRing(7);
     }
     const scale = room.width / size;
-    for (let x = 0; x < size; x ++) {
-        for (let y = 0; y < size; y ++) {
+    for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
             for (let loc of locsToAvoid) {
                 if (room.isIn(loc, {
-                    x: (x * scale) + (scale * 0.5),
-                    y: (y * scale) + (scale * 0.5)
-                })) maze[x][y] = false;
+                        x: (x * scale) + (scale * 0.5),
+                        y: (y * scale) + (scale * 0.5)
+                    })) maze[x][y] = false;
             }
         }
     }
@@ -65,8 +67,9 @@ function generateMaze(size) {
             if (cell) cells++;
     let eroded = 1;
     let toErode = cells * .625;
+
     function path(x, y, direction, length) {
-        for (let pathdistance = 0; pathdistance < length; pathdistance ++) {
+        for (let pathdistance = 0; pathdistance < length; pathdistance++) {
             if (Math.random() > .5) {
                 const newDirs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).filter(entry => {
                     if (entry !== direction) {
@@ -123,22 +126,26 @@ function generateMaze(size) {
                 y: 0,
                 size: 0
             };
-            for (let x = 0; x < size - 1; x ++) {
-                for (let y = 0; y < size - 1; y ++) {
+            for (let x = 0; x < size - 1; x++) {
+                for (let y = 0; y < size - 1; y++) {
                     if (!maze[x][y]) {
                         continue;
                     }
                     let sqrArea = 1;
                     loop: while (x + sqrArea < size - 1 && y + sqrArea < size - 1) {
-                        for (let i = 0; i < sqrArea; i ++) {
+                        for (let i = 0; i <= sqrArea; i++) {
                             if (!maze[x + sqrArea][y + i] || !maze[x + i][y + sqrArea]) {
                                 break loop;
                             }
-                            sqrArea ++;
+                            sqrArea++;
                         }
                     }
                     if (sqrArea > best.size) {
-                        best = { x, y, size: sqrArea };
+                        best = {
+                            x,
+                            y,
+                            size: sqrArea
+                        };
                     }
                 }
             }
@@ -147,48 +154,52 @@ function generateMaze(size) {
         let newMaze = [];
         let biggest;
         while ((biggest = findBiggest()) && !newMaze.includes(biggest) && biggest.size > 0) {
-            for (let i = 0; i < biggest.size; i ++) {
-                for (let j = 0; j < biggest.size; j ++) {
+            for (let i = 0; i < biggest.size; i++) {
+                for (let j = 0; j < biggest.size; j++) {
                     maze[biggest.x + i][biggest.y + j] = false;
                 }
             }
             newMaze.push(biggest);
         }
+
         function cellLookup(x, y, size = 1) {
             return newMaze.find(cell => (cell.x === x && cell.y === y && cell.size === size));
         }
+
         function removeCell(cell) {
             newMaze = newMaze.filter(entry => entry != cell);
         }
-        let i = 0;
-        while (i < newMaze.length) {
-            const my = newMaze[i];
-            let width = 1;
-            for (let x = my.x + my.size; x < size - 1; x += my.size) {
-                const other = cellLookup(x, my.y, my.size);
-                if (!other) {
-                    break;
+        if (groupWalls) {
+            let i = 0;
+            while (i < newMaze.length) {
+                const my = newMaze[i];
+                let width = 1;
+                for (let x = my.x + my.size; x < size - 1; x += my.size) {
+                    const other = cellLookup(x, my.y, my.size);
+                    if (!other) {
+                        break;
+                    }
+                    removeCell(other);
+                    width++;
                 }
-                removeCell(other);
-                width ++;
+                my.width = width;
+                i++;
             }
-            my.width = width;
-            i ++;
-        }
-        i = 0;
-        while (i < newMaze.length) {
-            const my = newMaze[i];
-            let height = 1;
-            for (let y = my.y + my.size; y < size - 1; y += my.size) {
-                const other = cellLookup(my.x, y, my.size);
-                if (!other) {
-                    break;
+            i = 0;
+            while (i < newMaze.length) {
+                const my = newMaze[i];
+                let height = 1;
+                for (let y = my.y + my.size; y < size - 1; y += my.size) {
+                    const other = cellLookup(my.x, y, my.size);
+                    if (!other) {
+                        break;
+                    }
+                    removeCell(other);
+                    height++;
                 }
-                removeCell(other);
-                height ++;
+                my.height = height;
+                i++;
             }
-            my.height = height;
-            i ++;
         }
         /*for (let x = 0; x < size - 1; x++) {
             for (let y = 0; y < size - 1; y++) {
