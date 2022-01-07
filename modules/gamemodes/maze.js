@@ -6,7 +6,7 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-let locsToAvoid = ["nest", "port", "dom0"];
+let locsToAvoid = ["nest", "port", "dom0", "edge"];
 for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i), locsToAvoid.push("dom" + i);
 
 function convertMapString(mapString) {
@@ -64,10 +64,10 @@ function generateMaze(size) {
         for (let cell of row)
             if (cell) cells++;
     let eroded = 1;
-    let toErode = cells * 0.525;
+    let toErode = cells * .625;
     function path(x, y, direction, length) {
         for (let pathdistance = 0; pathdistance < length; pathdistance ++) {
-            if (Math.random() > Math.random()) {
+            if (Math.random() > .5) {
                 const newDirs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).filter(entry => {
                     if (entry !== direction) {
                         const tx = entry === 0 ? x + 1 : entry === 2 ? x - 1 : x;
@@ -82,9 +82,7 @@ function generateMaze(size) {
                 if (newDirs.length) {
                     direction = newDirs.shift();
                     newDirs.forEach(dir => {
-                        if (Math.random() > .999) {
-                            path(x, y, dir, Math.random() * 3);
-                        }
+                        path(x, y, dir, Math.random() * 6);
                     });
                 }
             }

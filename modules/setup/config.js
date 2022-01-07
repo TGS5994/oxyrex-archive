@@ -91,23 +91,24 @@ const gamemodes = {
                 });
                 const mapType = (Math.random() > .1);
                 const bases = getBaseShuffling(teams);
-                width --;
-                height --;
+                width--;
+                height--;
                 switch (mapType) {
                     case 0: {
                         output.isOpen = true;
-                    } break;
-                    case 1: {
-                        output[0][0] = id(bases[0], 0);
-                        output[0][1] = output[1][0] = id(bases[0], 1);
-                        output[0][width] = id(bases[1], 0);
-                        output[0][width - 1] = output[1][width] = id(bases[1], 1);
-                        output[height][width] = id(bases[2], 0);
-                        output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
-                        output[height][0] = id(bases[3], 0);
-                        output[height][1] = output[height - 1][0] = id(bases[3], 1);
                     }
                     break;
+                case 1: {
+                    output[0][0] = id(bases[0], 0);
+                    output[0][1] = output[1][0] = id(bases[0], 1);
+                    output[0][width] = id(bases[1], 0);
+                    output[0][width - 1] = output[1][width] = id(bases[1], 1);
+                    output[height][width] = id(bases[2], 0);
+                    output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
+                    output[height][0] = id(bases[3], 0);
+                    output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                }
+                break;
                 }
                 return output;
             })()
@@ -195,10 +196,10 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = Math.round(Math.random());// + width % 2; // For alt map type
+                const mapType = Math.round(Math.random()); // + width % 2; // For alt map type
                 const bases = getBaseShuffling(teams);
-                width --;
-                height --;
+                width--;
+                height--;
                 const majorWidth = Math.floor(width / 2);
                 const minorWidth = Math.floor(width / 6);
                 const majorHeight = Math.floor(height / 2);
@@ -213,23 +214,24 @@ const gamemodes = {
                             output[majorHeight][majorWidth] = "dom0";
                         }
                         output.isOpen = true;
-                    } break;
-                    case 1: {
-                        output[0][0] = id(bases[0], 0);
-                        output[0][1] = output[1][0] = id(bases[0], 1);
-                        output[0][width] = id(bases[1], 0);
-                        output[0][width - 1] = output[1][width] = id(bases[1], 1);
-                        output[height][width] = id(bases[2], 0);
-                        output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
-                        output[height][0] = id(bases[3], 0);
-                        output[height][1] = output[height - 1][0] = id(bases[3], 1);
-                        output[minorHeight][majorWidth] = "dom0";
-                        output[height - minorHeight][majorWidth] = "dom0";
-                        output[majorHeight][minorWidth] = "dom0";
-                        output[majorHeight][width - minorWidth] = "dom0";
-                        output[majorHeight][majorWidth] = "dom0";
                     }
                     break;
+                case 1: {
+                    output[0][0] = id(bases[0], 0);
+                    output[0][1] = output[1][0] = id(bases[0], 1);
+                    output[0][width] = id(bases[1], 0);
+                    output[0][width - 1] = output[1][width] = id(bases[1], 1);
+                    output[height][width] = id(bases[2], 0);
+                    output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
+                    output[height][0] = id(bases[3], 0);
+                    output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                    output[minorHeight][majorWidth] = "dom0";
+                    output[height - minorHeight][majorWidth] = "dom0";
+                    output[majorHeight][minorWidth] = "dom0";
+                    output[majorHeight][width - minorWidth] = "dom0";
+                    output[majorHeight][majorWidth] = "dom0";
+                }
+                break;
                 }
                 return output;
             })(),
@@ -419,14 +421,14 @@ const gamemodes = {
         INFECTION_LOOP: true,
         ROOM_SETUP: (() => {
             let output = [];
-            for (let i = 0; i < 75; i ++) {
+            for (let i = 0; i < 75; i++) {
                 let row = [];
-                for (let j = 0; j < 75; j ++) {
+                for (let j = 0; j < 75; j++) {
                     row.push("norm");
                 }
                 output.push(row);
             }
-            for (let i = 0; i < 10; i ++) {
+            for (let i = 0; i < 10; i++) {
                 output[Math.random() * 75 | 0][Math.random() * 75 | 0] = "nest";
             }
             return output
@@ -452,48 +454,38 @@ const gamemodes = {
         ALLOW_MAZE: true
     },
     "Closed Beta": {
-        /*GROUPS: 5,
-        secondaryGameMode: "Groups",
-        tabLimit: 5,*/
         MODE: "tdm",
         TEAMS: 2,
-        WIDTH: 7500,
-        HEIGHT: 7500,
         BETA: 1,
         MAZE: 32,
-        ROOM_SETUP: setup({
-            width: 16,
-            height: 16,
-            rockScatter: 0
-        }),
-        /*WIDTH: 8000,
+        WIDTH: 8000,
         HEIGHT: 8000,
         ROOM_SETUP: [
-            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
+            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
             ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2"],
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm", "edge", "edge", "norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge"],
             ["edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge"],
-            ["roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm", "edge", "edge", "norm", "norm", "roid", "nest", "port", "nest", "roid", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3"],
-            ["bas4", "bas4", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "edge", "edge", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "bas3", "bas3"]
+            ["bas4", "bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3", "bas3"]
         ],
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
         DIVIDER_TOP: 3600,
-        DIVIDER_BOTTOM: 4400,*/
+        DIVIDER_BOTTOM: 4400,
         maxPlayers: 40
     }
 };
@@ -517,7 +509,7 @@ const gamemode = (function() {
     const table = [];
     for (const key in choiceTable) {
         if (gamemodes[key]) {
-            for (let i = 0; i < choiceTable[key]; i ++) {
+            for (let i = 0; i < choiceTable[key]; i++) {
                 table.push(key);
             }
         } else {
@@ -546,8 +538,8 @@ if (["Kill Race", "Mothership", "Tag", "Domination", "Center Control"].includes(
     output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
 if (changedToMaze) {
-    for (let y = 0; y < output.ROOM_SETUP.length; y ++) {
-        for (let x = 0; x < output.ROOM_SETUP[y].length; x ++) {
+    for (let y = 0; y < output.ROOM_SETUP.length; y++) {
+        for (let x = 0; x < output.ROOM_SETUP[y].length; x++) {
             if (["rock", "roid"].includes(output.ROOM_SETUP[y][x])) {
                 output.ROOM_SETUP[y][x] = "norm";
             }
