@@ -9,332 +9,307 @@ goog.require('goog.structs.QuadTree');
 let locsToAvoid = ["nest", "port", "dom0", "edge"];
 for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i), locsToAvoid.push("dom" + i);
 
-function convertMapString(mapString) {
-    const map = mapString.trim().split('\n').map(r => r.trim().split('').map(r => r === '#' ? 1.5 : r === '@'));
-    return Array(map[0].length).fill().map((_, y) => Array(map.length).fill().map((_, x) => map[x][y]));
-}
-
-function generateMaze(size) {
-    const groupWalls = (typeof size !== "string");
-    let maze;
-
-    function clearRing(ring) {
-        for (let i = ring; i < size - ring - 1; i++) {
-            maze[ring][i] = false;
-            maze[size - ring - 1][i] = false;
-            maze[i][ring] = false;
-            maze[i][size - ring - 1] = false;
-        }
-        maze[size - ring - 1][size - ring - 1] = false;
+class MazeRemap {
+    constructor(maze) {
+        this._ref = JSON.parse(JSON.stringify(maze));
+        this.maze = maze;
+        this.blocks = [];
+        this.offset = {
+            x: 0,
+            y: 0
+        };
     }
+    get width() {
+        return this.maze.length;
+    }
+    get height() {
+        return this.maze.length === 0 ? 0 : this.maze[0].length;
+    }
+    trim() {
+        while (this.maze.length > 0 && this.maze[0].every(block => !block)) {
+            this.offset.x++;
+            this.maze.shift();
+        }
 
-    function randomPosition(typeSearch) {
-        let x = Math.floor(Math.random() * size),
-            y = Math.floor(Math.random() * size);
-        while (maze[x][y] != typeSearch) {
-            x = Math.floor(Math.random() * size);
-            y = Math.floor(Math.random() * size);
+        while (this.maze.length > 0 && this.maze[this.maze.length - 1].every(block => !block)) {
+            this.maze.pop();
         }
-        return [x, y];
-    }
-    if (typeof size === "string") {
-        maze = JSON.parse(JSON.stringify(convertMapString(size)));
-        size = maze.length;
-    } else {
-        maze = JSON.parse(JSON.stringify(Array(size).fill(Array(size).fill(true))));
-        for (let i = 0; i < size; i++) {
-            maze[0][i] = false;
-            maze[size - 1][i] = false;
-            maze[i][0] = false;
-            maze[i][size - 1] = false;
-        }
-        clearRing(7);
-    }
-    const scale = room.width / size;
-    for (let x = 0; x < size; x++) {
-        for (let y = 0; y < size; y++) {
-            for (let loc of locsToAvoid) {
-                if (room.isIn(loc, {
-                        x: (x * scale) + (scale * 0.5),
-                        y: (y * scale) + (scale * 0.5)
-                    })) maze[x][y] = false;
-            }
-        }
-    }
-    let cells = 0;
-    for (let row of maze)
-        for (let cell of row)
-            if (cell) cells++;
-    let eroded = 1;
-    let toErode = cells * .625;
-
-    function path(x, y, direction, length) {
-        for (let pathdistance = 0; pathdistance < length; pathdistance++) {
-            if (Math.random() > .5) {
-                const newDirs = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).filter(entry => {
-                    if (entry !== direction) {
-                        const tx = entry === 0 ? x + 1 : entry === 2 ? x - 1 : x;
-                        const ty = entry === 1 ? y + 1 : entry === 3 ? y - 1 : y;
-                        if (tx >= size || ty >= size || tx < 1 || ty < 1) return false;
-                        if (!maze[tx][ty]) return false;
-                        if (maze[x][y] == 1.5 || maze[tx][ty] == 1.5) return false;
-                        return true;
-                    }
-                    return false;
-                });
-                if (newDirs.length) {
-                    direction = newDirs.shift();
-                    newDirs.forEach(dir => {
-                        path(x, y, dir, Math.random() * 6);
-                    });
+        let minY = Infinity,
+            maxY = -Infinity;
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (!this.maze[x][y]) {
+                    continue;
                 }
+                minY = y < minY ? y : minY;
+                maxY = y > maxY ? y : maxY;
             }
-            const tx = direction === 0 ? x + 1 : direction === 2 ? x - 1 : x;
-            const ty = direction === 1 ? y + 1 : direction === 3 ? y - 1 : y;
-            if (tx >= size || ty >= size || tx < 1 || ty < 1) break;
-            if (!maze[tx][ty]) break;
-            if (maze[x][y] == 1.5 || maze[tx][ty] == 1.5) break;
-            maze[tx][ty] = false;
-            eroded++;
-            x = tx;
-            y = ty;
+        }
+        this.offset.y += minY;
+        if (minY === Infinity) {
+            this.maze = [];
+        } else {
+            this.maze = this.maze.map(row => row.slice(minY, maxY + 1));
         }
     }
-    for (let i = 0; i < toErode; i++) {
-        if (eroded >= toErode) {
-            console.log("Done!");
-            break;
-        }
-        for (let i = 0; i < 1000; i++) {
-            let direction = Math.floor(Math.random() * 4);
-            let [x, y] = randomPosition(false);
-            if ((x === 0 || x === size - 1) && (y === 0 || y === size - 1)) continue;
-            if (x === 0) direction = 0;
-            if (y === 0) direction = 1;
-            if (x === size - 1) direction = 2;
-            if (y === size - 1) direction = 3;
-            const pathSize = Math.floor(Math.random() * 9) + 8;
-            path(x, y, direction, pathSize);
-            break;
-        }
-    }
-    if (eroded) {
-        // Group rectangles...
-        function findBiggest() {
-            let best = {
-                x: 0,
-                y: 0,
-                size: 0
-            };
-            for (let x = 0; x < size - 1; x++) {
-                for (let y = 0; y < size - 1; y++) {
-                    if (!maze[x][y]) {
-                        continue;
-                    }
-                    let sqrArea = 1;
-                    loop: while (x + sqrArea < size - 1 && y + sqrArea < size - 1) {
-                        for (let i = 0; i <= sqrArea; i++) {
-                            if (!maze[x + sqrArea][y + i] || !maze[x + i][y + sqrArea]) {
-                                break loop;
-                            }
-                            sqrArea++;
+    findBiggest() {
+        let best = {
+            x: 0,
+            y: 0,
+            size: 0
+        };
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (!this.maze[x][y]) {
+                    continue;
+                }
+                let size = 1;
+                loop: while (x + size < this.width && y + size < this.height) {
+                    for (let i = 0; i <= size; i++) {
+                        if (!this.maze[x + size][y + i] || !this.maze[x + i][y + size]) {
+                            break loop
                         }
                     }
-                    if (sqrArea > best.size) {
-                        best = {
-                            x,
-                            y,
-                            size: sqrArea
-                        };
-                    }
+                    size++
+                }
+                if (size > best.size) {
+                    best = {
+                        x: x,
+                        y: y,
+                        size: size
+                    };
                 }
             }
-            return best;
         }
-        let newMaze = [];
+        for (let x = 0; x < best.size; x++) {
+            for (let y = 0; y < best.size; y++) {
+                this.maze[best.x + x][best.y + y] = false;
+            }
+        }
+        return {
+            x: best.x + this.offset.x,
+            y: best.y + this.offset.y,
+            size: best.size,
+            width: 1,
+            height: 1
+        };
+    }
+    lookup(x, y, size, width, height) {
+        return this.blocks.find(cell => (cell.x === x && cell.y === y && cell.size === size && cell.width === width && cell.height === height));
+    }
+    remove(id) {
+        this.blocks = this.blocks.filter(entry => entry.id != id);
+        return this.blocks;
+    }
+    remap() {
+        this.blocks = [];
         let biggest;
-        while ((biggest = findBiggest()) && !newMaze.includes(biggest) && biggest.size > 0) {
-            for (let i = 0; i < biggest.size; i++) {
-                for (let j = 0; j < biggest.size; j++) {
-                    maze[biggest.x + i][biggest.y + j] = false;
-                }
-            }
-            newMaze.push(biggest);
+        while ((biggest = this.findBiggest()) && !this.blocks.includes(biggest) && biggest.size > 0) {
+            this.blocks.push(biggest);
         }
-
-        function cellLookup(x, y, size = 1) {
-            return newMaze.find(cell => (cell.x === x && cell.y === y && cell.size === size));
-        }
-
-        function removeCell(cell) {
-            newMaze = newMaze.filter(entry => entry != cell);
-        }
-        if (groupWalls) {
-            let i = 0;
-            while (i < newMaze.length) {
-                const my = newMaze[i];
+        this.blocks.forEach((block, i) => {
+            block.id = i;
+        });
+        let i = 0;
+        while (i < this.blocks.length) {
+            const my = this.blocks[i];
+            if ( /*my.size === 1 && my.width === 1 && my.height === 1*/ true) {
                 let width = 1;
-                for (let x = my.x + my.size; x < size - 1; x += my.size) {
-                    const other = cellLookup(x, my.y, my.size);
+                for (let x = my.x + my.size; x <= this.width - my.size; x += my.size) {
+                    const other = this.lookup(x, my.y, my.size, my.width, my.height);
                     if (!other) {
                         break;
                     }
-                    removeCell(other);
+                    this.remove(other.id);
                     width++;
                 }
                 my.width = width;
-                i++;
             }
-            i = 0;
-            while (i < newMaze.length) {
-                const my = newMaze[i];
+            i++;
+        }
+        i = 0;
+        while (i < this.blocks.length) {
+            const my = this.blocks[i];
+            if ( /*my.size === 1 && my.width === 1 && my.height === 1*/ true) {
                 let height = 1;
-                for (let y = my.y + my.size; y < size - 1; y += my.size) {
-                    const other = cellLookup(my.x, y, my.size);
+                for (let y = my.y + my.size; y <= this.height - my.size; y += my.size) {
+                    const other = this.lookup(my.x, y, my.size, my.width, my.height);
                     if (!other) {
                         break;
                     }
-                    removeCell(other);
+                    this.remove(other.id);
                     height++;
                 }
                 my.height = height;
-                i++;
             }
+            i++;
         }
-        /*for (let x = 0; x < size - 1; x++) {
-            for (let y = 0; y < size - 1; y++) {
-                if (maze[x][y] && maze[x + 1][y] && maze[x + 2][y] && maze[x][y + 1] && maze[x][y + 2] && maze[x + 1][y + 2] && maze[x + 2][y + 1] && maze[x + 1][y + 1] && maze[x + 2][y + 2]) {
-                    maze[x][y] = 3;
-                    maze[x + 1][y] = false;
-                    maze[x][y + 1] = false;
-                    maze[x + 2][y] = false;
-                    maze[x][y + 2] = false;
-                    maze[x + 2][y + 1] = false;
-                    maze[x + 1][y + 2] = false;
-                    maze[x + 1][y + 1] = false;
-                    maze[x + 2][y + 2] = false;
-                } else if (maze[x][y] && maze[x + 1][y] && maze[x][y + 1] && maze[x + 1][y + 1]) {
-                    maze[x][y] = 2;
-                    maze[x + 1][y] = false;
-                    maze[x][y + 1] = false;
-                    maze[x + 1][y + 1] = false;
-                }
-            }
-        }*/
-        // Group walls...
-        /*if (groupWalls) {
-            for (let x = 0; x < size; x ++) {
-                for (let y = 0; y < size; y ++) {
-                    if (maze[x][y] && maze[x][y] != 1.5) {
-                        {
-                            let i = x + 1;
-                            let size = 1;
-                            while (maze[i][y] && maze[i][y] != 1.5) {
-                                maze[i][y] = false;
-                                size ++;
-                                i ++;
-                            }
-                            if (size > 1) {
-                                maze[x][y] = [x + size / 2 - 0.5, y, size, 1];
-                            }
-                        } {
-                            let i = y + 1;
-                            let size = 1;
-                            while (maze[x][i] && maze[x][i] != 1.5) {
-                                maze[x][i] = false;
-                                size ++;
-                                i ++;
-                            }
-                            if (size > 1) {
-                                maze[x][y] = [x, y + size / 2 - 0.5, 1, size];
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
-        for (const placement of newMaze) {
-            const width = placement.width || 1;
-            const height = placement.height || 1;
-            let o = new Entity({
-                x: placement.x * scale + (scale / 2 * placement.size * width),
-                y: placement.y * scale + (scale / 2 * placement.size * height)
-            });
-            o.define(Class.mazeWall);
-            o.SIZE = placement.size * scale / 2 + placement.size * 2;
-            o.width = width;
-            o.height = height;
-            o.team = -101;
-            o.alwaysActive = true;
-            o.protect();
-            o.life();
-        }
-        /*for (let x = 0; x < size; x++) {
-            for (let y = 0; y < size; y++) {
-                let spawnWall = true;
-                let d = {};
-                if (Array.isArray(maze[x][y])) {
-                    if (maze[x][y].length === 3) {
-                        const [xx, yy, ss] = maze[x][y];
-                        d = {
-                            x: (xx * scale) + (scale * ss / 2),
-                            y: (yy * scale) + (scale * ss / 2),
-                            s: scale * ss,
-                            sS: ss === 1 ? 1 : ((ss - 1) * 2.5)
-                        }
-                    } else {
-                        const [X, Y, W, H] = maze[x][y];
-                        d = {
-                            x: (X * scale) + (scale * 0.5),
-                            y: (Y * scale) + (scale * 0.5),
-                            s: scale,
-                            sS: 1,
-                            width: W,
-                            height: H
-                        };
-                    }
-                } else if (maze[x][y] === 3) {
-                    d = {
-                        x: (x * scale) + (scale * 1.5),
-                        y: (y * scale) + (scale * 1.5),
-                        s: scale * 3,
-                        sS: 5
-                    }
-                } else if (maze[x][y] === 2) {
-                    d = {
-                        x: (x * scale) + scale,
-                        y: (y * scale) + scale,
-                        s: scale * 2,
-                        sS: 2.5
-                    }
-                } else if (maze[x][y]) {
-                    d = {
-                        x: (x * scale) + (scale * 0.5),
-                        y: (y * scale) + (scale * 0.5),
-                        s: scale,
-                        sS: 1
-                    }
-                } else spawnWall = false;
-                if (spawnWall) {
-                    let o = new Entity({
-                        x: d.x,
-                        y: d.y
-                    });
-                    o.define(Class.mazeWall);
-                    o.SIZE = (d.s * 0.5) + d.sS;
-                    if (d.width) {
-                        o.width = d.width;
-                        o.height = d.height;
-                    }
-                    o.team = -101;
-                    o.alwaysActive = true;
-                    o.protect();
-                    o.life();
-                }
-            }
-        }*/
+        return this.blocks;
     }
-};
+}
+class MazeGenerator {
+    constructor(options = {}) {
+        if (options.erosionPattern == null) {
+            options.erosionPattern = {
+                amount: .5,
+                getter: (i, max) => {
+                    if (i > max * .6) {
+                        return [Math.random() > .3 ? 2 : Math.random() > .5 ? 1 : 0, Math.random() > .1 ? 2 : (Math.random() * 2 | 0)];
+                    } else {
+                        return [+(Math.random() > .8), (Math.random() * 3 | 0)];
+                    }
+                }
+            };
+        } else {
+            if (options.erosionPattern.amount == null) {
+                options.erosionPattern.amount = .5;
+            }
+            if (options.erosionPattern.getter == null) {
+                options.erosionPattern.getter = (i, max) => {
+                    if (i > max * .5) {
+                        return [(Math.random() * 3 | 0), 2];
+                    } else {
+                        return [(Math.random() * 2 | 0), (Math.random() * 2 | 0) * 2];
+                    }
+                };
+            }
+        }
+        this.options = options;
+        this.maze = options.mapString != null ? this.parseMapString(options.mapString) : JSON.parse(JSON.stringify(Array(options.width || 32).fill(Array(options.height || 32).fill(true))));
+        this.offset = {
+            x: 0,
+            y: 0
+        };
+        const scale = room.width / this.width;
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                for (let loc of locsToAvoid) {
+                    if (room.isIn(loc, {
+                        x: (x * scale) + (scale * 0.5),
+                        y: (y * scale) + (scale * 0.5)
+                    })) {
+                        this.maze[x][y] = false;
+                    }
+                }
+            }
+        }
+        if (options.mapString == null) {
+            this.clearRing(0);
+            this.clearRing(5);
+            let cx = this.width / 2 | 0,
+                cy = this.height / 2 | 0,
+                cs = this.width / 5 | 0;
+            if (cs % 2) {
+                cs++;
+            }
+            for (let i = cx - cs / 2; i < cx + cs / 2; i++) {
+                for (let j = cy - cs / 2; j < cy + cs / 2; j++) {
+                    this.maze[i | 0][j | 0] = false;
+                }
+            }
+        }
+        const max = this.maze.flat().length * options.erosionPattern.amount;
+        for (let i = 0; i < max; i++) {
+            this.randomErosion(...options.erosionPattern.getter(i, max));
+        }
+    }
+    get width() {
+        return this.maze.length;
+    }
+    get height() {
+        return this.maze.length === 0 ? 0 : this.maze[0].length;
+    }
+    parseMapString(mapString) {
+        const map = mapString.trim().split('\n').map(r => r.trim().split('').map(r => r === '#' ? 1 : r === '@'));
+        return Array(map[0].length).fill().map((_, y) => Array(map.length).fill().map((_, x) => map[x][y]));
+    }
+    randomPosition(typeSearch) {
+        let x = Math.floor(Math.random() * this.width),
+            y = Math.floor(Math.random() * this.height);
+        while (this.maze[x][y] != typeSearch) {
+            x = Math.floor(Math.random() * this.width);
+            y = Math.floor(Math.random() * this.height);
+        }
+        return [x, y];
+    }
+    clearRing(dist) {
+        for (let i = dist; i < this.width - dist; i++) {
+            this.maze[i][dist] = false;
+            this.maze[i][this.width - 1 - dist] = false;
+        }
+        for (let i = dist; i < this.height - dist; i++) {
+            this.maze[dist][i] = false;
+            this.maze[this.height - 1 - dist][i] = false;
+        }
+    }
+    randomErosion(side, corner) {
+        for (let i = 0; i < 750; i++) {
+            const [x, y] = this.randomPosition(false);
+            if ((x === 0 || x === this.width - 1) && (y === 0 || y === this.height - 1)) {
+                continue;
+            }
+            let dir = Math.random() * 4 | 0;
+            if (x === 0) {
+                dir = 0;
+            } else if (y === 0) {
+                dir = 1;
+            } else if (x === this.width - 1) {
+                dir = 2;
+            } else if (y === this.height - 1) {
+                dir = 3;
+            }
+            let tx = dir === 0 ? x + 1 : dir === 2 ? x - 1 : x,
+                ty = dir === 1 ? y + 1 : dir === 3 ? y - 1 : y;
+            if (this.test(tx, ty) !== true) {
+                continue;
+            }
+            if (corner !== null) {
+                let left = this.maze[dir === 2 || dir === 3 ? x - 1 : x + 1][dir === 0 || dir === 3 ? y - 1 : y + 1],
+                    right = this.maze[dir === 1 || dir === 2 ? x - 1 : x + 1][dir === 2 || dir === 3 ? y - 1 : y + 1];
+                if ((corner === true && (left || right)) || (corner === +left + +right)) {} else {
+                    continue;
+                }
+            }
+            if (side !== null) {
+                let left = this.maze[dir === 3 ? x + 1 : dir === 1 ? x - 1 : x][dir === 0 ? y + 1 : dir === 2 ? y - 1 : y],
+                    right = this.maze[dir === 1 ? x + 1 : dir === 3 ? x - 1 : x][dir === 2 ? y + 1 : dir === 0 ? y - 1 : y];
+                if ((side === true && (left || right)) || (side === +left + +right)) {} else {
+                    continue;
+                }
+            }
+            this.maze[tx][ty] = false;
+            return;
+        }
+    }
+    test(x, y) {
+        return this.maze[x][y];
+    }
+}
+
+function generateMaze(options) {
+    const maze = new MazeGenerator(options);
+    const remapped = new MazeRemap(maze.maze).remap();
+    const scale = room.width / maze.width;
+    for (const placement of remapped) {
+        const width = placement.width || 1;
+        const height = placement.height || 1;
+        let o = new Entity({
+            x: placement.x * scale + (scale / 2 * placement.size * width),
+            y: placement.y * scale + (scale / 2 * placement.size * height)
+        });
+        o.define(Class.mazeWall);
+        o.SIZE = placement.size * scale / 2 + placement.size * 2;
+        o.width = width - (width > 1 ? ((width - (width / 1.1)) * .1) : 0);
+        o.height = height - (height > 1 ? ((height - (height / 1.1)) * .1) : 0);
+        o.team = -101;
+        o.alwaysActive = true;
+        o.protect();
+        o.life();
+    }
+}
+
 module.exports = {
-    generateMaze
+    generateMaze,
+    MazeGenerator,
+    MazeRemap
 };

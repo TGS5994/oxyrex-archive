@@ -1419,26 +1419,26 @@ const sockets = (() => {
                                         do {
                                             loc = room.randomType("bas" + player.team);
                                             i --;
-                                        } while (dirtyCheck(loc, 50) && i);
+                                        } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
                                     } else {
                                         do {
                                             loc = room.gaussInverse(5);
                                             i --;
-                                        } while (dirtyCheck(loc, 50) && i);
+                                        } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
                                     }
                                 }
                             } else {
                                 do {
                                     loc = room.gaussInverse(5);
                                     i --;
-                                } while (dirtyCheck(loc, 50) && i);
+                                } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
                             }
                         } break;
                         default:
                             do {
                                 if (socket.group) loc = room.near(socket.group.getSpawn(), 300);
                                 else loc = room.gaussInverse(5);
-                            } while (dirtyCheck(loc, 50));
+                            } while (dirtyCheck(loc, Class.genericTank.SIZE * 5));
                     }
                     let body;
                     const filter = disconnections.filter(r => r.ip === socket.ip && r.body && !r.body.isDead());

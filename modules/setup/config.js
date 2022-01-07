@@ -39,8 +39,8 @@ function oddify(number, multiplier = 1) {
 function setup(options = {}) {
     if (options.width == null) options.width = defaults.X_GRID;
     if (options.height == null) options.height = defaults.Y_GRID;
-    if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4) + (options.width % 2);
-    if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4) + (options.height % 2);
+    if (options.nestWidth == null) options.nestWidth = Math.floor(options.width / 4) + (options.width % 2 === 0) - (1 + (options.width % 2 === 0));
+    if (options.nestHeight == null) options.nestHeight = Math.floor(options.height / 4) + (options.height % 2 === 0) - (1 + (options.width % 2 === 0));
     if (options.rockScatter == null) options.rockScatter = .175;
     options.rockScatter = 1 - options.rockScatter;
     const output = [];
@@ -71,7 +71,7 @@ function setup(options = {}) {
 
 const gamemodes = {
     "FFA": {
-        ALLOW_MAZE: true,
+        ALLOW_MAZE: {},
         RANDOM_COLORS: Math.random() > .8
     }, // "defaults" is already FFA.
     "TDM": (function() {
@@ -83,7 +83,7 @@ const gamemodes = {
             TEAMS: teams,
             X_GRID: width,
             Y_GRID: height,
-            ALLOW_MAZE: true,
+            ALLOW_MAZE: {},
             ROOM_SETUP: (function() {
                 const output = setup({
                     width: width,
@@ -119,7 +119,7 @@ const gamemodes = {
         TEAMS: 2 + (Math.random() * 3 | 0),
         ROOM_SETUP: setup(),
         KILL_RACE: true,
-        ALLOW_MAZE: true,
+        ALLOW_MAZE: {},
         secondaryGameMode: "kr"
     },
     "Hide and Seek": {
@@ -127,7 +127,7 @@ const gamemodes = {
         TEAMS: 2,
         WIDTH: 7500,
         HEIGHT: 7500,
-        MAZE: 32,
+        MAZE: {},
         X_GRID: 16,
         Y_GRID: 16,
         ROOM_SETUP: setup({
@@ -178,7 +178,7 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         ROOM_SETUP: setup(),
         TAG: true,
-        ALLOW_MAZE: true,
+        ALLOW_MAZE: {},
         secondaryGameMode: "t"
     },
     "Domination": (function() {
@@ -190,7 +190,7 @@ const gamemodes = {
             TEAMS: teams,
             X_GRID: width,
             Y_GRID: height,
-            ALLOW_MAZE: true,
+            ALLOW_MAZE: {},
             ROOM_SETUP: (function() {
                 const output = setup({
                     width: width,
@@ -264,7 +264,8 @@ const gamemodes = {
         HEIGHT: 5500,
         X_GRID: 16,
         Y_GRID: 16,
-        MAZE: `
+        MAZE: {
+            mapString: `
             --------------------------------
             --------------------------------
             --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
@@ -297,7 +298,8 @@ const gamemodes = {
             --@@@@@@@@@@@@@@@@@@@@@@@@@@@@--
             --------------------------------
             --------------------------------
-        `,
+            `
+        },
         ROOM_SETUP: [
             ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
             ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
@@ -355,7 +357,8 @@ const gamemodes = {
         HEIGHT: 5500,
         X_GRID: 16,
         Y_GRID: 16,
-        MAZE: `
+        MAZE: {
+            mapString: `
             --------------------------------
             -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
             -@############################@-
@@ -388,7 +391,8 @@ const gamemodes = {
             -@############################@-
             -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
             --------------------------------
-        `,
+            `
+        },
         ROOM_SETUP: [
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
             ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
@@ -451,11 +455,18 @@ const gamemodes = {
     "Trios": {
         GROUPS: 3,
         secondaryGameMode: "Groups",
-        ALLOW_MAZE: true
+        ALLOW_MAZE: {}
     },
     "Closed Beta": {
         BETA: 1,
         RANDOM_COLORS: Math.random() > .8,
+        ROOM_SETUP: setup({
+            width: 16,
+            height: 16,
+            rockScatter: 0
+        }),
+        ALLOW_MAZE: {
+        },
         /*MAZE: 32,
         MODE: "tdm",
         TEAMS: 2,
@@ -523,7 +534,7 @@ const gamemode = (function() {
 const mode = gamemodes[gamemode];
 let changedToMaze = false;
 if (mode.ALLOW_MAZE && Math.random() > .5) {
-    mode.MAZE = (mode.X_GRID || defaults.X_GRID) * 2;
+    mode.MAZE = mode.ALLOW_MAZE;
     changedToMaze = true;
 }
 let output = {};

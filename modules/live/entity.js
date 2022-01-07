@@ -1634,15 +1634,16 @@ class Entity {
     }
     move() {
         let g = {
-                x: this.control.goal.x - this.x,
-                y: this.control.goal.y - this.y,
-            },
-            gactive = (g.x !== 0 || g.y !== 0),
-            engine = {
-                x: 0,
-                y: 0,
-            },
-            a = this.acceleration / roomSpeed;
+            x: this.control.goal.x - this.x,
+            y: this.control.goal.y - this.y,
+            //jump: this.control.goal.y < this.y && this.collisionArray.some(r => r.type === 'wall')
+        },
+        gactive = (g.x !== 0 || g.y !== 0),
+        engine = {
+            x: 0,
+            y: 0,
+        },
+        a = this.acceleration / roomSpeed
         if (c.SPACE_PHYSICS) {
             this.maxSpeed = this.topSpeed;
             this.damp = 50;
@@ -1964,25 +1965,14 @@ class Entity {
                 this.kill();
             }
         }
-        if (this.type === "food" && room.isIn("boss", {
-                x: this.x,
-                y: this.y
-            })) this.kill();
-        if (room.gameMode === 'tdm' && this.type !== 'food' && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive && c.DO_BASE_DAMAGE) {
+        if (room.gameMode === 'tdm' && this.type !== 'food' && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive && c.DO_BASE_DAMAGE && !this.isArenaCloser && !this.master.isArenaCloser) {
             let loc = {
                 x: this.x,
                 y: this.y,
             };
-            let inEnemyBase = false;
-            for (let i = 1; i < 5; i++) {
-                if (room["bas" + i].length)
-                    if (this.team !== -i && room.isIn("bas" + i, loc)) inEnemyBase = true;
-                if (room["bap" + i].length)
-                    if (this.team !== -i && room.isIn("bap" + i, loc)) inEnemyBase = true;
+            if ((this.team !== -1 && (room.isIn('bas1', loc) || room.isIn('bap1', loc))) || (this.team !== -2 && (room.isIn('bas2', loc) || room.isIn('bap2', loc))) || (this.team !== -3 && (room.isIn('bas3', loc) || room.isIn('bap3', loc))) || (this.team !== -4 && (room.isIn('bas4', loc) || room.isIn('bap4', loc)))) {
+                this.damageReceived += 20;
             }
-            if (c.TEAMS === 1) inEnemyBase = false;
-            if (room.isIn("boss", loc) && this.team !== -100) inEnemyBase = true;
-            if (inEnemyBase && !this.isArenaCloser && !this.master.isArenaCloser) this.kill();
         }
     }
     contemplationOfMortality() {

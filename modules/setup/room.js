@@ -143,7 +143,8 @@ room.isInNorm = function(location) {
     let b = Math.floor(location.x * room.xgrid / room.width);
     if (!room.setup[a]) return false;
     if (!room.setup[a][b]) return false;
-    return room.setup[a][b] !== 'nest';
+    const v = room.setup[a][b];
+    return v !== 'norm' && v !== 'roid' && v !== 'rock' && v !== 'wall' && v !== 'edge'
 };
 room.gauss = function(clustering) {
     let output,
