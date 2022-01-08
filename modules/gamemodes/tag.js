@@ -14,13 +14,13 @@ function countPlayers(justForUpdate = false) {
     for (let i = 0; i < entities.length; i++) {
         let o = entities[i];
         if (!o.isPlayer && !o.isBot) continue;
-        if (![-1, -2, -3, -4].includes(o.team)) continue;
+        if (![-1, -2, -3, -4, -5, -6, -7, -8].includes(o.team)) continue;
         teams.find(entry => entry[0] === o.team)[1]++;
         all++;
     }
     global.botScoreboard = {};
     for (let i = 0; i < c.TEAMS; i ++) {
-        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = teams[i][1] + " Players";
+        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][i]] = teams[i][1] + " Players";
     }
     if (!justForUpdate) {
         let team = teams.find(entry => entry[1] === all);
@@ -32,7 +32,7 @@ let won = false;
 function winner(teamId) {
     if (won) return;
     won = true;
-    let team = ["BLUE", "RED", "GREEN", "PURPLE"][teamId];
+    let team = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][teamId];
     sockets.broadcast(team + " has won the game!");
     setTimeout(closeArena, 3e3);
 };
@@ -55,7 +55,7 @@ function tagDeathEvent(instance) {
 if (c.TAG) {
     global.botScoreboard = {};
     for (let i = 0; i < c.TEAMS; i ++) {
-        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = "0 Players";
+        global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][i]] = "0 Players";
     }
     setInterval(function() {
         countPlayers(true);

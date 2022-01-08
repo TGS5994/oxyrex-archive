@@ -17,7 +17,7 @@ const dominatorLoop = (function() {
         let o = new Entity(loc);
         o.define(type);
         o.team = team;
-        o.color = [10, 11, 12, 15][-team - 1] || 3;
+        o.color = team === -100 ? 3 : [10, 11, 12, 15, 0, 1, 2, 6][-team - 1];
         o.skill.score = 111069;
         o.name = "Dominator";
         //o.SIZE = 37.5;
@@ -32,7 +32,7 @@ const dominatorLoop = (function() {
                 let newTeam = killer.team;
                 spawn(loc, newTeam, type);
                 room.setType("dom" + -killer.team, loc);
-                sockets.broadcast("A dominator is now controlled by " + ["BLUE", "RED", "GREEN", "PURPLE"][-newTeam - 1] + "!");
+                sockets.broadcast("A dominator is now controlled by " + ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][-newTeam - 1] + "!");
                 for (let player of sockets.players)
                     if (player.body)
                         if (player.body.team === newTeam) player.body.sendMessage("Press H to take control of the dominator.");
@@ -48,7 +48,7 @@ const dominatorLoop = (function() {
     function winner(teamId) {
         gameWon = true;
         setTimeout(function() {
-            let team = ["BLUE", "RED", "GREEN", "PURPLE"][teamId];
+            let team = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][teamId];
             sockets.broadcast(team + " has won the game!");
             setTimeout(closeArena, 3e3);
         }, 1500);
@@ -62,7 +62,7 @@ const dominatorLoop = (function() {
             if (o.isDominator && o.team !== -101 && dominators[o.team] != null) dominators[o.team]++;
         });
         global.botScoreboard = {};
-        const names = ["BLUE", "RED", "GREEN", "PURPLE"];
+        const names = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
         for (let i = 0; i < c.TEAMS; i ++) {
             global.botScoreboard[names[[i]]] = (dominators[-i - 1]) + " Dominator" + (dominators[-i - 1] == 1 ? "" : "s");
         }
@@ -70,11 +70,15 @@ const dominatorLoop = (function() {
         if (dominators["-2"] === config.neededToWin) winner(1);
         if (dominators["-3"] === config.neededToWin) winner(2);
         if (dominators["-4"] === config.neededToWin) winner(3);
+        if (dominators["-5"] === config.neededToWin) winner(4);
+        if (dominators["-6"] === config.neededToWin) winner(5);
+        if (dominators["-7"] === config.neededToWin) winner(6);
+        if (dominators["-8"] === config.neededToWin) winner(7);
     };
 
     if (c.DOMINATOR_LOOP) {
         global.botScoreboard = {};
-        const names = ["BLUE", "RED", "GREEN", "PURPLE"];
+        const names = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
         for (let i = 0; i < c.TEAMS; i ++) {
             global.botScoreboard[names[[i]]] = "0 Dominators";
         }

@@ -8,8 +8,8 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 
 const killRace = (function() {
-    const teamNames = ["BLUE", "RED", "GREEN", "PURPLE"];
-    const data = [0, 0, 0, 0];
+    const teamNames = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
+    const data = [0, 0, 0, 0, 0, 0, 0, 0];
     let gameWon = false;
     function getKillData(instance) {
         let killers = [];

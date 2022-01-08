@@ -459,14 +459,18 @@ const gamemodes = {
     },
     "Closed Beta": {
         BETA: 1,
+        MODE: "tdm",
+        TEAMS: 8,
         RANDOM_COLORS: Math.random() > .8,
-        ROOM_SETUP: setup({
-            width: 16,
-            height: 16,
-            rockScatter: 0
-        }),
-        ALLOW_MAZE: {
-        },
+        ROOM_SETUP: [
+            ["bap1", "norm", "roid", "bap6", "roid", "norm", "bap4"],
+            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
+            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
+            ["bap5", "rock", "nest", "roid", "nest", "rock", "bap8"],
+            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
+            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
+            ["bap3", "norm", "roid", "bap7", "roid", "norm", "bap2"],
+        ],
         /*MAZE: 32,
         MODE: "tdm",
         TEAMS: 2,

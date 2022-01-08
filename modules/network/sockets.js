@@ -59,11 +59,13 @@ const sockets = (() => {
                 return 1;
             }
             const team = Math.abs(Math.floor(message[1]));
-            if (body.socket) body.socket.rememberedTeam = team;
             body.team = -team;
-            let color = [10, 11, 12, 15][team - 1] || 3;
+            let color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1] || 3;
             body.color = color;
-            body.teamColor = color;
+            if (body.socket) {
+                body.socket.rememberedTeam = team;
+                body.socket.player.teamColor = color;
+            }
             socket.talk("Q", "info", "The team has been set to " + -team);
         }
     }, {
@@ -1107,7 +1109,8 @@ const sockets = (() => {
                 return () => {
                     // Kick if it's d/c'd
                     if (util.time() - socket.status.lastHeartbeat > c.maxHeartbeatInterval) {
-                        socket.kick('Heartbeat lost.');
+                        socket.lastWords('K', "Socket closed due to AFK timeout");
+                        socket.terminate();
                         return 0;
                     }
                     // Add a strike if there's more than 50 requests in a second
@@ -1415,9 +1418,10 @@ const sockets = (() => {
                                         y: factory.y + factory.SIZE * 1.5 * Math.cos(factory.facing)
                                     };
                                 } else {
-                                    if (room["bas" + player.team] && room["bas" + player.team].length) {
+                                    const type = ran.choose(["bas", "bap"].filter(entry => (room[entry + player.team] && room[entry + player.team].length)));
+                                    if (type != null) {
                                         do {
-                                            loc = room.randomType("bas" + player.team);
+                                            loc = room.randomType(type + player.team);
                                             i --;
                                         } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
                                     } else {
@@ -1494,7 +1498,7 @@ const sockets = (() => {
                     switch (room.gameMode) {
                         case "tdm": {
                             body.team = -player.team;
-                            body.color = [10, 11, 12, 15][player.team - 1] || 3;
+                            body.color = [10, 11, 12, 15, 0, 1, 2, 6][player.team - 1] || 3;
                         }
                             break;
                         default: {
@@ -1564,7 +1568,7 @@ const sockets = (() => {
                         ].forEach(body.sendMessage);
                     }
                     // Move the client camera
-                    socket.talk('c', socket.camera.x, socket.camera.y, socket.camera.fov);
+                    socket.talk('c', (socket.camera.x + .5) | 0, (socket.camera.y + .5) | 0, (socket.camera.fov + .5) | 0);
                     return player;
                 };
             })();
@@ -1574,13 +1578,9 @@ const sockets = (() => {
                 function flatten(data) {
                     let output = [data.type]; // We will remove the first entry in the persepective method
                     if (data.type & 0x01) {
-                        output.push(
-                            // 1: facing
-                            data.facing,
-                            // 2: layer
-                            data.layer);
+                        output.push(+data.facing.toFixed(2), data.layer);
                     } else {
-                        const stuff = [data.id, 0, data.index, data.x, data.y, data.vx, data.vy, data.size, data.facing];
+                        const stuff = [data.id, 0, data.index, (data.x + .5) | 0, (data.y + .5) | 0, (data.vx + .5) | 0, (data.vy + .5) | 0, data.size, +data.facing.toFixed(2)];
                         if (data.twiggle) {
                             stuff[1] += 1;
                         }
@@ -1610,49 +1610,13 @@ const sockets = (() => {
                             stuff.push(data.sizeRatio[1]);
                         }
                         output.push(...stuff);
-                        /*output.push(
-                            // 1: id
-                            data.id,
-                            // 2: index
-                            data.index,
-                            // 3: x
-                            data.x,
-                            // 4: y
-                            data.y,
-                            // 5: vx
-                            data.vx,
-                            // 6: vy
-                            data.vy,
-                            // 7: size
-                            data.size,
-                            // 8: facing
-                            data.facing,
-                            // 9: vfacing
-                            data.vfacing,
-                            // 10: twiggle
-                            data.twiggle,
-                            // 11: layer
-                            data.layer,
-                            // 12: color
-                            data.color,
-                            // 13: health
-                            Math.ceil(255 * data.health),
-                            // 14: shield
-                            Math.round(255 * data.shield),
-                            // 15: alpha
-                            Math.round(255 * data.alpha),
-                            // 16: width
-                            data.sizeRatio[0],
-                            // 17: height
-                            data.sizeRatio[1]
-                        );*/
                         if (data.type & 0x04) {
                             output.push(data.name, data.score);
                         }
                     }
                     // Add the gun data to the array
                     let gundata = [data.guns.length];
-                    for (let i = 0; i < data.guns.length; i++) gundata.push(data.guns[i].time, data.guns[i].power);
+                    for (let i = 0; i < data.guns.length; i++) gundata.push((data.guns[i].time + .5) | 0, (data.guns[i].power + .5) | 0);
                     output.push(...gundata);
                     // For each turret, add their own output
                     let turdata = [data.turrets.length];
@@ -1662,29 +1626,6 @@ const sockets = (() => {
                     // Return it
                     return output;
                 }
-
-                /*function perspective(e, player, data) {
-                    if (player.body != null) {
-                        if (player.body.id === e.master.id) {
-                            data = data.slice(); // So we don't mess up references to the original
-                            // Set the proper color if it's on our team
-                            let colorOverride = false;
-                            if (player.rainbowInterval != null || player.body.type !== "tank") colorOverride = true;
-                            if (room.gameMode === "ffa" && player.body.color !== 11) colorOverride = true;
-                            if (room.gameMode === "tdm" && player.body.color !== player.teamColor) colorOverride = true;
-                            data[12] = colorOverride ? e.color : player.teamColor;
-                            // And make it force to our mouse if it ought to
-                            if (player.command.autospin || player.body.facingType === "smoothWithMotion") {
-                                data[10] = 1;
-                            }
-                        }
-                        if (player.body.team === e.source.team && c.GROUPS) { // GROUPS
-                            data = data.slice();
-                            data[12] = player.teamColor;
-                        }
-                    }
-                    return data;
-                }*/
 
                 function perspective(e, player, data) {
                     if (player.body != null) {
@@ -1846,7 +1787,7 @@ const sockets = (() => {
                             } else {
                                 socket.talk("sub", false);
                             }
-                            socket.talk('u', rightNow, camera.x, camera.y, setFov, camera.vx, camera.vy, ...player.gui.publish(), visible.length, ...visible.flat());
+                            socket.talk('u', rightNow, (camera.x + .5) | 0, (camera.y + .5) | 0, (setFov + .5) | 0, (camera.vx + .5) | 0, (camera.vy + .5) | 0, ...player.gui.publish(), visible.length, ...visible.flat());
                             logs.network.mark();
                         },
                     };
@@ -1865,15 +1806,23 @@ const sockets = (() => {
                 let getBarColor = entry => {
                     switch (entry.team) {
                         case -100:
-                            return entry.color
+                            return entry.color;
                         case -1:
-                            return 10
+                            return 10;
                         case -2:
-                            return 11
+                            return 11;
                         case -3:
-                            return 12
+                            return 12;
                         case -4:
-                            return 15
+                            return 15;
+                        case -5:
+                            return 0;
+                        case -6:
+                            return 1;
+                        case -7:
+                            return 2;
+                        case -8:
+                            return 6;
                         default:
                             if (room.gameMode[0] === '2' || room.gameMode[0] === '3' || room.gameMode[0] === '4') return entry.color;
                             return 12;
@@ -1960,7 +1909,7 @@ const sockets = (() => {
                     }
                     return all;
                 });
-                let teamIDs = [1, 2, 3, 4];
+                let teamIDs = [1, 2, 3, 4, 5, 6, 7, 8];
                 if (c.GROUPS) {
                     for (let i = 1; i < 100; i++) teamIDs[i - 1] = i;
                     /*for (let i = 0; i < global.activeGroups.length; i ++) {
@@ -1989,8 +1938,8 @@ const sockets = (() => {
                             epicenterScoreboard = epicenter.getScoreboard();
                         }
                         for (let i = 0; i < c.TEAMS; i++) {
-                            let teamNames = ["BLUE", "RED", "GREEN", "PURPLE"];
-                            let teamColors = [10, 11, 12, 15];
+                            let teamNames = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
+                            let teamColors = [10, 11, 12, 15, 0, 1, 2, 6];
                             list.push({
                                 id: i,
                                 skill: {
@@ -2117,8 +2066,10 @@ const sockets = (() => {
                     logs.minimap.mark();
                     let time = util.time();
                     for (let socket of clients) {
-                        if (socket.timeout.check(time)) socket.lastWords('K', "Socket timed out.");
-                        if (time - socket.statuslastHeartbeat > c.maxHeartbeatInterval) socket.kick('Lost heartbeat.');
+                        if (socket.timeout.check(time) || (time - socket.status.lastHeartbeat > c.maxHeartbeatInterval)) {
+                            socket.lastWords('K', "Socket closed due to AFK timeout");
+                            socket.terminate();
+                        }
                     }
                 }, 250);
                 return {

@@ -81,7 +81,7 @@ const epicenter = (function() {
         if (leaderCount != null) {
             if (leaderCount === 1000) {
                 const winnerID = scoreboard.getWinner() - 1;
-                sockets.broadcast(["BLUE", "RED", "GREEN", "PURPLE"][winnerID] + " has won the game!");
+                sockets.broadcast(["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][winnerID] + " has won the game!");
                 setTimeout(closeArena, 2500);
             }
         }
@@ -89,7 +89,7 @@ const epicenter = (function() {
         const epicenterScoreboard = getScoreboard();
         for (let i = 0; i < c.TEAMS; i ++) {
             const data = (epicenterScoreboard.find(thing => thing.index === i) || 0).count;
-            global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE"][i]] = data + "/1000 Points";
+            global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][i]] = data + "/1000 Points";
         }
     }
     function getScoreboard() {

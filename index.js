@@ -556,7 +556,7 @@ const maintainloop = (() => {
             ai: "hideBot"
         } : ran.choose(botSets));
         const botName = ran.chooseBotName();
-        let color = [10, 11, 12, 15][team - 1];
+        let color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1];
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);
         let loc = c.SPECIAL_BOSS_SPAWNS ? ((room["bas1"] && room["bas1"].length) ? room.randomType("bas1") : room.randomType("nest")) : room.randomType("norm");
         let o = new Entity(loc);
@@ -634,9 +634,9 @@ const maintainloop = (() => {
             let o = new Entity(loc);
             o.define(Class.baseDroneSpawner); // Class.baseProtector
             o.team = -team;
-            o.color = [10, 11, 12, 15][team - 1];
+            o.color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1];
         };
-        for (let i = 1; i < 5; i++) {
+        for (let i = 1; i <= c.TEAMS; i++) {
             room['bap' + i].forEach((loc) => {
                 f(loc, i);
             });

@@ -1970,8 +1970,8 @@ class Entity {
                 x: this.x,
                 y: this.y,
             };
-            if ((this.team !== -1 && (room.isIn('bas1', loc) || room.isIn('bap1', loc))) || (this.team !== -2 && (room.isIn('bas2', loc) || room.isIn('bap2', loc))) || (this.team !== -3 && (room.isIn('bas3', loc) || room.isIn('bap3', loc))) || (this.team !== -4 && (room.isIn('bas4', loc) || room.isIn('bap4', loc)))) {
-                this.damageReceived += 20;
+            if ((this.team !== -1 && (room.isIn('bas1', loc) || room.isIn('bap1', loc))) || (this.team !== -2 && (room.isIn('bas2', loc) || room.isIn('bap2', loc))) || (this.team !== -3 && (room.isIn('bas3', loc) || room.isIn('bap3', loc))) || (this.team !== -4 && (room.isIn('bas4', loc) || room.isIn('bap4', loc))) || (this.team !== -5 && (room.isIn('bas5', loc) || room.isIn('bap5', loc))) || (this.team !== -6 && (room.isIn('bas6', loc) || room.isIn('bap6', loc))) || (this.team !== -7 && (room.isIn('bas7', loc) || room.isIn('bap7', loc))) || (this.team !== -8 && (room.isIn('bas8', loc) || room.isIn('bap8', loc)))) {
+                this.kill();
             }
         }
     }

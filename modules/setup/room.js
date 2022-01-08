@@ -30,7 +30,7 @@ const room = {
     topPlayerID: -1,
     cellTypes: (function() {
         let output = ["nest", "norm", "rock", "roid", "port", "wall", "door", "edge"];
-        for (let i = 1; i < 5; i++) output.push("bas" + i), output.push("bap" + i);
+        for (let i = 1; i <= 8; i++) output.push("bas" + i), output.push("bap" + i);
         for (let i = 0; i < c.ROOM_SETUP.length; i++)
             for (let j = 0; j < c.ROOM_SETUP[i].length; j++)
                 if (!output.includes(c.ROOM_SETUP[i][j])) output.push(c.ROOM_SETUP[i][j]);
