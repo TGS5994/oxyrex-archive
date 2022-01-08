@@ -48,8 +48,8 @@
         ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
         ["norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm"]
     ],
-    "X_GRID": 12,
-    "Y_GRID": 12,
+    "X_GRID": 16,
+    "Y_GRID": 16,
     "DAMAGE_CONSTANT": 0.5,
     "KNOCKBACK_CONSTANT": 1.5,
     "ROOM_BOUND_FORCE": 0.01,

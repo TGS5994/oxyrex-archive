@@ -13,9 +13,9 @@ if (global.fingerPrint.digitalOcean) {
     defaults.maxPlayers = 35;
 }
 
-function getBaseShuffling(teams) {
+function getBaseShuffling(teams, max = 5) {
     const output = [];
-    for (let i = 1; i < 5; i++) {
+    for (let i = 1; i < max; i++) {
         output.push(i > teams ? 0 : i);
     }
     return output.sort(function() {
@@ -71,13 +71,14 @@ function setup(options = {}) {
 
 const gamemodes = {
     "FFA": {
+        ROOM_SETUP: setup(),
         ALLOW_MAZE: {},
         RANDOM_COLORS: Math.random() > .8
     }, // "defaults" is already FFA.
     "TDM": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
-        let width = 15,
-            height = 15;
+        let width = 16,
+            height = 16;
         return {
             MODE: "tdm",
             TEAMS: teams,
@@ -89,7 +90,7 @@ const gamemodes = {
                     width: width,
                     height: height
                 });
-                const mapType = (Math.random() > .1);
+                const mapType = +(Math.random() > .25);
                 const bases = getBaseShuffling(teams);
                 width--;
                 height--;
@@ -178,7 +179,10 @@ const gamemodes = {
         TEAMS: (Math.random() * 3 | 0) + 2,
         ROOM_SETUP: setup(),
         TAG: true,
-        ALLOW_MAZE: {},
+        ALLOW_MAZE: {
+            width: 16,
+            height: 16
+        },
         secondaryGameMode: "t"
     },
     "Domination": (function() {
@@ -246,12 +250,14 @@ const gamemodes = {
         HEIGHT: 5000,
         X_GRID: 5,
         Y_GRID: 5,
+        MODE: "tdm",
+        TEAMS: 4,
         SPACE_PHYSICS: true,
         ROOM_SETUP: [
             ["norm", "norm", "roid", "norm", "norm"],
-            ["norm", "rock", "norm", "rock", "norm"],
+            ["norm", "bas1", "norm", "bas3", "norm"],
             ["roid", "norm", "nest", "norm", "roid"],
-            ["norm", "rock", "norm", "rock", "norm"],
+            ["norm", "bas4", "norm", "bas2", "norm"],
             ["norm", "norm", "roid", "norm", "norm"],
         ],
         secondaryGameMode: "sp"
@@ -460,19 +466,30 @@ const gamemodes = {
     "Closed Beta": {
         BETA: 1,
         MODE: "tdm",
-        TEAMS: 8,
+        TEAMS: 2,
         RANDOM_COLORS: Math.random() > .8,
+        SPACE_PHYSICS: true,
+        SPACE_MODE: true,
+        ARENA_TYPE: "circle",
         ROOM_SETUP: [
-            ["bap1", "norm", "roid", "bap6", "roid", "norm", "bap4"],
-            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
-            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
-            ["bap5", "rock", "nest", "roid", "nest", "rock", "bap8"],
-            ["roid", "norm", "nest", "nest", "nest", "norm", "roid"],
-            ["norm", "rock", "norm", "rock", "norm", "rock", "norm"],
-            ["bap3", "norm", "roid", "bap7", "roid", "norm", "bap2"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "bap1", "norm", "roid", "norm", "nest", "norm", "roid", "norm", "nest", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "roid", "norm", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "norm", "roid", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "nest", "norm", "roid", "norm", "nest", "norm", "roid", "norm", "bap2", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "roid", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
+            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
         ],
-        /*MAZE: 32,
-        MODE: "tdm",
+        secondaryGameMode: "sp",
+        /*MODE: "tdm",
         TEAMS: 2,
         WIDTH: 8000,
         HEIGHT: 8000,

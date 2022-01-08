@@ -1643,10 +1643,9 @@ class Entity {
             x: 0,
             y: 0,
         },
-        a = this.acceleration / roomSpeed
-        if (c.SPACE_PHYSICS) {
-            this.maxSpeed = this.topSpeed;
-            this.damp = 50;
+        a = this.acceleration / roomSpeed;
+        if (c.SPACE_PHYSICS && this.type === "tank") {
+            this.damp = .05;
         }
         switch (this.motionType) {
             case "grow":
@@ -1845,7 +1844,9 @@ class Entity {
         nullVector(this.accel);
         // Apply motion
         this.stepRemaining = 1;
-        if (c.SPACE_PHYSICS) this.stepRemaining = 1.6;
+        if (c.SPACE_PHYSICS) {
+            this.stepRemaining = 1.175;
+        }
         this.x += this.stepRemaining * this.velocity.x / roomSpeed;
         this.y += this.stepRemaining * this.velocity.y / roomSpeed;
     }
@@ -1856,7 +1857,9 @@ class Entity {
             var k = this.damp / roomSpeed,
                 drag = excess / (k + 1),
                 finalvelocity = this.maxSpeed + drag;
-            if (c.SPACE_PHYSICS) finalvelocity *= (this.type === "bullet" ? 1.005 : 1.1);
+            if (c.SPACE_PHYSICS) {
+                finalvelocity *= 1.05;
+            }
             this.velocity.x = finalvelocity * this.velocity.x / motion;
             this.velocity.y = finalvelocity * this.velocity.y / motion;
         }

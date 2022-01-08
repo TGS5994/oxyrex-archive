@@ -60,7 +60,7 @@ const sockets = (() => {
             }
             const team = Math.abs(Math.floor(message[1]));
             body.team = -team;
-            let color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1] || 3;
+            let color = getTeamColor(team);
             body.color = color;
             if (body.socket) {
                 body.socket.rememberedTeam = team;
@@ -1498,7 +1498,7 @@ const sockets = (() => {
                     switch (room.gameMode) {
                         case "tdm": {
                             body.team = -player.team;
-                            body.color = [10, 11, 12, 15, 0, 1, 2, 6][player.team - 1] || 3;
+                            body.color = getTeamColor(player.team);
                         }
                             break;
                         default: {
@@ -1938,8 +1938,6 @@ const sockets = (() => {
                             epicenterScoreboard = epicenter.getScoreboard();
                         }
                         for (let i = 0; i < c.TEAMS; i++) {
-                            let teamNames = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
-                            let teamColors = [10, 11, 12, 15, 0, 1, 2, 6];
                             list.push({
                                 id: i,
                                 skill: {
@@ -2015,8 +2013,8 @@ const sockets = (() => {
                                                     id: my.id,
                                                     data: [
                                                         (my.type === 'wall' || my.isMothership) ? my.shape === 4 ? 2 : 1 : 0,
-                                                        util.clamp(Math.floor(256 * my.x / room.width), 0, 255),
-                                                        util.clamp(Math.floor(256 * my.y / room.height), 0, 255),
+                                                        util.clamp((256 * my.x / room.width) | 0, 0, 255),
+                                                        util.clamp((256 * my.y / room.height) | 0, 0, 255),
                                                         my.color,
                                                         Math.round(my.SIZE),
                                                         my.width || 1,
@@ -2066,7 +2064,7 @@ const sockets = (() => {
                     logs.minimap.mark();
                     let time = util.time();
                     for (let socket of clients) {
-                        if (socket.timeout.check(time) || (time - socket.status.lastHeartbeat > c.maxHeartbeatInterval)) {
+                        if (time - socket.status.lastHeartbeat > c.maxHeartbeatInterval) {
                             socket.lastWords('K', "Socket closed due to AFK timeout");
                             socket.terminate();
                         }

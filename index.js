@@ -59,7 +59,7 @@ const gameloop = (() => {
             case (instance.type === "wall" || other.type === "wall"):
                 if (instance.type === "wall" && other.type === "wall") return instance.facing = other.facing = 0;
                 if (instance.label.includes("Collision") || other.label.includes("Collision")) return;
-                if (instance.settings.goThroughWalls || other.settings.goThroughWalls || instance.master.settings.goThroughWalls || other.master.settings.goThroughWalls || instance.master.godmode || other.master.godmode) return;
+                if (instance.settings.goThroughWalls || other.settings.goThroughWalls || instance.master.settings.goThroughWalls || other.master.settings.goThroughWalls || instance.master.godmode || other.master.godmode || instance.master.invuln || other.master.invuln) return;
                 let wall = instance.type === "wall" ? instance : other;
                 let entity = instance.type === "wall" ? other : instance;
                 switch (wall.shape) {
@@ -221,7 +221,7 @@ setTimeout(closeArena, 60000 * 240); // Restart every 2 hours
 // A less important loop. Runs at an actual 5Hz regardless of game speed.
 const maintainloop = (() => {
     // Place obstacles
-    function placeRoids() {
+    global.placeRoids = function placeRoids() {
         function placeRoid(type, entityClass) {
             let x = 0;
             let position;
@@ -556,7 +556,7 @@ const maintainloop = (() => {
             ai: "hideBot"
         } : ran.choose(botSets));
         const botName = ran.chooseBotName();
-        let color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1];
+        let color = getTeamColor(team);
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);
         let loc = c.SPECIAL_BOSS_SPAWNS ? ((room["bas1"] && room["bas1"].length) ? room.randomType("bas1") : room.randomType("nest")) : room.randomType("norm");
         let o = new Entity(loc);
@@ -601,31 +601,19 @@ const maintainloop = (() => {
         return o;
     };
     if (c.SPACE_MODE) {
-        {
-            let o = new Entity(room.random());
+        let placeMoon = () => {
+            let o = new Entity({
+                x: room.width / 2,
+                y: room.height / 2
+            })
             o.define(Class.moon);
             o.team = -101;
-            o.SIZE = room.width / 15;
+            o.facing = ran.randomAngle();
             o.protect();
             o.life();
+            util.log('Placing moon!');
         }
-        function ring(x, y, radius, size = 1, gap = 1) {
-            const angle = Math.random() * Math.PI * 2;
-            const amount = 20 + radius / 10;
-            for (let i = gap; i < amount; i ++) {
-                let o = new Entity({
-                    x: x + radius * Math.cos(angle + (i / amount) * (Math.PI * 2)) * 5,
-                    y: y + radius * Math.sin(angle + (i / amount) * (Math.PI * 2)) * 5
-                });
-                o.define(Class.obstacle);
-                o.team = -101;
-                o.SIZE = radius / 2.5 * size;
-                o.facing = angle + (i / amount) * (Math.PI * 2);
-                o.protect();
-                o.life();
-            }
-        }
-        //for (const loc of room.nest) ring(loc.x, loc.y, room.width / room.xgrid / room.xgrid, 2, 3);
+        placeMoon();
     }
     // The NPC function
     let makenpcs = (() => {
@@ -634,7 +622,7 @@ const maintainloop = (() => {
             let o = new Entity(loc);
             o.define(Class.baseDroneSpawner); // Class.baseProtector
             o.team = -team;
-            o.color = [10, 11, 12, 15, 0, 1, 2, 6][team - 1];
+            o.color = getTeamColor(team);
         };
         for (let i = 1; i <= c.TEAMS; i++) {
             room['bap' + i].forEach((loc) => {

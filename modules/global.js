@@ -15,8 +15,8 @@ global.fingerPrint = (function() {
     const herokuHB = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "hb");
     const herokuC = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "c");
     const DogatorixDOGA = process.argv.some(arg => arg.includes("Dogatorix")) && (process.env.HASH === "doga");
-    const digitalOcean = process.argv.some(arg => arg.includes("digitalOcean"));
-    const extraVM = process.argv.some(arg => arg.includes("extraVM"));
+    const digitalOcean = process.argv.some(arg => arg.includes("ba"));
+    const extraVM = process.argv.some(arg => arg.includes("ga"));
     const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuC && !digitalOcean && !extraVM && !DogatorixDOGA;
     return {
         herokuOA,
@@ -69,6 +69,14 @@ global.getTeam = () => {
     const toSort = Object.keys(teamData).map(key => [key, teamData[key]]).filter(e => !global.defeatedTeams.includes(-e[0])).sort((a, b) => a[1] - b[1]);
     return toSort.length === 0 ? ((Math.random() * c.TEAMS | 0) + 1) : toSort[0][0];
 };
+global.teamNames = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "LIME", "ORANGE", "GREY"];
+global.teamColors = [10, 11, 12, 15, 0, 1, 2, 6];
+global.getTeamColor = function(team) {
+    if (Math.abs(team) - 1 >= teamNames.length) {
+        return 3;
+    }
+    return teamColors[Math.abs(team) - 1];
+}
 global.loopThrough = function(array, callback = () => {}) {
     for (let index = 0, length = array.length; index < length; index ++) callback(array[index], index);
 };

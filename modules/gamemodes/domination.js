@@ -17,7 +17,7 @@ const dominatorLoop = (function() {
         let o = new Entity(loc);
         o.define(type);
         o.team = team;
-        o.color = team === -100 ? 3 : [10, 11, 12, 15, 0, 1, 2, 6][-team - 1];
+        o.color = getTeamColor(team);
         o.skill.score = 111069;
         o.name = "Dominator";
         //o.SIZE = 37.5;
@@ -27,12 +27,12 @@ const dominatorLoop = (function() {
             if (o.team === -100 && o.collisionArray.length) {
                 let killers = [];
                 for (let instance of o.collisionArray)
-                    if (instance.team > -5 && instance.team < 0 && o.team !== instance.team) killers.push(instance);
+                    if (instance.team > -9 && instance.team < 0 && o.team !== instance.team) killers.push(instance);
                 let killer = ran.choose(killers) || { team: o.team };
                 let newTeam = killer.team;
                 spawn(loc, newTeam, type);
                 room.setType("dom" + -killer.team, loc);
-                sockets.broadcast("A dominator is now controlled by " + ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][-newTeam - 1] + "!");
+                sockets.broadcast("A dominator is now controlled by " + teamNames[-newTeam - 1] + "!");
                 for (let player of sockets.players)
                     if (player.body)
                         if (player.body.team === newTeam) player.body.sendMessage("Press H to take control of the dominator.");
@@ -48,7 +48,7 @@ const dominatorLoop = (function() {
     function winner(teamId) {
         gameWon = true;
         setTimeout(function() {
-            let team = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][teamId];
+            let team = teamNames[teamId];
             sockets.broadcast(team + " has won the game!");
             setTimeout(closeArena, 3e3);
         }, 1500);
@@ -62,9 +62,8 @@ const dominatorLoop = (function() {
             if (o.isDominator && o.team !== -101 && dominators[o.team] != null) dominators[o.team]++;
         });
         global.botScoreboard = {};
-        const names = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
         for (let i = 0; i < c.TEAMS; i ++) {
-            global.botScoreboard[names[[i]]] = (dominators[-i - 1]) + " Dominator" + (dominators[-i - 1] == 1 ? "" : "s");
+            global.botScoreboard[teamNames[[i]]] = (dominators[-i - 1]) + " Dominator" + (dominators[-i - 1] == 1 ? "" : "s");
         }
         if (dominators["-1"] === config.neededToWin) winner(0);
         if (dominators["-2"] === config.neededToWin) winner(1);
@@ -78,9 +77,8 @@ const dominatorLoop = (function() {
 
     if (c.DOMINATOR_LOOP) {
         global.botScoreboard = {};
-        const names = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"];
         for (let i = 0; i < c.TEAMS; i ++) {
-            global.botScoreboard[names[[i]]] = "0 Dominators";
+            global.botScoreboard[teamNames[[i]]] = "0 Dominators";
         }
     }
 

@@ -417,7 +417,26 @@ function reflectCollide(wall, bounce) {
                     bounce.x = wall.x + width + bounce.size;
                 }
             }
-        } else if (!(left || right || top || bottom)) {
+        } else if (!(left || right || top || bottom) || point.isShorterThan(bounce.size)) {
+            if (bounce.accel.x < 0 || bounce.accel.x > 0) {
+                bounce.accel.x = 0;
+                bounce.velocity.x = 0;
+            }
+            if (bounce.accel.y < 0 || bounce.accel.y > 0) {
+                bounce.accel.y = 0;
+                bounce.velocity.y = 0;
+            }
+            if (right) {
+                bounce.x = wall.x + width + bounce.size;
+            } else {
+                bounce.x = wall.x - width - bounce.size;
+            }
+            if (bottom) {
+                bounce.y = wall.y + height + bounce.size;
+            } else {
+                bounce.y = wall.y - height - bounce.size;
+            }
+        }/*else if (!(left || right || top || bottom)) {
             let force = (bounce.size / point.length - 1) * bounceBy / 2;
             bounce.accel.x += point.x * force;
             bounce.accel.y += point.y * force;
@@ -427,13 +446,27 @@ function reflectCollide(wall, bounce) {
             let force = (bounce.size / point.length - 1) * bounceBy / 2; // simplified
             bounce.accel.x -= point.x * force;
             bounce.accel.y -= point.y * force;
-        } else {
+        }*/ else {
             intersected = false;
         }
     }
     if (intersected) {
+        if (bounce.type !== 'tank' && bounce.type !== 'miniboss' && bounce.type !== "crasher" && !!!bounce.bounceObstacles) {
+            bounce.kill();
+        }/* else if (bounce.collisionArray.some(body => body.type === "wall")) {
+            const dir = Math.PI * ((Math.random() * 4) | 0);
+            if (bounce.accel.x < 0 || bounce.accel.x > 0) {
+                bounce.accel.x = 0;
+                bounce.velocity.x = 0;
+            }
+            if (bounce.accel.y < 0 || bounce.accel.y > 0) {
+                bounce.accel.y = 0;
+                bounce.velocity.y = 0;
+            }
+            bounce.x = wall.x + (Math.cos(dir) * (width + bounce.size + 5));
+            bounce.y = wall.y + (Math.sin(dir) * (height + bounce.size + 5));
+        }*/
         bounce.collisionArray.push(wall);
-        if (bounce.type !== 'tank' && bounce.type !== 'miniboss' && bounce.type !== "crasher" && !!!bounce.bounceObstacles) bounce.kill();
     }
 };
 module.exports = {

@@ -90,8 +90,8 @@ if (typeof module !== "undefined") {
 const loadMockupJsonData = (() => {
     console.log("Started loading mockups...");
     function rounder(val) {
-        if (Math.abs(val) < 0.00001) val = 0;
-        return +val.toPrecision(6);
+        if (Math.abs(val) < 0.001) val = 0;
+        return +val.toPrecision(3);
     }
     // Define mocking up functions
     const bodyData = {
@@ -410,14 +410,24 @@ const loadMockupJsonData = (() => {
     }
     // Save them
     let mockupData = [];
+    const temptank = new Entity({
+        x: 0,
+        y: 0
+    });
     for (let k in Class) {
         try {
             if (!Class.hasOwnProperty(k)) continue;
             let type = Class[k];
             // Create a reference entities which we'll then take an image of.
-            let temptank = new Entity({
+            /*let temptank = new Entity({
                 x: 0,
                 y: 0
+            });*/
+            temptank.define({
+                SHAPE: 0,
+                COLOR: 16,
+                GUNS: [],
+                TURRETS: []
             });
             temptank.define(type);
             temptank.name = type.LABEL; // Rename it (for the upgrades menu).
@@ -438,6 +448,7 @@ const loadMockupJsonData = (() => {
             util.error(Class[k]);
         }
     }
+    temptank.destroy();
     // Remove them
     purgeEntities();
     // Build the function to return

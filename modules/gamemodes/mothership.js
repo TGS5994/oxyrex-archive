@@ -47,7 +47,7 @@ let mothershipLoop = (function() {
                 ACCEPTS_SCORE: false,
                 VALUE: 643890
             });
-            o.color = [10, 11, 12, 15, 0, 1, 2, 6][i];
+            o.color = getTeamColor(team);
             o.team = -i - 1;
             o.name = "Mothership";
             o.isMothership = true;
@@ -59,7 +59,7 @@ let mothershipLoop = (function() {
     };
 
     function death(entry) {
-        let team = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][entry[1]];
+        let team = teamNames[entry[1]];
         sockets.broadcast(team + "'s mothership has been killed!");
         global.defeatedTeams.push(-entry[1] - 1);
         for (let i = 0; i < entities.length; i++) {
@@ -73,7 +73,7 @@ let mothershipLoop = (function() {
     };
 
     function winner(teamId) {
-        let team = ["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][teamId];
+        let team = teamNames[teamId];
         sockets.broadcast(team + " has won the game!");
         setTimeout(closeArena, 3e3);
     };
@@ -90,7 +90,7 @@ let mothershipLoop = (function() {
         for (let i = 0; i < aliveNow.length; i ++) {
             const entry = aliveNow[i][2];
             if (entry) {
-                global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][-entry.team - 1]] = `${Math.round(entry.health.amount)}/${Math.round(entry.health.max)} Health`;
+                global.botScoreboard[teamNames[-entry.team - 1]] = `${Math.round(entry.health.amount)}/${Math.round(entry.health.max)} Health`;
             }
         }
         if (aliveNow.length === 1) {
@@ -102,7 +102,7 @@ let mothershipLoop = (function() {
     if (c.MOTHERSHIP_LOOP) {
         global.botScoreboard = {};
         for (let i = 0; i < c.TEAMS; i ++) {
-            global.botScoreboard[["BLUE", "RED", "GREEN", "PURPLE", "TEAL", "ORANGE", "LIME", "GREY"][i]] = Class.mothership.BODY.HEALTH + `/${Class.mothership.BODY.HEALTH} Health`;
+            global.botScoreboard[teamNames[i]] = Class.mothership.BODY.HEALTH + `/${Class.mothership.BODY.HEALTH} Health`;
         }
     }
     return {
