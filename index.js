@@ -420,7 +420,7 @@ const maintainloop = (() => {
                         break;
                     case 2:
                         choice = [
-                            [Class.fallenOverlord, Class.fallenBooster, Class.fallenHybrid], 1 + (Math.random() * 2 | 0), 'a', 'norm'
+                            [Class.fallenOverlord, Class.fallenBooster, Class.fallenHybrid, Class.fallenPentaquark], 1 + (Math.random() * 2 | 0), 'a', 'norm'
                         ];
                         sockets.broadcast("Many sought the day they'd return, but not in this way...");
                         break;
@@ -505,7 +505,7 @@ const maintainloop = (() => {
             chance: 0.8,
             sentryChance: 0.95,
             crashers: [Class.crasher, Class.fragment, Class.dartCrasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission]
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission, Class.sentryRho]
         };
         function getType() {
             const seed = Math.random();
