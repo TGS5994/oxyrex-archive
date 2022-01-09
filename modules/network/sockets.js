@@ -78,6 +78,7 @@ const sockets = (() => {
             }
             body.skill.score = Math.abs(Math.floor(message[1]));
             socket.talk("Q", "info", "The score has been set to " + body.skill.score);
+            body.cheated = true;
         }
     }, {
         permissions: "setColor",
@@ -100,6 +101,7 @@ const sockets = (() => {
             }
             body.SIZE = Math.abs(Math.floor(message[1]));
             socket.talk("Q", "info", "Your size has been set to " + body.SIZE);
+            body.cheated = true;
         }
     }, {
         permissions: "setTank",
@@ -135,6 +137,7 @@ const sockets = (() => {
                 return 1;
             }
             body.skill[stat] = value;
+            body.cheated = true;
         }
     }, {
         permissions: "setEntity",
@@ -158,6 +161,7 @@ const sockets = (() => {
                 return 1;
             }
             body.skill.points = Math.abs(Math.floor(message[1]));
+            body.cheated = true;
             socket.talk("Q", "info", "Your skill points have been set to " + body.skill.points);
         }
     }, {
@@ -761,6 +765,7 @@ const sockets = (() => {
                                     body.define(Class[tank]);
                                     body.color = room.gameMode === "ffa" ? 11 : player.teamColor;
                                     body.sendMessage("Please do not abuse these tanks.");
+                                    body.cheated = true;
                                 } break;
                                 case 1: { // Teleport
                                     if (socket.permissions === 3) {
@@ -775,6 +780,7 @@ const sockets = (() => {
                                 case 3: { // Passive
                                     body.passive = !body.passive;
                                     body.sendMessage(`Passive mode ${body.passive ? "enabled" : "disabled"}.`);
+                                    body.cheated = true;
                                 } break;
                                 case 4: { // Godmode
                                     if (socket.permissions === 3) {
@@ -839,6 +845,7 @@ const sockets = (() => {
                                             }
                                         }
                                     }
+                                    body.cheated = true;
                                 } break;
                                 case 9: { // Spawn entity
                                     if (socket.permissions === 3) {
@@ -1703,7 +1710,7 @@ const sockets = (() => {
                                         socket.talk('F', ...records);
                                     }
                                     // If we have a valid record, let's verify it!
-                                    if (records[0] > 500000) { // Score > 500k
+                                    if (records[0] > 500000 && !player.body.cheated && socket.discordID && room.supportsRecords) { // Score > 500k
                                         const totalKills = Math.round(records[2] + (records[3] / 2) + (records[4] * 2));
                                         if (totalKills >= Math.floor(records[0] / 100000)) { // Total kills >= 100k(s) aka the amount of kills is greater than or equal to your score / 100k, 1 kill per 100k
                                             bot.logRecord({

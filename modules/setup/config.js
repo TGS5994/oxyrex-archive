@@ -73,7 +73,8 @@ const gamemodes = {
     "FFA": {
         ROOM_SETUP: setup(),
         ALLOW_MAZE: {},
-        RANDOM_COLORS: Math.random() > .8
+        RANDOM_COLORS: Math.random() > .8,
+        secondaryGameMode: "ffa"
     }, // "defaults" is already FFA.
     "TDM": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
@@ -112,7 +113,8 @@ const gamemodes = {
                 break;
                 }
                 return output;
-            })()
+            })(),
+            secondaryGameMode: "tdm"
         };
     })(),
     "Kill Race": {
@@ -466,7 +468,7 @@ const gamemodes = {
     },
     "Trios": {
         GROUPS: 3,
-        secondaryGameMode: "Groups",
+        secondaryGameMode: "gp",
         ALLOW_MAZE: {}
     },
     "Closed Beta": {
@@ -502,7 +504,8 @@ const gamemodes = {
         DIVIDER_RIGHT: 4400,
         DIVIDER_TOP: 3600,
         DIVIDER_BOTTOM: 4400,*/
-        maxPlayers: 40
+        maxPlayers: 40,
+        secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb"
     }
 };
 

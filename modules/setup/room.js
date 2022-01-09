@@ -230,6 +230,7 @@ class Room {
         this.lastCycle = undefined;
         this.cycleSpeed = 1000 / roomSpeed / 30;
         this.gameMode = config.MODE;
+        this.supportsRecords = ["ffa", "tdm", "d", "t", "m", "cc", "gp"].includes(this.config.secondaryGameMode);
         this.skillBoost = config.SKILL_BOOST;
         this.topPlayerID = -1;
         this.cellTypes = (() => {

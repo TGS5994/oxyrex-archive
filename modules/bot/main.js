@@ -134,39 +134,48 @@ bot.on("error", async error => {
 bot.logRecord = function(data) {
     const channel = bot.channels.cache.get("895793977868058674");
     console.log(channel);
-    for (const channel of ["895793977868058674", "884601275092729946"].map(id => bot.channels.cache.get(id))) {
+    for (const channel of ["895793977868058674", "929731137331413052"].map(id => bot.channels.cache.get(id))) {
         if (channel) {
             const embed = new Discord.MessageEmbed()
-                .setTitle("A possible record has been auto validated")
+                .setTitle("Record ticket (run `$wr submit <message link of this embed>` to submit it as a record)")
                 .setColor(0xDD0000)
-                .setDescription(`Mode: **${c.gameModeName}**`)
+                .setDescription(`Mode: **${c.secondaryGameMode}**`)
                 .addFields({
                     name: "Player Name",
-                    value: data.name
+                    value: data.name,
+                    inline: true
                 }, {
                     name: "Player Discord",
-                    value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A"
+                    value: (data.discordID != null) ? `<@!${data.discordID}>` : "N/A",
+                    inline: true
                 }, {
                     name: "Final Score",
-                    value: global.util.formatLargeNumber(data.score)
+                    value: global.util.formatLargeNumber(data.score),
+                    inline: true
                 }, {
                     name: "Tank",
-                    value: data.tank
+                    value: data.tank,
+                    inline: true
                 }, {
-                    name: "Total Kills round(Kills + (Assists / 2) + (Bosses * 2)",
-                    value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2))
+                    name: "Total Kills",
+                    value: Math.round(data.kills + (data.assists / 2) + (data.bosses * 2)),
+                    inline: true
                 }, {
                     name: "Kills",
-                    value: data.kills
+                    value: data.kills,
+                    inline: true
                 }, {
                     name: "Assists",
-                    value: data.assists
+                    value: data.assists,
+                    inline: true
                 }, {
                     name: "Bosses",
-                    value: data.bosses
+                    value: data.bosses,
+                    inline: true
                 }, {
                     name: "Time Alive",
-                    value: global.util.timeForHumans(data.timeAlive)
+                    value: global.util.timeForHumans(data.timeAlive),
+                    inline: true
                 })
                 .setFooter("Powered by Discord.js", "https://i.imgur.com/wSTFkRM.png");
             channel.send(embed);
