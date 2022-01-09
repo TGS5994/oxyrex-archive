@@ -1710,7 +1710,7 @@ const sockets = (() => {
                                         socket.talk('F', ...records);
                                     }
                                     // If we have a valid record, let's verify it!
-                                    if (records[0] > 500000 && !player.body.cheated && socket.discordID && room.supportsRecords) { // Score > 500k
+                                    if (records[0] > 500000 && socket.discordID != null && room.supportsRecords) { // Score > 500k
                                         const totalKills = Math.round(records[2] + (records[3] / 2) + (records[4] * 2));
                                         if (totalKills >= Math.floor(records[0] / 100000)) { // Total kills >= 100k(s) aka the amount of kills is greater than or equal to your score / 100k, 1 kill per 100k
                                             bot.logRecord({
