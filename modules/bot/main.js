@@ -70,6 +70,7 @@ for (let command of [
     "claim",
     "achievements",
     "prize",
+    "restore",
     "cip",
     "kick",
     "ban",
