@@ -1616,11 +1616,15 @@ const sockets = (() => {
                     }
                     // Add the gun data to the array
                     let gundata = [data.guns.length];
-                    for (let i = 0; i < data.guns.length; i++) gundata.push((data.guns[i].time + .5) | 0, (data.guns[i].power + .5) | 0);
+                    for (let i = 0; i < data.guns.length; i++) {
+                        gundata.push((data.guns[i].time + .5) | 0, (data.guns[i].power + .5) | 0);
+                    }
                     output.push(...gundata);
                     // For each turret, add their own output
                     let turdata = [data.turrets.length];
-                    for (let i = 0; i < data.turrets.length; i++) turdata.push(...flatten(data.turrets[i]));
+                    for (let i = 0; i < data.turrets.length; i++) {
+                        turdata.push(...flatten(data.turrets[i]));
+                    }
                     // Push all that to the array
                     output.push(...turdata);
                     // Return it
@@ -1766,12 +1770,22 @@ const sockets = (() => {
                                     if (!c.SANDBOX || nearby[i].sandboxId === socket.sandboxId) {
                                         if (!nearby[i].flattenedPhoto) nearby[i].flattenedPhoto = flatten(nearby[i].photo);
                                         const output = perspective(nearby[i], player, nearby[i].flattenedPhoto);
-                                        if (output) {
-                                            if (player.body != null) {
+                                        if (output) { 
+                                            /*if (player.body != null) {
                                                 if (player.body.submarine.submerged != nearby[i].submarine.submerged) {
-                                                    output[15] = Math.round(255 * (+player.body.submarine.submerged * .25));
+                                                    const index = 9 + (output[2] & 2) + 1 + (output[2] & 4) + (output[2] & 8) + 1;
+                                                    // ok so, first we need to see if we have an alpha tag
+                                                    if (output[2] & 16) {
+                                                        // yeah, we do
+                                                        output[index] = (255 * (+player.body.submarine.submerged * .25) + .5) | 0;
+                                                    } else {
+                                                        console.log(output);
+                                                        output.splice(index, 0, (255 * (+player.body.submarine.submerged * .25) + .5) | 0);
+                                                        output[2] += 16;
+                                                        console.log(output);
+                                                    }
                                                 }
-                                            }
+                                            }*/
                                             visible.push(output);
                                         }
                                     }

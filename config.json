@@ -17,7 +17,7 @@
     "visibleListInterval": 500,
     "gameSpeed": 1,
     "runSpeed": 1.5,
-    "maxHeartbeatInterval": 120000,
+    "maxHeartbeatInterval": 360000,
     "verbose": true,
     "REQUIRE_TOKENS": false,
     "DO_BASE_DAMAGE": true,

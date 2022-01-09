@@ -423,6 +423,8 @@ const loadMockupJsonData = (() => {
                 x: 0,
                 y: 0
             });*/
+            temptank.upgrades = [];
+            temptank.settings.skillNames = null;
             temptank.define({
                 SHAPE: 0,
                 COLOR: 16,

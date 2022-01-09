@@ -64,6 +64,7 @@ class Gun {
                 });
                 this.controllers = toAdd.concat(this.controllers);
             }
+            this.setSubmerged = (info.PROPERTIES.SET_SUBMERGED == null) ? null : info.PROPERTIES.SET_SUBMERGED;
             this.onShoot = (info.PROPERTIES.ON_SHOOT == null) ? null : info.PROPERTIES.ON_SHOOT;
             this.autofire = (info.PROPERTIES.AUTOFIRE == null) ? false : info.PROPERTIES.AUTOFIRE;
 			this.randomType = (info.PROPERTIES.RANDOM_TYPE == null) ? false : info.PROPERTIES.RANDOM_TYPE;
@@ -277,7 +278,12 @@ class Gun {
             o.y += s.y * this.cycle / jumpAhead;
         }*/
         o.velocity = s;
-        o.submarine.submerged = this.body.submarine.submerged;
+        if (this.setSubmerged) {
+            o.submarine.submerged = this.body.submarine.submerged;
+        }
+        if (o.submarine.submerged) {
+            o.alpha = .15;
+        }
         this.bulletInit(o);
         o.coreSize = o.SIZE;
     }
@@ -887,6 +893,7 @@ class Entity {
                     }
                 }
                 if (this.submarine && this.submarine.maxAir > 0) {
+                    this.alpha = util.lerp(this.alpha, util.clamp(+!this.submarine.submerged, .1, .9), .075);
                     if (this.submarine.submerged) {
                         if (this.submarine.air > 0) {
                             if (Date.now() - this.submarine.lastTick >= 1000) {
