@@ -505,7 +505,7 @@ const maintainloop = (() => {
             chance: 0.8,
             sentryChance: 0.95,
             crashers: [Class.crasher, Class.fragment, Class.dartCrasher],
-            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission, Class.sentryRho]
+            sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission, Class.sentryRho, Class.teslaCrasher]
         };
         function getType() {
             const seed = Math.random();
