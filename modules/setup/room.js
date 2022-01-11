@@ -339,6 +339,9 @@ class Room {
         }
         const a = (location.y * this.ygrid / this.height) | 0;
         const b = (location.x * this.xgrid / this.width) | 0;
+        if (!this.setup[a] || !this.setup[a][b]) {
+            return false;
+        }
         if (this.config.ARENA_TYPE === "circle") {
             const me = this.isAt(location);
             return (Math.sqrt((location.x - me.x) ** 2 + (location.y - me.y) ** 2) < (this.xgridWidth / 2)) && type === this.setup[a][b];
@@ -363,6 +366,9 @@ class Room {
         }
         const a = (location.y * this.ygrid / this.height) | 0;
         const b = (location.x * this.xgrid / this.width) | 0;
+        if (!this.setup[a] || !this.setup[a][b]) {
+            return false;
+        }
         const v = this.setup[a][b];
         return v !== 'norm' && v !== 'roid' && v !== 'rock' && v !== 'wall' && v !== 'edge';
     }
@@ -428,7 +434,14 @@ class Room {
         }
         sockets.broadcastRoom();
         if (resetObstacles) {
-            entities.forEach(entity => entity.type === "wall" && entity.kill());
+            this.regenerateObstacles();
+        }
+    }
+    regenerateObstacles() {
+        entities.forEach(entity => entity.type === "wall" && entity.kill());
+        if (this.config.MAZE && typeof this.config.MAZE !== "boolean") {
+            generateMaze(c.MAZE);
+        } else {
             placeRoids();
         }
     }
