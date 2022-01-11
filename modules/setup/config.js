@@ -119,7 +119,7 @@ const gamemodes = {
     })(),
     "Kill Race": {
         MODE: "tdm",
-        TEAMS: 2 + (Math.random() * 3 | 0),
+        TEAMS: 2 + (Math.random() * 7 | 0),
         ROOM_SETUP: setup(),
         KILL_RACE: true,
         ALLOW_MAZE: {},
@@ -171,32 +171,32 @@ const gamemodes = {
     },
     "Mothership": {
         MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
+        TEAMS: (Math.random() * 7 | 0) + 2,
         ROOM_SETUP: setup(),
         MOTHERSHIP_LOOP: true,
         secondaryGameMode: "m"
     },
     "Tag": {
         MODE: "tdm",
-        TEAMS: (Math.random() * 3 | 0) + 2,
+        TEAMS: (Math.random() * 7 | 0) + 2,
         ROOM_SETUP: setup(),
         TAG: true,
-        ALLOW_MAZE: {
-            width: 16,
-            height: 16
-        },
+        ALLOW_MAZE: {},
         secondaryGameMode: "t"
     },
     "Domination": (function() {
         const teams = (Math.random() * 3 | 0) + 2;
-        let width = 15,
-            height = 15;
+        let width = 13,
+            height = 13;
         return {
             MODE: "tdm",
             TEAMS: teams,
             X_GRID: width,
             Y_GRID: height,
-            ALLOW_MAZE: {},
+            ALLOW_MAZE: {
+                width: 26,
+                height: 26
+            },
             ROOM_SETUP: (function() {
                 const output = setup({
                     width: width,
@@ -212,33 +212,47 @@ const gamemodes = {
                 const minorHeight = Math.floor(height / 6);
                 switch (mapType) {
                     case 0: {
-                        output[minorHeight][majorWidth] = "dom0";
-                        output[height - minorHeight][majorWidth] = "dom0";
-                        output[majorHeight][minorWidth] = "dom0";
-                        output[majorHeight][width - minorWidth] = "dom0";
+                        if (Math.random() > .5) {
+                            output[majorHeight / 2 | 0][majorWidth / 2 | 0] = "dom0";
+                            output[height - (majorHeight / 2 | 0)][majorWidth / 2 | 0] = "dom0";
+                            output[height - (majorHeight / 2 | 0)][width - (majorWidth / 2 | 0)] = "dom0";
+                            output[majorHeight / 2 | 0][width - (majorWidth / 2 | 0)] = "dom0";
+                        } else {
+                            output[minorHeight][majorWidth] = "dom0";
+                            output[height - minorHeight][majorWidth] = "dom0";
+                            output[majorHeight][minorWidth] = "dom0";
+                            output[majorHeight][width - minorWidth] = "dom0";
+                        }
                         if ((width + 1) % 2) {
                             output[majorHeight][majorWidth] = "dom0";
                         }
                         output.isOpen = true;
                     }
                     break;
-                case 1: {
-                    output[0][0] = id(bases[0], 0);
-                    output[0][1] = output[1][0] = id(bases[0], 1);
-                    output[0][width] = id(bases[1], 0);
-                    output[0][width - 1] = output[1][width] = id(bases[1], 1);
-                    output[height][width] = id(bases[2], 0);
-                    output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
-                    output[height][0] = id(bases[3], 0);
-                    output[height][1] = output[height - 1][0] = id(bases[3], 1);
-                    output[minorHeight][majorWidth] = "dom0";
-                    output[height - minorHeight][majorWidth] = "dom0";
-                    output[majorHeight][minorWidth] = "dom0";
-                    output[majorHeight][width - minorWidth] = "dom0";
-                    output[majorHeight][majorWidth] = "dom0";
-                }
-                break;
-                }
+                    case 1: {
+                        output[0][0] = id(bases[0], 0);
+                        output[0][1] = output[1][0] = id(bases[0], 1);
+                        output[0][width] = id(bases[1], 0);
+                        output[0][width - 1] = output[1][width] = id(bases[1], 1);
+                        output[height][width] = id(bases[2], 0);
+                        output[height][width - 1] = output[height - 1][width] = id(bases[2], 1);
+                        output[height][0] = id(bases[3], 0);
+                        output[height][1] = output[height - 1][0] = id(bases[3], 1);
+                        if (Math.random() > .5) {
+                            output[majorHeight / 2 | 0][majorWidth / 2 | 0] = "dom0";
+                            output[height - (majorHeight / 2 | 0)][majorWidth / 2 | 0] = "dom0";
+                            output[height - (majorHeight / 2 | 0)][width - (majorWidth / 2 | 0)] = "dom0";
+                            output[majorHeight / 2 | 0][width - (majorWidth / 2 | 0)] = "dom0";
+                        } else {
+                            output[minorHeight][majorWidth] = "dom0";
+                            output[height - minorHeight][majorWidth] = "dom0";
+                            output[majorHeight][minorWidth] = "dom0";
+                            output[majorHeight][width - minorWidth] = "dom0";
+                        }
+                        output[majorHeight][majorWidth] = "dom0";
+                    }
+                    break;
+                } 
                 return output;
             })(),
             DOMINATOR_LOOP: true,

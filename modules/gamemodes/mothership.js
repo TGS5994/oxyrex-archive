@@ -47,7 +47,7 @@ let mothershipLoop = (function() {
                 ACCEPTS_SCORE: false,
                 VALUE: 643890
             });
-            o.color = getTeamColor(team);
+            o.color = getTeamColor(-i - 1);
             o.team = -i - 1;
             o.name = "Mothership";
             o.isMothership = true;

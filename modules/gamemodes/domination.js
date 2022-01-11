@@ -20,7 +20,6 @@ const dominatorLoop = (function() {
         o.color = getTeamColor(team);
         o.skill.score = 111069;
         o.name = "Dominator";
-        //o.SIZE = 37.5;
         o.isDominator = true;
         o.controllers = [new ioTypes.nearestDifferentMaster(o), new ioTypes.spinWhenIdle(o)];
         o.onDead = function() {
@@ -65,14 +64,19 @@ const dominatorLoop = (function() {
         for (let i = 0; i < c.TEAMS; i ++) {
             global.botScoreboard[teamNames[[i]]] = (dominators[-i - 1]) + " Dominator" + (dominators[-i - 1] == 1 ? "" : "s");
         }
-        if (dominators["-1"] === config.neededToWin) winner(0);
+        for (const key in dominators) {
+            if (dominators[key] === config.neededToWin) {
+                winner(-(+key) - 1);
+            }
+        }
+        /*if (dominators["-1"] === config.neededToWin) winner(0);
         if (dominators["-2"] === config.neededToWin) winner(1);
         if (dominators["-3"] === config.neededToWin) winner(2);
         if (dominators["-4"] === config.neededToWin) winner(3);
         if (dominators["-5"] === config.neededToWin) winner(4);
         if (dominators["-6"] === config.neededToWin) winner(5);
         if (dominators["-7"] === config.neededToWin) winner(6);
-        if (dominators["-8"] === config.neededToWin) winner(7);
+        if (dominators["-8"] === config.neededToWin) winner(7);*/
     };
 
     if (c.DOMINATOR_LOOP) {
