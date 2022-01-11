@@ -2253,8 +2253,10 @@ const sockets = (() => {
                     if (spawnkill) {
                         setTimeout(function () {
                             socket.awaitingSpawn = true;
-                            socket.player.body.sendMessage("Your sanctuaries have been destroyed. You may respawn when one is recontrolled.");
-                            socket.player.body.kill();
+                            if (socket.player && socket.player.body) {
+                                socket.player.body.sendMessage("Your sanctuaries have been destroyed. You may respawn when one is recontrolled.");
+                                socket.player.body.kill();
+                            }
                         }, 500);
                     }
                 }
