@@ -690,7 +690,8 @@ class Entity {
         this.tesla = { // Tesla effect
             // My settings
             status: false,
-            amplification: 1
+            amplification: 1,
+	    radius: 1
         };
         this.isInGrid = false;
         this.removeFromGrid = () => {
@@ -1027,7 +1028,7 @@ class Entity {
         }
         if (this.tesla.status) {
             for (let instance of entities) {
-                if (util.getDistance(instance, this) < (this.size * 8) && instance.master.team !== this.master.team && instance.master.master !== this.master.master && !instance.passive && !instance.invuln && !instance.godmode) {
+                if (util.getDistance(instance, this) < (this.size * 8) * this.tesla.radius && instance.master.team !== this.master.team && instance.master.master !== this.master.master && !instance.passive && !instance.invuln && !instance.godmode) {
                     if (instance.type === "tank" || instance.type === "crasher" || instance.type === "miniboss" || instance.type === "food") {
                         if ((instance.health.amount - (.15 * this.tesla.amplification)) > (instance.health.max / 10)) {
                             instance.health.amount -= (.15 * this.tesla.amplification);
@@ -1186,6 +1187,9 @@ class Entity {
             }
             if (set.TESLA.AMPLIFY != null) {
                 this.tesla.amplification = set.TESLA.AMPLIFY;
+            }
+            if (set.TESLA.RADIUS != null) {
+                this.tesla.radius = set.TESLA.RADIUS;
             }
         }
         if (set.ACCEPTS_SCORE != null) {
