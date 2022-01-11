@@ -132,15 +132,14 @@ bot.on("error", async error => {
     console.log(`Uncaught Discord Bot Error:\n${error.toString()}`);
     await util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
 });
-bot.logRecord = function(data) {
-    const channel = bot.channels.cache.get("895793977868058674");
-    console.log(channel);
-    for (const channel of ["895793977868058674", "929731137331413052"].map(id => bot.channels.cache.get(id))) {
+bot.logRecord = async function(data) {
+    for (const channel of ["895793977868058674", "929731137331413052"]) {
+        channel = await bot.channels.fetch(channel);
         if (channel) {
             const embed = new Discord.MessageEmbed()
                 .setTitle("Record ticket (run `$wr submit <message link of this embed>` to submit it as a record)")
                 .setColor(0xDD0000)
-                .setDescription(`Mode: **${c.secondaryGameMode}**`)
+                .setDescription(`Mode: **${c.gameModeName} (${c.secondaryGameMode})**`)
                 .addFields({
                     name: "Player Name",
                     value: data.name,
