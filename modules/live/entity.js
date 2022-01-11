@@ -1025,7 +1025,7 @@ class Entity {
         if (this.confusion.timeLeft > 0) {
             this.confusion.timeLeft --;
         }
-        if (this.tesla.status && this.type === "tank") {
+        if (this.tesla.status) {
             for (let instance of entities) {
                 if (util.getDistance(instance, this) < (this.size * 8) && instance.master.team !== this.master.team && instance.master.master !== this.master.master && !instance.passive && !instance.invuln && !instance.godmode) {
                     if (instance.type === "tank" || instance.type === "crasher" || instance.type === "miniboss" || instance.type === "food") {
