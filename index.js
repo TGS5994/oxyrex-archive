@@ -708,7 +708,7 @@ const maintainloop = (() => {
                 }
                 if (o.upgrades.length && Math.random() > 0.5 && !o.botDoneUpgrading) {
                     let index = Math.floor(Math.random() * o.upgrades.length), i = 10;
-                    if (o.botSet.includes != null) {
+                    if (o.botSet && o.botSet.ignore != null) {
                         while (o.botSet.ignore.includes(o.upgrades[index].class.LABEL) && i > 0) {
                             index = Math.floor(Math.random() * o.upgrades.length);
                             i --;
