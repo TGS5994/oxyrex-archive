@@ -14,43 +14,12 @@ class MazeRemap {
         this._ref = JSON.parse(JSON.stringify(maze));
         this.maze = maze;
         this.blocks = [];
-        this.offset = {
-            x: 0,
-            y: 0
-        };
     }
     get width() {
         return this.maze.length;
     }
     get height() {
         return this.maze.length === 0 ? 0 : this.maze[0].length;
-    }
-    trim() {
-        while (this.maze.length > 0 && this.maze[0].every(block => !block)) {
-            this.offset.x++;
-            this.maze.shift();
-        }
-
-        while (this.maze.length > 0 && this.maze[this.maze.length - 1].every(block => !block)) {
-            this.maze.pop();
-        }
-        let minY = Infinity,
-            maxY = -Infinity;
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (!this.maze[x][y]) {
-                    continue;
-                }
-                minY = y < minY ? y : minY;
-                maxY = y > maxY ? y : maxY;
-            }
-        }
-        this.offset.y += minY;
-        if (minY === Infinity) {
-            this.maze = [];
-        } else {
-            this.maze = this.maze.map(row => row.slice(minY, maxY + 1));
-        }
     }
     findBiggest() {
         let best = {
@@ -87,8 +56,8 @@ class MazeRemap {
             }
         }
         return {
-            x: best.x + this.offset.x,
-            y: best.y + this.offset.y,
+            x: best.x,
+            y: best.y,
             size: best.size,
             width: 1,
             height: 1
@@ -176,10 +145,6 @@ class MazeGenerator {
         }
         this.options = options;
         this.maze = options.mapString != null ? this.parseMapString(options.mapString) : JSON.parse(JSON.stringify(Array(options.width || 32).fill(Array(options.height || 32).fill(true))));
-        this.offset = {
-            x: 0,
-            y: 0
-        };
         const scale = room.width / this.width;
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
@@ -196,17 +161,6 @@ class MazeGenerator {
         if (options.mapString == null) {
             this.clearRing(0);
             this.clearRing(5);
-            let cx = this.width / 2 | 0,
-                cy = this.height / 2 | 0,
-                cs = this.width / 5 | 0;
-            if (cs % 2) {
-                cs++;
-            }
-            for (let i = cx - cs / 2; i < cx + cs / 2; i++) {
-                for (let j = cy - cs / 2; j < cy + cs / 2; j++) {
-                    this.maze[i | 0][j | 0] = false;
-                }
-            }
         }
         const max = this.maze.flat().length * options.erosionPattern.amount;
         for (let i = 0; i < max; i++) {
@@ -217,7 +171,7 @@ class MazeGenerator {
         return this.maze.length;
     }
     get height() {
-        return this.maze.length === 0 ? 0 : this.maze[0].length;
+        return this.maze[0].length;
     }
     parseMapString(mapString) {
         const map = mapString.trim().split('\n').map(r => r.trim().split('').map(r => r === '#' ? 1 : r === '@'));
@@ -235,11 +189,11 @@ class MazeGenerator {
     clearRing(dist) {
         for (let i = dist; i < this.width - dist; i++) {
             this.maze[i][dist] = false;
-            this.maze[i][this.width - 1 - dist] = false;
+            this.maze[i][this.height - 1 - dist] = false;
         }
         for (let i = dist; i < this.height - dist; i++) {
             this.maze[dist][i] = false;
-            this.maze[this.height - 1 - dist][i] = false;
+            this.maze[this.width - 1 - dist][i] = false;
         }
     }
     randomErosion(side, corner) {
@@ -283,6 +237,17 @@ class MazeGenerator {
     }
     test(x, y) {
         return this.maze[x][y];
+    }
+    toMapString() {
+        console.log(this.width, this.height)
+        let output = ``;
+        for (let y = 0; y < this.height; y ++) {
+            for (let x = 0; x < this.width; x ++) {
+                output += this.maze[x][y] === 1 ? "#" : this.maze[x][y] ? "@" : "-";
+            }
+            output += "\n";
+        }
+        return output;
     }
 }
 

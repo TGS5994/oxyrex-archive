@@ -500,10 +500,9 @@ const maintainloop = (() => {
         };
     })();
     let spawnCrasher = (() => {
-        let nestDefenderSpawned = false;
         const config = {
-            max: 25,
-            chance: 0.8,
+            max: 16,
+            chance: .9,
             sentryChance: 0.95,
             crashers: [Class.crasher, Class.fragment, Class.dartCrasher],
             sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.sentryOmission, Class.sentryRho, Class.teslaCrasher]

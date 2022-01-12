@@ -70,13 +70,129 @@ function setup(options = {}) {
 }
 
 const gamemodes = {
-    "FFA": {
-        ROOM_SETUP: setup(),
-        ALLOW_MAZE: {},
-        RANDOM_COLORS: Math.random() > .8,
-        secondaryGameMode: "ffa"
-    }, // "defaults" is already FFA.
+    "FFA": (function() {
+        const portals = Math.random() > .85 ? Math.round(Math.random() + 1) : 0;
+        const xGrid = [16, 20, 20][portals];
+        const yGrid = [16, 9, 20][portals];
+        return {
+            RANDOM_COLORS: Math.random() > .85,
+            WIDTH: [6500, 8000, 8000][portals],
+            HEIGHT: [6500, 3600, 8000][portals],
+            ALLOW_MAZE: {
+                width: xGrid * 2,
+                height: yGrid * 2
+            },
+            ROOM_SETUP: (function() {
+                const output = setup({
+                    width: xGrid,
+                    height: yGrid,
+                    nestWidth: portals > 0 ? 0 : null,
+                    nestHeight: portals > 0 ? 0 : null
+                });
+                function placeNestThing(x, y) {
+                    output[y][x] = "port";
+                    output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
+                }
+                switch(portals) {
+                    case 1: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(20 - 5, 4);
+                    } break;
+                    case 2: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                            output[9][i] = output[10][i] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(20 - 5, 4);
+                        placeNestThing(4, 20 - 5);
+                        placeNestThing(20 - 5, 20 - 5);
+                    } break;
+                }
+                return output;
+            })(),
+            secondaryGameMode: "ffa",
+            DIVIDER_LEFT: portals ? 3600 : null,
+            DIVIDER_RIGHT: portals ? 4400 : null,
+            DIVIDER_TOP: portals === 2 ? 3600 : null,
+            DIVIDER_BOTTOM: portals === 2 ? 4400 : null,
+        }
+    })(),
     "TDM": (function() {
+        const portals = Math.random() > .85 ? Math.round(Math.random() + 1) : 0;
+        const teams = (Math.random() * 3 | 0) + 2;
+        let xGrid = [16, 20, 20][portals],
+            yGrid = [16, 9, 20][portals];
+        return {
+            MODE: "tdm",
+            TEAMS: teams,
+            WIDTH: [6500, 8000, 8000][portals],
+            HEIGHT: [6500, 3600, 8000][portals],
+            ALLOW_MAZE: {
+                width: xGrid * 2,
+                height: yGrid * 2
+            },
+            ROOM_SETUP: (function() {
+                const output = setup({
+                    width: xGrid,
+                    height: yGrid,
+                    nestWidth: portals > 0 ? 0 : null,
+                    nestHeight: portals > 0 ? 0 : null
+                });
+                xGrid --;
+                yGrid --;
+                function placeNestThing(x, y) {
+                    output[y][x] = "port";
+                    output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
+                }
+                switch(portals) {
+                    case 1: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(xGrid - 4, 4);
+                    } break;
+                    case 2: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                            output[9][i] = output[10][i] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(xGrid - 4, 4);
+                        placeNestThing(4, yGrid - 4);
+                        placeNestThing(xGrid - 4, yGrid - 4);
+                    } break;
+                }
+                const mapType = +(Math.random() > .25);
+                const bases = getBaseShuffling(teams);
+                switch (mapType) {
+                    case 0: {
+                        output.isOpen = true;
+                    } break;
+                    case 1: {
+                        output[0][0] = id(bases[0], 0);
+                        output[0][1] = output[1][0] = id(bases[0], 1);
+                        output[0][xGrid] = id(bases[1], 0);
+                        output[0][xGrid - 1] = output[1][xGrid] = id(bases[1], 1);
+                        output[yGrid][xGrid] = id(bases[2], 0);
+                        output[yGrid][xGrid - 1] = output[yGrid - 1][xGrid] = id(bases[2], 1);
+                        output[yGrid][0] = id(bases[3], 0);
+                        output[yGrid][1] = output[yGrid - 1][0] = id(bases[3], 1);
+                    } break;
+                }
+                return output;
+            })(),
+            secondaryGameMode: "tdm",
+            DIVIDER_LEFT: portals ? 3600 : null,
+            DIVIDER_RIGHT: portals ? 4400 : null,
+            DIVIDER_TOP: portals === 2 ? 3600 : null,
+            DIVIDER_BOTTOM: portals === 2 ? 4400 : null,
+        }
+    })()/*(function() {
         const teams = (Math.random() * 3 | 0) + 2;
         let width = 16,
             height = 16;
@@ -116,7 +232,7 @@ const gamemodes = {
             })(),
             secondaryGameMode: "tdm"
         };
-    })(),
+    })()*/,
     "Kill Race": {
         MODE: "tdm",
         TEAMS: 2 + (Math.random() * 7 | 0),
@@ -480,14 +596,88 @@ const gamemodes = {
         SANDBOX: true,
         secondaryGameMode: "sb"
     },
+    "Duos": {
+        GROUPS: 2,
+        secondaryGameMode: "gp",
+        ALLOW_MAZE: {}
+    },
     "Trios": {
         GROUPS: 3,
         secondaryGameMode: "gp",
         ALLOW_MAZE: {}
     },
-    "Closed Beta": {
+    "Closed Beta": (function() {
+        const portals = Math.random() > .75 ? Math.round(Math.random() + 1) : 0;
+        return {
+            BETA: 1,
+            RANDOM_COLORS: Math.random() > .8,
+            WIDTH: [6500, 8000, 8000][portals],
+            HEIGHT: [6500, 3600, 8000][portals],
+            ROOM_SETUP: (function() {
+                const output = setup({
+                    width: [15, 20, 20][portals],
+                    height: [15, 9, 20][portals],
+                    nestWidth: portals > 0 ? 0 : null,
+                    nestHeight: portals > 0 ? 0 : null
+                });
+                function placeNestThing(x, y) {
+                    output[y][x] = "port";
+                    output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
+                }
+                switch(portals) {
+                    case 1: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(20 - 5, 4);
+                    } break;
+                    case 2: {
+                        for (let i = 0; i < output.length; i ++) {
+                            output[i][9] = output[i][10] = "edge";
+                            output[9][i] = output[10][i] = "edge";
+                        }
+                        placeNestThing(4, 4);
+                        placeNestThing(20 - 5, 4);
+                        placeNestThing(4, 20 - 5);
+                        placeNestThing(20 - 5, 20 - 5);
+                    } break;
+                }
+                return output;
+            })(),
+            maxPlayers: 40,
+            secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb",
+            DIVIDER_LEFT: portals ? 3600 : null,
+            DIVIDER_RIGHT: portals ? 4400 : null,
+            DIVIDER_TOP: portals === 2 ? 3600 : null,
+            DIVIDER_BOTTOM: portals === 2 ? 4400 : null,
+        }
+    })()/*{
         BETA: 1,
         RANDOM_COLORS: Math.random() > .8,
+        ROOM_SETUP: (function() {
+            const portals = 1;//(Math.random() > .75 ? Math.round(Math.random() + 1) : 0);
+            const output = setup({
+                width: [15, 20, 20][portals],
+                height: [15, 9, 20][portals],
+                nestWidth: portals > 0 ? 0 : null,
+                nestHeight: portals > 0 ? 0 : null
+            });
+            function placeNestThing(x, y) {
+                output[y][x] = "port";
+                output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
+            }
+            switch(portals) {
+                case 1: {
+                    for (let i = 0; i < output.length; i ++) {
+                        output[i][10] = output[i][11] = "edge";
+                    }
+                    placeNestThing(5, 5);
+                    placeNestThing(20 - 5, 5);
+                } break;
+            }
+            return output;
+        })(),
         /*MODE: "tdm",
         TEAMS: 2,
         WIDTH: 8000,
@@ -517,24 +707,25 @@ const gamemodes = {
         DIVIDER_LEFT: 3600,
         DIVIDER_RIGHT: 4400,
         DIVIDER_TOP: 3600,
-        DIVIDER_BOTTOM: 4400,*/
+        DIVIDER_BOTTOM: 4400,
         maxPlayers: 40,
         secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb"
-    }
+    }*/
 };
 
 const choiceTable = {
     "FFA": 10,
-    "TDM": 9,
+    "TDM": 10,
     "Kill Race": 5,
-    "Soccer": 6,
+    "Soccer": 5,
     "Survival": 3,
     "Mothership": 4,
     "Tag": 4,
     "Domination": 8,
-    "Boss Rush": 9,
+    "Boss Rush": 7,
     "Center Control": 5,
-    "Trios": 5,
+    "Trios": 6,
+    "Duos": 7,
     "Sandbox": 5
 };
 
@@ -549,7 +740,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
+    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Survival" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
@@ -570,7 +761,7 @@ if (gamemode.includes("TDM")) {
 if (["Kill Race", "Mothership", "Tag", "Domination", "Center Control"].includes(gamemode)) {
     output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
-if (changedToMaze) {
+if (changedToMaze || mode.MAZE != null) {
     for (let y = 0; y < output.ROOM_SETUP.length; y++) {
         for (let x = 0; x < output.ROOM_SETUP[y].length; x++) {
             if (["rock", "roid"].includes(output.ROOM_SETUP[y][x])) {
@@ -580,6 +771,10 @@ if (changedToMaze) {
     }
     output.gameModeName = "Maze " + output.gameModeName;
     output.secondaryGameMode = "m_" + output.secondaryGameMode;
+}
+if (output.ROOM_SETUP.some(row => row.some(cell => cell === "port"))) {
+    output.gameModeName = "Portal " + output.gameModeName;
+    output.secondaryGameMode = "p_" + output.secondaryGameMode;
 }
 if (output.ROOM_SETUP.isOpen) {
     output.gameModeName = "Open " + output.gameModeName;
