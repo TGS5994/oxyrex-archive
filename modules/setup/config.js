@@ -740,7 +740,7 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Survival" : table[Math.floor(Math.random() * table.length)];
+    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
