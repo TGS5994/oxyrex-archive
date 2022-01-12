@@ -7,6 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const GLOBAL = require("./modules/global.js");
+const { ioTypes } = require('./modules/live/controllers.js');
 console.log(`[${GLOBAL.creationDate}]: Server initialized.\nRoom Info:\nDimensions: ${room.width} x ${room.height}\nMax Food / Nest Food: ${room.maxFood} / ${room.maxFood * room.nestFoodAmount}`);
 // Let's get a cheaper array removal thing
 Array.prototype.remove = function(index) {
@@ -547,7 +548,7 @@ const maintainloop = (() => {
     function spawnBot(TEAM = null) {
         let team = TEAM ? TEAM : getTeam();
         let set = (c.NAVAL_SHIPS ? {
-            startClass: ran.choose(["alexanderNevsky", "yamato", "petropavlovsk"]),
+            startClass: Math.random() > .25 ? "aircraftCarriers" : ran.choose(["alexanderNevsky", "yamato", "petropavlovsk"]),
             build: getBuild(),
             ai: "bot"
         } : (c.HIDE_AND_SEEK && team == 2) ? {
@@ -593,6 +594,9 @@ const maintainloop = (() => {
                 if (Class[key].index === index) className = key;
             o.define(Class[set.ai]);
             o.define(Class[className]);
+            if (c.NAVAL_SHIPS && set.startClass == "aircraftCarriers") {
+                o.controllers = [new ioTypes.carrierThinking(o), new ioTypes.carrierAI(o)];
+            }
             o.refreshBodyAttributes();
             o.name += botName;
             o.invuln = false;

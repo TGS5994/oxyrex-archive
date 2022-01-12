@@ -133,7 +133,7 @@ bot.on("error", async error => {
     await util.log(bot, "error", `Uncaught Discord Bot Error:\n${error.toString()}`);
 });
 bot.logRecord = async function(data) {
-    for (const channel of ["895793977868058674", "929731137331413052"]) {
+    for (let channel of ["895793977868058674", "929731137331413052"]) {
         channel = await bot.channels.fetch(channel);
         if (channel) {
             const embed = new Discord.MessageEmbed()
