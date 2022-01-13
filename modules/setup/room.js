@@ -230,7 +230,8 @@ class Room {
         this.lastCycle = undefined;
         this.cycleSpeed = 1000 / roomSpeed / 30;
         this.gameMode = config.MODE;
-        this.supportsRecords = ["ffa", "tdm", "d", "t", "m", "cc", "gp"].some(entry => entry === this.config.secondaryGameMode.split("_").pop());this.skillBoost = config.SKILL_BOOST;
+        this.supportsRecords = ["ffa", "tdm", "d", "t", "m", "cc", "gp"].some(entry => entry === this.config.secondaryGameMode.split("_").pop());
+		this.skillBoost = config.SKILL_BOOST;
         this.topPlayerID = -1;
         this.cellTypes = (() => {
             const output = ["nest", "norm", "rock", "roid", "port", "wall", "door", "edge"];
