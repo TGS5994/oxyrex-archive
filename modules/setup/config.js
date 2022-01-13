@@ -606,111 +606,11 @@ const gamemodes = {
         secondaryGameMode: "gp",
         ALLOW_MAZE: {}
     },
-    "Closed Beta": (function() {
-        const portals = Math.random() > .75 ? Math.round(Math.random() + 1) : 0;
-        return {
-            BETA: 1,
-            RANDOM_COLORS: Math.random() > .8,
-            WIDTH: [6500, 8000, 8000][portals],
-            HEIGHT: [6500, 3600, 8000][portals],
-            ROOM_SETUP: (function() {
-                const output = setup({
-                    width: [15, 20, 20][portals],
-                    height: [15, 9, 20][portals],
-                    nestWidth: portals > 0 ? 0 : null,
-                    nestHeight: portals > 0 ? 0 : null
-                });
-                function placeNestThing(x, y) {
-                    output[y][x] = "port";
-                    output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
-                }
-                switch(portals) {
-                    case 1: {
-                        for (let i = 0; i < output.length; i ++) {
-                            output[i][9] = output[i][10] = "edge";
-                        }
-                        placeNestThing(4, 4);
-                        placeNestThing(20 - 5, 4);
-                    } break;
-                    case 2: {
-                        for (let i = 0; i < output.length; i ++) {
-                            output[i][9] = output[i][10] = "edge";
-                            output[9][i] = output[10][i] = "edge";
-                        }
-                        placeNestThing(4, 4);
-                        placeNestThing(20 - 5, 4);
-                        placeNestThing(4, 20 - 5);
-                        placeNestThing(20 - 5, 20 - 5);
-                    } break;
-                }
-                return output;
-            })(),
-            maxPlayers: 40,
-            secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb",
-            DIVIDER_LEFT: portals ? 3600 : null,
-            DIVIDER_RIGHT: portals ? 4400 : null,
-            DIVIDER_TOP: portals === 2 ? 3600 : null,
-            DIVIDER_BOTTOM: portals === 2 ? 4400 : null,
-        }
-    })()/*{
+    "Closed Beta": {
         BETA: 1,
-        RANDOM_COLORS: Math.random() > .8,
-        ROOM_SETUP: (function() {
-            const portals = 1;//(Math.random() > .75 ? Math.round(Math.random() + 1) : 0);
-            const output = setup({
-                width: [15, 20, 20][portals],
-                height: [15, 9, 20][portals],
-                nestWidth: portals > 0 ? 0 : null,
-                nestHeight: portals > 0 ? 0 : null
-            });
-            function placeNestThing(x, y) {
-                output[y][x] = "port";
-                output[y - 1][x] = output[y + 1][x] = output[y][x - 1] = output[y][x + 1] = output[y - 1][x + 1] = output[y + 1][x + 1] = output[y - 1][x - 1] = output[y + 1][x - 1] = "nest";
-            }
-            switch(portals) {
-                case 1: {
-                    for (let i = 0; i < output.length; i ++) {
-                        output[i][10] = output[i][11] = "edge";
-                    }
-                    placeNestThing(5, 5);
-                    placeNestThing(20 - 5, 5);
-                } break;
-            }
-            return output;
-        })(),
-        /*MODE: "tdm",
-        TEAMS: 2,
-        WIDTH: 8000,
-        HEIGHT: 8000,
-        ROOM_SETUP: [
-            ["bas1", "bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "bas2"],
-            ["bas1", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge"],
-            ["edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge", "edge"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "port", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "nest", "nest", "nest", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3"],
-            ["bas4", "bas4", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "edge", "edge", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas3", "bas3"]
-        ],
-        DIVIDER_LEFT: 3600,
-        DIVIDER_RIGHT: 4400,
-        DIVIDER_TOP: 3600,
-        DIVIDER_BOTTOM: 4400,
         maxPlayers: 40,
         secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb"
-    }*/
+    }
 };
 
 const choiceTable = {

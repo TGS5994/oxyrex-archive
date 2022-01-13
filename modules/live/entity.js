@@ -1668,6 +1668,9 @@ class Entity {
             case "grow":
                 this.SIZE += 5;
                 break;
+            case "carrierBomb":
+                this.SIZE += 8;
+                break;
             case "grower":
                 this.SIZE += 0.8;
     			this.damp = 0.02;
