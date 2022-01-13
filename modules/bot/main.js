@@ -139,7 +139,7 @@ bot.logRecord = async function(data) {
             const embed = new Discord.MessageEmbed()
                 .setTitle("Record ticket (run `$wr submit <message link of this embed>` to submit it as a record)")
                 .setColor(0xDD0000)
-                .setDescription(`Mode: **${c.gameModeName} (${c.secondaryGameMode})**`)
+                .setDescription(`Mode: **${c.gameModeName}**`)
                 .addFields({
                     name: "Player Name",
                     value: data.name,

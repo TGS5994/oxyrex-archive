@@ -349,14 +349,20 @@ class Gun {
         // Otherwise
         o.refreshBodyAttributes();
         o.life();
-        this.onShootFunction();
+        this.onShootFunction(o);
         this.recoilDir = this.body.facing + this.angle;
     }
-    onShootFunction() {
+    onShootFunction(bullet) {
         if (typeof this.onShoot === "string") {
             switch (this.onShoot) {
                 case "die": {
                     this.body.kill();
+                } break;
+                case "kiva": {
+                    if (!this.body.isDead()) this.body.define(Class.kivaaritehdasFire);
+                    bullet.onDead = () => {
+                        if (!bullet.master.isDead()) bullet.master.define(Class.kivaaritehdas);
+                    };
                 } break;
                 case "mindController": {
                     if (!this.body.controllingSquadron && this.body.guns.find(gun => typeof gun.launchSquadron === "string" && gun.children.length)) {
