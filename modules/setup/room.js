@@ -233,6 +233,7 @@ class Room {
         this.supportsRecords = ["ffa", "tdm", "d", "t", "m", "cc", "gp"].some(entry => entry === this.config.secondaryGameMode.split("_").pop());
 		this.skillBoost = config.SKILL_BOOST;
         this.topPlayerID = -1;
+        this.botAmount = this.config.FORCE_BOTS;
         this.cellTypes = (() => {
             const output = ["nest", "norm", "rock", "roid", "port", "wall", "door", "edge"];
             for (let i = 1; i <= 8; i++) {

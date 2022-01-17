@@ -239,7 +239,6 @@ class MazeGenerator {
         return this.maze[x][y];
     }
     toMapString() {
-        console.log(this.width, this.height)
         let output = ``;
         for (let y = 0; y < this.height; y ++) {
             for (let x = 0; x < this.width; x ++) {
@@ -253,7 +252,9 @@ class MazeGenerator {
 
 function generateMaze(options) {
     const maze = new MazeGenerator(options);
-    const remapped = new MazeRemap(maze.maze).remap();
+    const remapper = new MazeRemap(maze.maze);
+    const remapped = remapper.remap();
+    global.mazeGridData = remapper._ref.map(r => r.map(e => !!e));
     const scale = room.width / maze.width;
     for (const placement of remapped) {
         const width = placement.width || 1;

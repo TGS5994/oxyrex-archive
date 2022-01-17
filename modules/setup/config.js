@@ -69,11 +69,11 @@ function setup(options = {}) {
 
 const gamemodes = {
     "FFA": (function() {
-        const portals = Math.random() > .85 ? Math.round(Math.random() + 1) : 0;
+        const portals = Math.random() > .75 ? Math.round(Math.random() + 1) : 0;
         const xGrid = [16, 20, 20][portals];
         const yGrid = [16, 9, 20][portals];
         return {
-            RANDOM_COLORS: Math.random() > .85,
+            RANDOM_COLORS: Math.random() > .75,
             WIDTH: [6500, 8000, 8000][portals],
             HEIGHT: [6500, 3600, 8000][portals],
             ALLOW_MAZE: {
@@ -120,7 +120,7 @@ const gamemodes = {
         }
     })(),
     "TDM": (function() {
-        const portals = Math.random() > .85 ? Math.round(Math.random() + 1) : 0;
+        const portals = Math.random() > .75 ? Math.round(Math.random() + 1) : 0;
         const teams = (Math.random() * 3 | 0) + 2;
         let xGrid = [16, 20, 20][portals],
             yGrid = [16, 9, 20][portals];
@@ -627,7 +627,7 @@ const choiceTable = {
     "Survival": 4,
     // Cool mode servers
     "Boss Rush": 8,
-    "Naval Combat": 6,
+    "Naval Battle": 6,
     "Sandbox": 1,
     // XYZ and C
     "Closed Beta": 1 
@@ -638,7 +638,7 @@ const serverTable = {
     "ob": ["Domination", "Mothership", "Kill Race", "Soccer"],
     "ha": ["FFA", "TDM", "Duos"],
     "hb": ["Domination", "Center Control", "Survival", "Tag"],
-    "ba": ["Boss Rush", "Naval Combat", "Sandbox"],
+    "ba": ["Boss Rush", "Naval Battle", "Sandbox"],
     "c": ["Closed Beta"],
     "xyz": ["Closed Beta"]
 }
@@ -663,7 +663,9 @@ if (mode.ALLOW_MAZE && Math.random() > .75) {
     mode.MAZE = mode.ALLOW_MAZE;
     changedToMaze = true;
 }
-let output = {};
+let output = {
+    FORCE_BOTS: mode.FORCE_BOTS
+};
 for (let key in defaults) {
     output[key] = defaults[key];
     if (mode[key] != null) output[key] = mode[key];

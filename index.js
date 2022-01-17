@@ -501,7 +501,7 @@ const maintainloop = (() => {
     })();
     let spawnCrasher = (() => {
         const config = {
-            max: 16,
+            max: 1,
             chance: .9,
             sentryChance: 0.95,
             crashers: [Class.crasher, Class.fragment, Class.dartCrasher],

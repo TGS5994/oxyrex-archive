@@ -1117,6 +1117,48 @@ ioTypes.bossRushAI = class extends IO {
         }
     }
 }
+const findPath = require("../setup/pathFinder.js");
+ioTypes.pathFind = class extends IO {
+    constructor(body) {
+        super(body);
+        this.path = [];
+        this.lastPathUpdate = 0;
+    }
+    getCell(position) {
+        return [
+            util.clamp(Math.floor((position.y / room.height) * mazeGridData[0].length - 1), 0, mazeGridData[0].length - 1),
+            util.clamp(Math.floor((position.x / room.width) * mazeGridData.length - 1), 0, mazeGridData.length - 1)
+        ];
+    }
+    think(input) {
+        if (!input.goal || mazeGridData == null || !mazeGridData.length) {
+            this.path = [];
+            return;
+        }
+        if (!this.path.length || Date.now() - this.lastPathUpdate > 2500) {
+            console.log({ x: this.body.x, y: this.body.y}, input.goal);
+            this.path = findPath(this.getCell(this.body), this.getCell(input.goal));
+            this.lastPathUpdate = Date.now();
+            console.log(this.path);
+        }
+        if (this.path.length) {
+            if (util.getDistance(this.body, {
+                x: (this.path[0][1] / mazeGridData.length) * room.width,
+                y: (this.path[0][0] / mazeGridData[0].length) * room.height
+            }) < this.body.size) {
+                this.path.shift();
+            }
+            if (this.path.length) {
+                return {
+                    goal: {
+                        x: (this.path[0][1] / mazeGridData.length) * room.width,
+                        y: (this.path[0][0] / mazeGridData[0].length) * room.height
+                    }
+                }
+            }
+        }
+    }
+}
 ioTypes.carrierThinking = class extends IO {
     constructor(body) {
         super(body);
