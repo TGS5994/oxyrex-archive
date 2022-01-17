@@ -208,20 +208,20 @@ if (global.fingerPrint.prefix == "ba") {
     const http = require("http");
     const https = require("https");
     const WebSocket = require("ws");
-    const httpServer = http.createServer(server);
-    const httpsServer = https.createServer(credentials, server);
+    /*const httpServer = http.createServer(server);
     httpServer.listen(process.env.PORT || c.port, () => {
         console.log("[HTTP]: Express + WS server listening on port", process.env.PORT || c.port);
         console.log("[HTTP]: Tracking:", ...Object.entries(c.tracking));
         console.log("[HTTP]: Accepting requests from:", c.clientAddresses.join(", "));
     });
+    const wsHTTP = new WebSocket.Server({ server: httpServer });
+    wsHTTP.on("connection", sockets.connect);*/
+    const httpsServer = https.createServer(credentials, server);
     httpsServer.listen(process.env.PORT || c.port, () => {
         console.log("[HTTPS]: Express + WS server listening on port", process.env.PORT || c.port);
         console.log("[HTTPS]: Tracking:", ...Object.entries(c.tracking));
         console.log("[HTTPS]: Accepting requests from:", c.clientAddresses.join(", "));
     });
-    const wsHTTP = new WebSocket.Server({ server: httpServer });
-    wsHTTP.on("connection", sockets.connect);
     const wsHTTPs = new WebSocket.Server({ server: httpsServer });
     wsHTTPs.on("connection", sockets.connect);
 } else {
