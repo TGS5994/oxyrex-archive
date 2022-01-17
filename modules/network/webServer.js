@@ -200,12 +200,14 @@ server.post("/patch/lib/definitions.js", function(request, response) {
     response.send("Changes saved!");
 });
 if (global.fingerPrint.prefix == "ba") {
-    const privateKey  = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
+    const privateKey = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
     const certificate = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/fullchain.pem', 'utf8');
     const credentials = {
         key: privateKey,
         cert: certificate
     };
+    const http = require("http");
+    const https = require("https");
     const httpServer = http.createServer(app);
     const httpsServer = https.createServer(credentials, app);
     httpServer.listen(8080);
