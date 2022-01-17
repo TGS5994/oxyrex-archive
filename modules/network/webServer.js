@@ -220,9 +220,9 @@ if (global.fingerPrint.prefix == "ba") {
         console.log("[HTTPS]: Tracking:", ...Object.entries(c.tracking));
         console.log("[HTTPS]: Accepting requests from:", c.clientAddresses.join(", "));
     });
-    const wsHTTP = new WebSocket.Server({ httpServer });
+    const wsHTTP = new WebSocket.Server({ server: httpServer });
     wsHTTP.on("connection", sockets.connect);
-    const wsHTTPs = new WebSocket.Server({ httpsServer });
+    const wsHTTPs = new WebSocket.Server({ server: httpsServer });
     wsHTTPs.on("connection", sockets.connect);
 } else {
     server.ws("/", sockets.connect);
