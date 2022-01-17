@@ -8,9 +8,7 @@ goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const defaults = require("../../config.json");
 if (global.fingerPrint.digitalOcean) {
-    defaults.WIDTH = 6750;
-    defaults.HEIGHT = 6750;
-    defaults.maxPlayers = 35;
+    defaults.maxPlayers = 30;
 }
 
 function getBaseShuffling(teams, max = 5) {
@@ -614,29 +612,40 @@ const gamemodes = {
 };
 
 const choiceTable = {
+    // Normal Mode servers
     "FFA": 10,
-    "TDM": 10,
-    "Kill Race": 5,
-    "Soccer": 5,
-    "Survival": 3,
-    "Mothership": 4,
-    "Tag": 4,
-    "Domination": 8,
-    "Boss Rush": 7,
+    "TDM": 7,
+    "Trios": 4,
+    "Duos": 4,
+    // Event Mode Servers
+    "Domination": 7,
+    "Mothership": 6,
     "Center Control": 5,
-    "Trios": 6,
-    "Duos": 7,
-    "Sandbox": 5
+    "Tag": 6,
+    "Kill Race": 6,
+    "Soccer": 4,
+    "Survival": 4,
+    // Cool mode servers
+    "Boss Rush": 8,
+    "Naval Combat": 6,
+    "Sandbox": 1,
+    // XYZ and C
+    "Closed Beta": 1 
 };
 
 const serverTable = {
-    "oa": ["FFA", "TDM", "Trios", "Duos"],
-    "ob": [""]
+    "oa": ["FFA", "TDM", "Trios"],
+    "ob": ["Domination", "Mothership", "Kill Race", "Soccer"],
+    "ha": ["FFA", "TDM", "Duos"],
+    "hb": ["Domination", "Center Control", "Survival", "Tag"],
+    "ba": ["Boss Rush", "Naval Combat", "Sandbox"],
+    "c": ["Closed Beta"],
+    "xyz": ["Closed Beta"]
 }
 
 const gamemode = (function() {
     const table = [];
-    for (const key in choiceTable) {
+    for (const key of (serverTable[global.fingerPrint.prefix] || ["Closed Beta"])) {
         if (gamemodes[key]) {
             for (let i = 0; i < choiceTable[key]; i++) {
                 table.push(key);
@@ -645,12 +654,12 @@ const gamemode = (function() {
             throw new ReferenceError(key + " isn't a valid gamemode!");
         }
     }
-    return (global.fingerPrint.herokuC || global.fingerPrint.localhost) ? "Closed Beta" : table[Math.floor(Math.random() * table.length)];
+    return table[Math.floor(Math.random() * table.length)];
 })();
 
 const mode = gamemodes[gamemode];
 let changedToMaze = false;
-if (mode.ALLOW_MAZE && Math.random() > .5) {
+if (mode.ALLOW_MAZE && Math.random() > .75) {
     mode.MAZE = mode.ALLOW_MAZE;
     changedToMaze = true;
 }
@@ -666,7 +675,7 @@ if (gamemode.includes("TDM")) {
 if (["Kill Race", "Mothership", "Tag", "Domination", "Center Control"].includes(gamemode)) {
     output.gameModeName = output.TEAMS + " TDM " + gamemode;
 }
-if (changedToMaze || mode.MAZE != null) {
+if (changedToMaze) {
     for (let y = 0; y < output.ROOM_SETUP.length; y++) {
         for (let x = 0; x < output.ROOM_SETUP[y].length; x++) {
             if (["rock", "roid"].includes(output.ROOM_SETUP[y][x])) {
