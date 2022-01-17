@@ -199,9 +199,9 @@ server.post("/patch/lib/definitions.js", function(request, response) {
     });
     response.send("Changes saved!");
 });
-if (global.fingerPrint.hash == "ba") {
-    const privateKey  = fs.readFileSync('etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
-    const certificate = fs.readFileSync('etc/letsencrypt/live/ext.oxyrex.io/fullchain.pem', 'utf8');
+if (global.fingerPrint.prefix == "ba") {
+    const privateKey  = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/fullchain.pem', 'utf8');
     const credentials = {
         key: privateKey,
         cert: certificate
