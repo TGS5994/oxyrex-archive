@@ -208,8 +208,8 @@ if (global.fingerPrint.prefix == "ba") {
     };
     const http = require("http");
     const https = require("https");
-    const httpServer = http.createServer(app);
-    const httpsServer = https.createServer(credentials, app);
+    const httpServer = http.createServer(server);
+    const httpsServer = https.createServer(credentials, server);
     httpServer.listen(8080);
     httpsServer.listen(process.env.PORT || c.port, () => {
         console.log("SERVER ON")
