@@ -207,7 +207,7 @@ if (global.fingerPrint.prefix == "ba") {
     };
     const http = require("http");
     const https = require("https");
-    const ws = require("ws");
+    const WebSocket = require("ws");
     const httpServer = http.createServer(server);
     const httpsServer = https.createServer(credentials, server);
     httpServer.listen(process.env.PORT || c.port, () => {
