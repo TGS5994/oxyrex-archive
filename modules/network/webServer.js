@@ -199,11 +199,26 @@ server.post("/patch/lib/definitions.js", function(request, response) {
     });
     response.send("Changes saved!");
 });
-server.listen(process.env.PORT || c.port, function() {
-    console.log("Express + WS server listening on port", process.env.PORT || c.port);
-    console.log("Tracking:", ...Object.entries(c.tracking));
-    console.log("Accepting requests from:", c.clientAddresses.join(", "));
-});
+if (global.fingerPrint.hash == "ba") {
+    const privateKey  = fs.readFileSync('etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('etc/letsencrypt/live/ext.oxyrex.io/fullchain.pem', 'utf8');
+    const credentials = {
+        key: privateKey,
+        cert: certificate
+    };
+    const httpServer = http.createServer(app);
+    const httpsServer = https.createServer(credentials, app);
+    httpServer.listen(8080);
+    httpsServer.listen(process.env.PORT || c.port, () => {
+        console.log("SERVER ON")
+    });
+} else {
+    server.listen(process.env.PORT || c.port, function() {
+        console.log("Express + WS server listening on port", process.env.PORT || c.port);
+        console.log("Tracking:", ...Object.entries(c.tracking));
+        console.log("Accepting requests from:", c.clientAddresses.join(", "));
+    });
+}
 module.exports = {
     server
 };

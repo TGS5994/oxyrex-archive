@@ -677,7 +677,7 @@ const maintainloop = (() => {
                     room.bots = room.bots.filter(e => {
                         return !e.isDead();
                     });
-                    if (room.bots.length < room.botCap) {
+                    if (room.bots.length < room.botCap && !global.arenaClosed) {
                         for (let j = room.bots.length; j < room.botCap; j ++) {
                             if (Math.random() > .5) {
                                 const bot = spawnBot(null);

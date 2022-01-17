@@ -629,6 +629,11 @@ const choiceTable = {
     "Sandbox": 5
 };
 
+const serverTable = {
+    "oa": ["FFA", "TDM", "Trios", "Duos"],
+    "ob": [""]
+}
+
 const gamemode = (function() {
     const table = [];
     for (const key in choiceTable) {

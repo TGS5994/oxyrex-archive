@@ -17,7 +17,7 @@ async function main() {
         });
     }
     await awaitCommand("git pull origin main");
-    //await awaitCommand(`git clone "https://${credentials.username}:${credentials.token}@github.com/oblivionplain/woomy-server"`);
+    //await awaitCommand(`git clone "https://${credentials.username}:${credentials.token}@github.com/z46-dev/woomy-server"`);
     console.log("Done!");
     closeArena();
 };
