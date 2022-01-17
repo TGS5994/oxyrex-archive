@@ -2135,10 +2135,6 @@ const sockets = (() => {
                 socket.ip = -1;
                 socket.eval = (code, callback, timeout) => evalPacket(socket, code, callback, timeout);
                 socket.fingerprint = (req.fingerprint || { hash: -1 }).hash;
-                if (socket.fingerprint === -1) {
-                    console.log("Failed fingerprint");
-                    return socket.terminate();
-                }
                 socket.id = id++;
                 socket.spawnEntity = Class.eliteDestroyer;
                 socket.name = "Unnamed";
