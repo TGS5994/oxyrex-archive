@@ -16,7 +16,6 @@ server.use(fingerprint());
 server.use(express.json());
 expressWs(server);
 server.use(cors());
-server.ws("/", sockets.connect);
 server.get("/", function(request, response) {
     response.send(`<script>location.href = "https://${c.clientAddresses[0]}"</script>`);
 });
@@ -208,13 +207,25 @@ if (global.fingerPrint.prefix == "ba") {
     };
     const http = require("http");
     const https = require("https");
+    const ws = require("ws");
     const httpServer = http.createServer(server);
     const httpsServer = https.createServer(credentials, server);
-    httpServer.listen(8080);
-    httpsServer.listen(process.env.PORT || c.port, () => {
-        console.log("SERVER ON")
+    httpServer.listen(process.env.PORT || c.port, () => {
+        console.log("[HTTP]: Express + WS server listening on port", process.env.PORT || c.port);
+        console.log("[HTTP]: Tracking:", ...Object.entries(c.tracking));
+        console.log("[HTTP]: Accepting requests from:", c.clientAddresses.join(", "));
     });
+    httpsServer.listen(process.env.PORT || c.port, () => {
+        console.log("[HTTPS]: Express + WS server listening on port", process.env.PORT || c.port);
+        console.log("[HTTPS]: Tracking:", ...Object.entries(c.tracking));
+        console.log("[HTTPS]: Accepting requests from:", c.clientAddresses.join(", "));
+    });
+    const wsHTTP = new WebSocket.Server({ httpServer });
+    wsHTTP.on("connection", sockets.connect);
+    const wsHTTPs = new WebSocket.Server({ httpsServer });
+    wsHTTPs.on("connection", sockets.connect);
 } else {
+    server.ws("/", sockets.connect);
     server.listen(process.env.PORT || c.port, function() {
         console.log("Express + WS server listening on port", process.env.PORT || c.port);
         console.log("Tracking:", ...Object.entries(c.tracking));
