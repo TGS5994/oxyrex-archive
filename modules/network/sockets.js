@@ -7,6 +7,7 @@ require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
 const fetch = require("node-fetch");
+const { ioTypes } = require('../live/controllers');
 const sockets = (() => {
     let clients = [],
         players = [],
@@ -858,6 +859,7 @@ const sockets = (() => {
                                             socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
                                         }
                                         o.define(socket.spawnEntity);
+                                        o.controllers.push(new ioTypes.pathFind(o));
                                         if (body.sandboxId) {
                                             o.sandboxId = body.sandboxId;
                                         }

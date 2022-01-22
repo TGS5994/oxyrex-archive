@@ -250,6 +250,107 @@ class MazeGenerator {
     }
 }
 
+class Pathfinder {
+    constructor(maze) {
+        this._ref = maze;
+    }
+    reset() {
+        this.grid = this._ref.map(row => row.map(entry => !!entry ? "Obstacle" : "Empty"));
+    }
+    findPath(start, goal) {
+        this.reset();
+        this.grid[start.x][start.y] = "Start";
+        this.grid[goal.x][goal.y] = "Goal";
+        const queue = [{
+            x: start.x,
+            y: start.y,
+            path: [],
+            status: "Start"
+        }];
+        while (queue.length) {
+            const location = queue.shift();
+            for (let i = 0; i < 4; i++) {
+                const newLocation = this.explore(location, ["North", "East", "South", "West"][i]);
+                switch (newLocation.status) {
+                    case "Goal":
+                        return this.construct(newLocation.path, start);
+                    case "Valid":
+                        queue.push(newLocation);
+                        break;
+                }
+            }
+        }
+        return this.construct(false, start);
+    }
+    construct(foundPath, position) {
+        let path = [];
+        if (foundPath === false) {
+            return [[position.x, position.y]];
+        }
+        for (let dir of foundPath) {
+            switch (dir) {
+                case "North":
+                    position.y --;
+                    break;
+                case "South":
+                    position.y ++;
+                    break;
+                case "West":
+                    position.x ++;
+                    break;
+                case "East":
+                    position.x --;
+                    break;
+            }
+            path.push([position.x, position.y]);
+        }
+        return path;
+    }
+    explore(location, direction) {
+        const newPath = location.path.slice();
+        newPath.push(direction);
+        let { x, y } = location;
+        switch (direction) {
+            case "North":
+                y --;
+                break;
+            case "East":
+                x --;
+                break;
+            case "South":
+                y ++;
+                break;
+            case "West":
+                x ++;
+                break;
+            default:
+                break;
+        }
+        const newLocation = {
+            x: x,
+            y: y,
+            path: newPath,
+            status: this.status({ x: x, y: y })
+        };
+        if (newLocation.status === "Valid") {
+            this.grid[newLocation.x][newLocation.y] = "Visited";
+        }
+        return newLocation;
+    }
+    status(location) {
+        switch (true) {
+            case location.x < 0: case location.x >= this.grid.length: case location.y < 0: case location.y >= this.grid[0].length:
+                return "Invalid";
+            case this.grid[location.x][location.y] === "Goal":
+                return "Goal";
+            case this.grid[location.x][location.y] !== "Empty":
+                return "Blocked";
+            default:
+                return "Valid";
+        }
+    }
+}
+
 function generateMaze(options) {
     const maze = new MazeGenerator(options);
     const remapper = new MazeRemap(maze.maze);
@@ -272,10 +373,36 @@ function generateMaze(options) {
         o.protect();
         o.life();
     }
+    global.findPath = (function() {
+        const finder = new Pathfinder(remapper._ref);
+        function getIndexes(position) {
+            return {
+                x: Math.round((position.x / room.width) * remapper._ref.length), 
+                y: Math.round((position.y / room.height) * remapper._ref[0].length)
+            }
+        }
+        return function(start, goal) {
+            if (!room.isInRoom(start) || !room.isInRoom(goal)) {
+                return [];
+            }
+            start = getIndexes(start);
+            goal = getIndexes(goal);
+            if (start.x < 0 || start.x >= remapper._ref.length || start.y < 0 || start.y >= remapper._ref[0].length || goal.x < 0 || goal.x >= remapper._ref.length || goal.y < 0 || goal.y >= remapper._ref[0].length) {
+                return [];
+            }
+            return finder.findPath(start, goal).map(entry => {
+                return { // Top left corner of cell + cell half width
+                    x: (entry[0] / remapper._ref.length * room.width) + ((room.width / remapper._ref.length) / 2),
+                    y: (entry[1] / remapper._ref[0].length * room.height) + ((room.height / remapper._ref[0].length) / 2)
+                }
+            });
+        }
+    })();
 }
 
 module.exports = {
     generateMaze,
     MazeGenerator,
-    MazeRemap
+    MazeRemap,
+    Pathfinder
 };

@@ -742,141 +742,6 @@ ioTypes.orion = class extends IO {
 ioTypes.botMovement = class extends IO {
     constructor(body) {
         super(body);
-        this.nearEdge = 1;
-        this.avoidEdge = false;
-        this.timer = 61;
-        this.offset = 0;
-        this.offset2 = 1;
-        this.avoidEdge = 90;
-        this.PI180 = Math.PI / 180;
-        this.orbit = 0.7 * this.body.fov;
-        this.orbit2 = 0.5 * this.body.fov;
-        this.wanderGoal = {
-            x: ran.randomRange(0, room.width),
-            y: ran.randomRange(0, room.height)
-        };
-        this.wanderStart = Date.now();
-        this.dir = 0;
-        this.defendTick = -1;
-    }
-    chooseSpot() {
-        this.wanderRoom = Math.random() < 0.8 ? "norm" : "nest";
-        return room.randomType(this.wanderRoom);
-    }
-    think(input) {
-        if (!room.isInRoom(this.wanderGoal)) this.wanderGoal = this.chooseSpot();
-        this.timer++;
-        let goal = {},
-            power = 1;
-        this.previousNearEdge = JSON.parse(JSON.stringify(this.nearEdge));
-        this.nearEdge = "5";
-        if (this.body.x < 200) this.nearEdge += "1";
-        if (this.body.y < 200) this.nearEdge += "2";
-        if (this.body.x > room.width - 200) this.nearEdge += "3";
-        if (this.body.y > room.height - 200) this.nearEdge += "4";
-        if (this.previousNearEdge !== this.nearEdge) switch (this.nearEdge) {
-            case "51":
-            case "53":
-                this.avoidEdge = /*ran.choose(*/ [90 * this.PI180, 270 * this.PI180] //);
-                break;
-            case "52":
-            case "54":
-                this.avoidEdge = /*ran.choose(*/ [180 * this.PI180, 0 * this.PI180] //);
-                break;
-            case "512":
-                this.avoidEdge = /*ran.choose(*/ [90 * this.PI180, 0 * this.PI180] //);
-                break;
-            case "514":
-                this.avoidEdge = /*ran.choose(*/ [270 * this.PI180, 0 * this.PI180] //);
-                break;
-            case "523":
-                this.avoidEdge = /*ran.choose(*/ [90 * this.PI180, 180 * this.PI180] //);
-                break;
-            case "534":
-                this.avoidEdge = /*ran.choose(*/ [270 * this.PI180, 180 * this.PI180] //);
-                break;
-        }
-        if (c.SPECIAL_BOSS_SPAWNS && room["bas1"] && room["bas1"].length < 3 && room["bas1"].length > 0) {
-            if ((this.defendTick <= 0 && (!room.isIn("bas1", this.wanderGoal) || !input.target)) || (room.isIn("bas1", this.wanderGoal) && !input.target)) {
-                this.wanderGoal = room.randomType("bas1");
-                this.wanderStart = Date.now();
-                this.defendTick = 50 + Math.random() * 150;
-            }
-            this.defendTick --;
-            goal = this.wanderGoal, power = 1;
-        } else {
-            this.defendTick = -1;
-            if (input.target != null) {
-                this.wanderGoal = this.chooseSpot();
-                this.wanderStart = Date.now();
-                let target = new Vector(input.target.x, input.target.y);
-                if (this.timer > 60) {
-                    this.offset = ran.randomRange(30 * Math.PI / 180, 45 * Math.PI / 180) * this.offset2,
-                        this.offset2 *= -1,
-                        this.timer = 0;
-                }
-                if (this.body.health.amount / this.body.health.max > 0.4) {
-                    if (this.nearEdge === "5") {
-                        if (target.length > this.orbit) {
-                            goal = {
-                                x: (this.body.x) + this.orbit * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                                y: (this.body.y) + this.orbit * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4)
-                            }, power = 1
-                        } else if (target.length > this.orbit2 && target.length < this.orbit) {
-                            goal = {
-                                x: (this.body.x) + this.orbit2 * Math.cos(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
-                                y: (this.body.y) + this.orbit2 * Math.sin(Math.floor((target.direction + this.offset) / Math.PI / 4) * Math.PI / 4),
-                            }, power = 1
-                        } else {
-                            goal = {
-                                x: (this.body.x) - this.orbit2 * Math.cos(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                                y: (this.body.y) - this.orbit2 * Math.sin(Math.floor((target.direction) / (Math.PI / 4)) * Math.PI / 4),
-                            }, power = 1
-                        }
-                    } else {
-                        if (target.length > this.orbit2) {
-                            goal = {
-                                x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1]),
-                                y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 0 : 1])
-                            }, power = 1;
-                        } else {
-                            goal = {
-                                x: (this.body.x) + 100 * Math.cos(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0]),
-                                y: (this.body.y) + 100 * Math.sin(this.avoidEdge[util.angleDifference(target.direction, this.avoidEdge[0]) < util.angleDifference(target.direction, this.avoidEdge[1]) ? 1 : 0])
-                            }, power = 1;
-                        }
-                    }
-                } else {
-                    if (this.nearEdge === "5") {
-                        goal = {
-                                x: (this.body.x) + 100 * -Math.cos(this.dir + this.offset),
-                                y: (this.body.y) + 100 * -Math.sin(this.dir + this.offset)
-                            },
-                            power = 1;
-                    } else {
-                        goal = {
-                            x: (this.body.x) + 100 * Math.cos(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0]),
-                            y: (this.body.y) + 100 * Math.sin(this.avoidEdge[Math.abs(target.direction - this.avoidEdge[0]) > Math.abs(target.direction - this.avoidEdge[1]) ? 1 : 0])
-                        }, power = 1;
-                    }
-                };
-            } else {
-                goal = this.wanderGoal, power = 1;
-                if (util.getDistance(this.wanderGoal, this.body) < 10 || Date.now() - this.wanderStart > 20000) {
-                    this.wanderGoal = this.chooseSpot();
-                    this.wanderStart = Date.now();
-                }
-            }
-        }
-        return {
-            goal: goal,
-            power: power,
-        };
-    }
-}
-ioTypes.botMovement = class extends IO {
-    constructor(body) {
-        super(body);
         this.goal = room.randomType("norm");
         this.timer = Math.random() * 500 | 0;
         this.defendTick = -1;
@@ -1117,43 +982,37 @@ ioTypes.bossRushAI = class extends IO {
         }
     }
 }
-const findPath = require("../setup/pathFinder.js");
 ioTypes.pathFind = class extends IO {
     constructor(body) {
         super(body);
         this.path = [];
         this.lastPathUpdate = 0;
     }
-    getCell(position) {
-        return [
-            util.clamp(Math.floor((position.y / room.height) * mazeGridData[0].length - 1), 0, mazeGridData[0].length - 1),
-            util.clamp(Math.floor((position.x / room.width) * mazeGridData.length - 1), 0, mazeGridData.length - 1)
-        ];
-    }
     think(input) {
-        if (!input.goal || mazeGridData == null || !mazeGridData.length) {
+        if (!input.target || typeof global.findPath !== "function") {
             this.path = [];
             return;
         }
-        if (!this.path.length || Date.now() - this.lastPathUpdate > 2500) {
-            console.log({ x: this.body.x, y: this.body.y}, input.goal);
-            this.path = findPath(this.getCell(this.body), this.getCell(input.goal));
+        if (!this.path.length || Date.now() - this.lastPathUpdate > 1000) {
+            this.path = findPath(this.body, {
+                x: input.target.x + this.body.x,
+                y: input.target.y + this.body.y
+            });
             this.lastPathUpdate = Date.now();
-            console.log(this.path);
         }
         if (this.path.length) {
             if (util.getDistance(this.body, {
-                x: (this.path[0][1] / mazeGridData.length) * room.width,
-                y: (this.path[0][0] / mazeGridData[0].length) * room.height
-            }) < this.body.size) {
+                x: this.path[0].x,
+                y: this.path[0].y
+            }) < 1) {
                 this.path.shift();
-            }
-            if (this.path.length) {
+            } else {
                 return {
                     goal: {
-                        x: (this.path[0][1] / mazeGridData.length) * room.width,
-                        y: (this.path[0][0] / mazeGridData[0].length) * room.height
-                    }
+                        x: this.path[0].x,
+                        y: this.path[0].y
+                    },
+                    power: 2
                 }
             }
         }

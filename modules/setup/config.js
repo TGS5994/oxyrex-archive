@@ -607,6 +607,7 @@ const gamemodes = {
     "Closed Beta": {
         BETA: 1,
         maxPlayers: 40,
+        MAZE: {},
         secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb"
     }
 };
