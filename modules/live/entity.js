@@ -84,6 +84,9 @@ class Gun {
             if (info.PROPERTIES.COLOR != null && info.PROPERTIES != null) {
                 this.color = info.PROPERTIES.COLOR
             }
+            if (info.PROPERTIES.COLOR_UNMIX != null && info.PROPERTIES != null) {
+                this.colorUnmix = info.PROPERTIES.COLOR_UNMIX;
+            }
             this.shootOnDeath = !!info.PROPERTIES.SHOOT_ON_DEATH;
             if (this.shootOnDeath) this.body.onDead = () => {
                 for (let i = 0; i < this.body.guns.length; i++) {
@@ -97,6 +100,7 @@ class Gun {
             };
         }
         if (info.PROPERTIES != null && info.PROPERTIES.COLOR != null) this.color = info.PROPERTIES.COLOR;
+        if (info.PROPERTIES != null && info.PROPERTIES.COLOR_UNMIX != null) this.colorUnmix = info.PROPERTIES.COLOR_UNMIX;
         if (info.PROPERTIES != null && info.PROPERTIES.SKIN != null) this.skin = info.PROPERTIES.SKIN;
         if (info.PROPERTIES != null && info.PROPERTIES.ON_SHOOT != null) this.onshoot = info.PROPERTIES.ON_SHOOT;
         let position = info.POSITION;

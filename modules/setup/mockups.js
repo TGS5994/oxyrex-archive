@@ -144,7 +144,8 @@ const loadMockupJsonData = (() => {
                     aspect: rounder(gun.aspect),
                     angle: rounder(gun.angle),
                     color: rounder(gun.color),
-                    skin: rounder(gun.skin)
+                    skin: rounder(gun.skin),
+                    colorUnmix: rounder(gun.colorUnmix || 0)
                 };
             }),
             turrets: e.turrets.map(function(t) {
