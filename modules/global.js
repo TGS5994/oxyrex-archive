@@ -114,6 +114,7 @@ const requires = [
     "./gamemodes/killRace.js", // Kill Race
     "./gamemodes/hideAndSeek.js", // Kill Race
     "./gamemodes/bossRush.js", // Boss Rush
+    "./gamemodes/trenchWarfare.js", // Trench Warfare
     "./gamemodes/maze.js", // Maze
     "./gamemodes/mothership.js", // The mothership mode
     "./gamemodes/domination.js", // The Domination mode

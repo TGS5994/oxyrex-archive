@@ -377,8 +377,8 @@ function generateMaze(options) {
         const finder = new Pathfinder(remapper._ref);
         function getIndexes(position) {
             return {
-                x: Math.round((position.x / room.width) * remapper._ref.length), 
-                y: Math.round((position.y / room.height) * remapper._ref[0].length)
+                x: Math.floor((position.x / room.width) * remapper._ref.length), 
+                y: Math.floor((position.y / room.height) * remapper._ref[0].length)
             }
         }
         return function(start, goal) {

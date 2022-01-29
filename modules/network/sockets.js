@@ -859,7 +859,6 @@ const sockets = (() => {
                                             socket.spawnEntity.BODY.ACCELERATION = 0.015 / (+socket.spawnEntity.FOOD.LEVEL + 1);
                                         }
                                         o.define(socket.spawnEntity);
-                                        o.controllers.push(new ioTypes.pathFind(o));
                                         if (body.sandboxId) {
                                             o.sandboxId = body.sandboxId;
                                         }

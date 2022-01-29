@@ -754,6 +754,11 @@ ioTypes.botMovement = class extends IO {
                 this.defendTick = 50 + Math.random() * 150;
             }
             this.defendTick --;
+        } else if (c.TRENCH_WARFARE) {
+            if ((this.defendTick <= 0 && (!room.isIn("bas2", this.goal) || !input.target)) || (room.isIn("bas2", this.goal) && !input.target)) {
+                this.goal = room.randomType("bas2");
+                this.defendTick = 50 + Math.random() * 150;
+            }
         } else {
             this.timer --;
             if (input.target) {
@@ -1001,7 +1006,10 @@ ioTypes.pathFind = class extends IO {
             this.lastPathUpdate = Date.now();
         }
         if (this.path.length) {
-            if (util.getDistance(this.body, {
+            if (this.path.length < 2) {
+                this.path = [];
+                this.lastPathUpdate = Date.now() + 5000;
+            } else if (util.getDistance(this.body, {
                 x: this.path[0].x,
                 y: this.path[0].y
             }) < 1) {
@@ -1012,7 +1020,7 @@ ioTypes.pathFind = class extends IO {
                         x: this.path[0].x,
                         y: this.path[0].y
                     },
-                    power: 2
+                    power: 1.5
                 }
             }
         }

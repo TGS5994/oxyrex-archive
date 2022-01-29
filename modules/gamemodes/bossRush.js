@@ -2,6 +2,9 @@
 /*jshint -W061 */
 /*global goog, Map, let */
 "use strict";
+
+const { ioTypes } = require('../live/controllers');
+
 // General requires
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
@@ -76,6 +79,9 @@ const bossRush = (function() {
             let o = new Entity(room.randomType("boss"));
             o.define(boss);
             o.controllers.push(new ioTypes.bossRushAI(o));
+            if (o.classSize < 35) {
+                o.controllers.push(new ioTypes.pathFind(o));
+            }
             o.team = -100;
             o.onDead = function() {
                 bosses --;
@@ -90,7 +96,7 @@ const bossRush = (function() {
         for (let i = 0; i < 2; i ++) {
             let n = new Entity(room.randomType("boss"));
             n.define(ran.choose(escorts));
-            n.controllers.push(new ioTypes.bossRushAI(n));
+            n.controllers.push(new ioTypes.bossRushAI(n), new ioTypes.pathFind(n));
             n.team = -100;
         }
         global.botScoreboard.Wave = (index + 1);

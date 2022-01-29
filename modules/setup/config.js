@@ -503,55 +503,55 @@ const gamemodes = {
             mapString: `
             --------------------------------
             -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
+            -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
+            -@@##########################@@-
+            -@@#------------------------#@@-
+            -@@#------------------------#@@-
+            -@##@@@@@@@@@@@@@@@@@@@@@@@@##@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@-@##@@@@@@@@@@@@##@@@@@#@-
+            -@#@@@-@@@#@@@@@@@@@@#@@--@@@#@-
+            -@#@@@--@@#@@@@@@@@@@#@@@-@@@#@-
+            -@#@@@@@##@@@@@@@@@@@@##@-@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
+            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
             -@############################@-
-            -@#####@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@##-----@@----@@----@@-----@#@-
-            -@##--@@----@@----@@----@@--@#@-
-            -@#@--########################@-
-            -@#@----@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@@@@@#@-
-            -@#@@@@@@@@@@@@@@@@@@@@@----@#@-
-            -@########################--@#@-
-            -@#@--@@----@@----@@----@@--##@-
-            -@#@-----@@----@@----@@-----##@-
-            -@#@@@@@@@@@@@@@@@@@@@@@@#####@-
-            -@############################@-
+            -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
             -@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-
             --------------------------------
             `
         },
         ROOM_SETUP: [
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "dom0", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas1", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "bas2", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "dom0", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"],
-            ["norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm"]
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "bas1", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "nest", "nest", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "bas2", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "bas2", "norm", "norm", "bas2", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "norm", "bas2", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "bas2", "norm", "outb"],
+            ["outb", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "norm", "outb"],
+            ["outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb", "outb"]
         ],
         secondaryGameMode: "tb",
         DO_BASE_DAMAGE: false,
@@ -607,7 +607,18 @@ const gamemodes = {
     "Closed Beta": {
         BETA: 1,
         maxPlayers: 40,
-        MAZE: {},
+        ROOM_SETUP: (function() {
+            const output = setup({
+                width: 32,
+                height: 32,
+                rockScatter: .15
+            });
+            for (let i = 0; i < 8; i ++) {
+                output[6 + i][6] = output[6][6 + i] = output[13 - i][13] = output[13][13 - i] = "wall";
+            }
+            output[9][13] = "door";
+            return output;
+        })(),
         secondaryGameMode: global.fingerPrint.localhost ? "ffa" : "cb"
     }
 };
@@ -630,6 +641,7 @@ const choiceTable = {
     "Boss Rush": 8,
     "Naval Battle": 6,
     "Sandbox": 1,
+    "Trench Battle": 6,
     // XYZ and C
     "Closed Beta": 1 
 };
@@ -639,7 +651,7 @@ const serverTable = {
     "ob": ["Domination", "Mothership", "Kill Race", "Soccer"],
     "ha": ["FFA", "TDM", "Duos"],
     "hb": ["Domination", "Center Control", "Survival", "Tag"],
-    "ba": ["Boss Rush", "Naval Battle", "Sandbox"],
+    "ba": ["Boss Rush", "Trench Battle", "Sandbox"],
     "c": ["Closed Beta"],
     "xyz": ["Closed Beta"]
 }

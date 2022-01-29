@@ -87,7 +87,7 @@ const gameloop = (() => {
             case (instance.settings.hitsOwnType === "everything" || other.settings.hitsOwnType === "everything"): {
                 if (instance.label === "Collision" || other.label === "Collision") return;
                 if (instance.team === other.team || instance.master.id === other.master.id) return;
-                if (instance.isDominator || other.isDominator || instance.isMothership || other.isMothership) return;
+                if (instance.isDominator || other.isDominator || instance.isMothership || other.isMothership || instance.type === "miniboss" || other.type === "miniboss") return;
                 let shield = instance.settings.hitsOwnType === "everything" ? instance : other,
                     entity = instance.settings.hitsOwnType === "everything" ? other : instance;
                 firmcollide(shield, entity);
@@ -287,7 +287,7 @@ const maintainloop = (() => {
         door.protect();
         door.life();
         doors.push(door);
-        const doorID = doors.length;
+        const doorID = doors.indexOf(door);
         door.onDead = function() {
             for (const button of buttons) {
                 if (button.doorID === doorID) {
@@ -595,6 +595,8 @@ const maintainloop = (() => {
             o.define(Class[className]);
             if (c.NAVAL_SHIPS && set.startClass == "aircraftCarriers") {
                 o.controllers = [new ioTypes.carrierThinking(o), new ioTypes.carrierAI(o)];
+            } else if (c.TRENCH_WARFARE) {
+                o.controllers.push(new ioTypes.pathFind(o));
             }
             o.refreshBodyAttributes();
             o.name += botName;
