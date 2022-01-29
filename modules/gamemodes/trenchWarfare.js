@@ -43,7 +43,7 @@ const trenchWarefare = (function() {
         }
     };
     let timer = setInterval((function() {
-        let time = 60 * 20;
+        let time = 60 * 30;
         return function() {
             time --;
             if (time <= 0) {

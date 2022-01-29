@@ -1980,7 +1980,7 @@ class Entity {
                 }
             }
         }
-        if (c.SPECIAL_BOSS_SPAWNS && room.isIn("outb", {
+        if (room.isIn("outb", {
             x: this.x,
             y: this.y
         }) && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive) {
