@@ -1433,6 +1433,17 @@ const sockets = (() => {
                                         x: factory.x + factory.SIZE * 1.5 * Math.cos(factory.facing),
                                         y: factory.y + factory.SIZE * 1.5 * Math.cos(factory.facing)
                                     };
+                                } else if (global.escortMotherships && global.escortMotherships.length) {
+                                    let mothership, angle;
+                                    do {
+                                        mothership = global.escortMotherships[Math.random() * global.escortMotherships.length | 0];
+                                        angle = Math.PI * 2 * Math.random();
+                                        loc = {
+                                            x: mothership.x + mothership.SIZE * 1.5 * Math.cos(angle),
+                                            y: mothership.y + mothership.SIZE * 1.5 * Math.sin(angle)
+                                        };
+                                        i --;
+                                    } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
                                 } else {
                                     const type = ran.choose(["bas", "bap"].filter(entry => (room[entry + player.team] && room[entry + player.team].length)));
                                     if (type != null) {
@@ -1627,7 +1638,7 @@ const sockets = (() => {
                         }
                         output.push(...stuff);
                         if (data.type & 0x04) {
-                            output.push(data.name, data.score);
+                            output.push(data.name || "", data.score || 0);
                         }
                     }
                     // Add the gun data to the array
@@ -1652,9 +1663,7 @@ const sockets = (() => {
                         if (player.body.id === e.master.id) {
                             data = data.slice();
                             let colorOverride = false;
-                            if (player.rainbowInterval != null || player.body.type !== "tank") colorOverride = true;
-                            if (room.gameMode === "ffa" && player.body.color !== 11) colorOverride = true;
-                            if (room.gameMode === "tdm" && player.body.color !== player.teamColor) colorOverride = true;
+                            if (player.rainbowInterval != null || player.body.type !== "tank" || (room.gameMode === "ffa" && player.body.color !== 11) || (room.gameMode === "tdm" && player.body.color !== player.teamColor) || e.color !== player.body.color) colorOverride = true;
                             data[(data[2] & 2) ? 11 : 10] = colorOverride ? e.color : player.teamColor;
                             // And make it force to our mouse if it ought to
                             if (player.command.autospin || player.body.facingType === "smoothWithMotion") {

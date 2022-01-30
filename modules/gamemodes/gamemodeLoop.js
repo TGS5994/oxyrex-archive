@@ -12,6 +12,7 @@ const gamemodeLoop = (function() {
   if (c.MOTHERSHIP_LOOP) mothershipLoop.spawn();
   if (c.SPECIAL_BOSS_SPAWNS) bossRush();
   if (c.TRENCH_WARFARE) trenchWarefare();
+  if (c.ESCORT) escort();
   if (c.MAZE && typeof c.MAZE !== "boolean") generateMaze(c.MAZE);
   if (c.DOMINATOR_LOOP) for (let loc of room.dom0) dominatorLoop.spawn(loc, -100);
   if (c.INFECTION_LOOP) initInfectionLoop();

@@ -759,6 +759,38 @@ ioTypes.botMovement = class extends IO {
                 this.goal = room.randomType("bas2");
                 this.defendTick = 50 + Math.random() * 150;
             }
+        } else if (global.escortMotherships && global.escortMotherships.length) {
+            const closest = global.escortMotherships.sort((a, b) => util.getDistance(a, this.body) - util.getDistance(b, this.body))[0];
+            if (closest && util.getDistance(closest, this.body) > this.body.size * 25) {
+                this.goal = {
+                    x: closest.x,
+                    y: closest.y
+                };
+            } else {
+                this.timer --;
+            if (input.target) {
+                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 1) {
+                    const target = {
+                        x: input.target.x + this.body.x,
+                        y: input.target.y + this.body.y
+                    };
+                    const angle = Math.atan2(target.y - this.body.y, target.x - this.body.x) + (Math.PI / 2 * (Math.random() - .5));
+                    const dist = Math.random() * this.body.fov;
+                    this.timer = Math.random() * 100 | 0;
+                    this.goal = {
+                        x: target.x + Math.cos(angle) * dist,
+                        y: target.y + Math.sin(angle) * dist
+                    };
+                    this.state = 0;
+                }
+            } else {
+                if (this.timer <= 0 || util.getDistance(this.body, this.goal) < this.body.SIZE || this.state === 0) {
+                    this.timer = Math.random() * 500 | 0;
+                    this.state = 1;
+                    this.goal = room.randomType(Math.random() > .9 ? "nest" : "norm");
+                }
+            }
+            }
         } else {
             this.timer --;
             if (input.target) {
@@ -987,6 +1019,30 @@ ioTypes.bossRushAI = class extends IO {
         }
     }
 }
+ioTypes.escortMothershipAI = class extends IO {
+    constructor(body) {
+        super(body);
+        this.enabled = true;
+        this.goal = {
+            x: room.width / 2,
+            y: room.height / 2
+        };
+    }
+    think() {
+        if (util.getDistance(this.body, this.goal) < 100 && room.isIn("nest", this.body)) {
+            this.goal = room["goal"][Math.random() * room["goal"].length | 0];
+        }
+        return {
+            main: false,
+            alt: false,
+            goal: this.goal,
+            target: {
+                x: this.goal.x - this.body.x,
+                y: this.goal.y - this.body.y
+            }
+        }
+    }
+}
 ioTypes.pathFind = class extends IO {
     constructor(body) {
         super(body);
@@ -1006,7 +1062,7 @@ ioTypes.pathFind = class extends IO {
             this.lastPathUpdate = Date.now();
         }
         if (this.path.length) {
-            if (this.path.length < 2) {
+            if (this.path.length < 2 || !global.checkIfNearWalls(this.body)) {
                 this.path = [];
                 this.lastPathUpdate = Date.now() + 5000;
             } else if (util.getDistance(this.body, {
@@ -1020,7 +1076,7 @@ ioTypes.pathFind = class extends IO {
                         x: this.path[0].x,
                         y: this.path[0].y
                     },
-                    power: 1.5
+                    power: 1.334
                 }
             }
         }

@@ -6,7 +6,7 @@
 require('google-closure-library');
 goog.require('goog.structs.PriorityQueue');
 goog.require('goog.structs.QuadTree');
-let locsToAvoid = ["nest", "port", "dom0", "edge"];
+let locsToAvoid = ["nest", "port", "dom0", "edge", "goal"];
 for (let i = 1; i < 5; i++) locsToAvoid.push("bas" + i), locsToAvoid.push("bap" + i), locsToAvoid.push("dom" + i);
 
 class MazeRemap {
@@ -370,6 +370,7 @@ function generateMaze(options) {
         o.height = height - (height > 1 ? ((height - (height / 1.1)) * .1) : 0);
         o.team = -101;
         o.alwaysActive = true;
+        o.settings.canGoOutsideRoom = true;
         o.protect();
         o.life();
     }
@@ -398,6 +399,23 @@ function generateMaze(options) {
             });
         }
     })();
+    global.checkIfNearWalls = function(body) {
+        for (let i = 0; i < remapper._ref.length; i ++) {
+            for (let j = 0; j < remapper._ref[0].length; j ++) {
+                if (remapper._ref[i][j] && util.getDistance(body, {
+                    x: (i / remapper._ref.length * room.width) + ((room.width / remapper._ref.length) / 2),
+                    y: (j / remapper._ref[0].length * room.height) + ((room.height / remapper._ref[0].length) / 2)
+                }) < global.mazeCellSize.x * 1.5) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    global.mazeCellSize = {
+        x: room.width / remapper._ref.length,
+        y: room.height / remapper._ref[0].length
+    };
 }
 
 module.exports = {

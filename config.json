@@ -89,6 +89,7 @@
     "NAVAL_SHIPS": false,
     "EPICENTER": false,
     "TRENCH_WARFARE": false,
+    "ESCORT": false,
     "SANDBOX": false,
     "TOKENS": [
         ["TOKEN_DEV_9YAghpcBdTXMHK12_DEV_TOKEN", "889989767557693580", "$000000", 3, "z46#4800"],

@@ -60,7 +60,7 @@ const gameloop = (() => {
             case (instance.type === "wall" || other.type === "wall"):
                 if (instance.type === "wall" && other.type === "wall") return instance.facing = other.facing = 0;
                 if (instance.label.includes("Collision") || other.label.includes("Collision")) return;
-                if (instance.settings.goThroughWalls || other.settings.goThroughWalls || instance.master.settings.goThroughWalls || other.master.settings.goThroughWalls || instance.master.godmode || other.master.godmode || instance.master.invuln || other.master.invuln) return;
+                if (instance.settings.goThroughWalls || other.settings.goThroughWalls || instance.master.settings.goThroughWalls || other.master.settings.goThroughWalls || instance.master.godmode || other.master.godmode) return;
                 let wall = instance.type === "wall" ? instance : other;
                 let entity = instance.type === "wall" ? other : instance;
                 switch (wall.shape) {
@@ -559,6 +559,18 @@ const maintainloop = (() => {
         let color = getTeamColor(team);
         if (room.gameMode === "ffa") color = (c.RANDOM_COLORS ? Math.floor(Math.random() * 20) : 11);
         let loc = c.SPECIAL_BOSS_SPAWNS ? ((room["bas1"] && room["bas1"].length) ? room.randomType("bas1") : room.randomType("nest")) : room.randomType("norm");
+        if (global.escortMotherships && global.escortMotherships.length) {
+            let mothership, angle, i = 15;
+            do {
+                mothership = global.escortMotherships[Math.random() * global.escortMotherships.length | 0];
+                angle = Math.PI * 2 * Math.random();
+                loc = {
+                    x: mothership.x + mothership.SIZE * 1.5 * Math.cos(angle),
+                    y: mothership.y + mothership.SIZE * 1.5 * Math.sin(angle)
+                };
+                i --;
+            } while (dirtyCheck(loc, Class.genericTank.SIZE * 5) && i);
+        }
         let o = new Entity(loc);
         o.color = color;
         o.invuln = true;
@@ -595,7 +607,7 @@ const maintainloop = (() => {
             o.define(Class[className]);
             if (c.NAVAL_SHIPS && set.startClass == "aircraftCarriers") {
                 o.controllers = [new ioTypes.carrierThinking(o), new ioTypes.carrierAI(o)];
-            } else if (c.TRENCH_WARFARE) {
+            } else if (c.TRENCH_WARFARE || c.ESCORT) {
                 o.controllers.push(new ioTypes.pathFind(o));
             }
             o.refreshBodyAttributes();
