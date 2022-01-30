@@ -22,8 +22,8 @@ const escort = (function() {
         o.team = -1;
         o.color = 10;
         o.define(Class.mothership);
-        o.name = ["Liberty", "Transylvania", "Indefatigable"][motherships.length] || "Escort Ship";
-        o.color = [140, 145, 150][motherships.length] || 10;
+        o.name = ["Liberty", "Transylvania"][motherships.length] || "Escort Ship";
+        o.color = [140, 145][motherships.length] || 10;
         o.controllers = [new ioTypes.escortMothershipAI(o), new ioTypes.pathFind(o)];
         o.onDead = function() {
             motherships = motherships.filter(r => r !== o);
@@ -69,7 +69,7 @@ const escort = (function() {
             o.kill();
             return;
         }
-        o.define({ BODY: { FOV: 50 }}); // More NPC types, spawn near mommy, bot ai
+        o.define({ BODY: { FOV: 50 }});
         o.controllers.push(new ioTypes.pathFind(o));
         o.team = -100;
     }
@@ -85,7 +85,7 @@ const escort = (function() {
         }
     }
     loopInterval = setInterval(loop, 250);
-    for (let i = 0; i < 3; i ++) {
+    for (let i = 0; i < 2; i ++) {
         spawnMothership();
     }
 });
