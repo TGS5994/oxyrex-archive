@@ -22,6 +22,7 @@ const escort = (function() {
         o.team = -1;
         o.color = 10;
         o.define(Class.mothership);
+        o.skill.set([9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
         o.name = ["Liberty", "Transylvania"][motherships.length] || "Escort Ship";
         o.color = [140, 145][motherships.length] || 10;
         o.controllers = [new ioTypes.escortMothershipAI(o), new ioTypes.pathFind(o)];

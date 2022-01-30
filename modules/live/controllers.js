@@ -1035,11 +1035,7 @@ ioTypes.escortMothershipAI = class extends IO {
         return {
             main: false,
             alt: false,
-            goal: this.goal,
-            target: {
-                x: this.goal.x - this.body.x,
-                y: this.goal.y - this.body.y
-            }
+            goal: this.goal
         }
     }
 }
