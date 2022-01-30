@@ -692,8 +692,8 @@ const choiceTable = {
     "Boss Rush": 8,
     "Naval Battle": 6,
     "Sandbox": 1,
-    "Trench Battle": 6,
-    "Escort": 6,
+    "Trench Battle": 8,
+    "Escort": 10,
     // XYZ and C
     "Closed Beta": 1 
 };
