@@ -49,7 +49,7 @@ const escort = (function() {
         let o = new Entity(room.randomType("nest"));
         if (Math.random() > .975 && enemies.nestDefenders[0] < enemies.nestDefenders[1]) {
             sockets.broadcast("A Nest Defender has spawned!");
-            o.define(ran.choose([Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx]));
+            o.define(ran.choose([Class.nestDefenderKrios, Class.nestDefenderTethys, Class.nestDefenderMnemosyne, Class.nestDefenderIapetus, Class.nestDefenderThemis, Class.nestDefenderNyx, Class.nestDefenderOuranos]));
             o.onDead = function() {
                 enemies.nestDefenders[0] --;
             }

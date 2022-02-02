@@ -81,6 +81,7 @@ class Gun {
             this.negRecoil = (info.PROPERTIES.NEGATIVE_RECOIL == null) ? false : info.PROPERTIES.NEGATIVE_RECOIL;
             this.destroyOldestChild = info.PROPERTIES.DESTROY_OLDEST_CHILD == null ? false : info.PROPERTIES.DESTROY_OLDEST_CHILD;
             this.colorOverride = info.PROPERTIES.COLOR_OVERRIDE;
+            this.colorAtBody = info.PROPERTIES.COLOR_OVERRIDE_BODY;
             if (info.PROPERTIES.COLOR != null && info.PROPERTIES != null) {
                 this.color = info.PROPERTIES.COLOR
             }
@@ -304,7 +305,7 @@ class Gun {
             SIZE: this.body.size * this.width * this.settings.size / 2,
             LABEL: this.master.label + ((this.label) ? ' ' + this.label : '') + ' ' + o.label,
         });
-        o.color = (this.colorOverride == null ? this.body.master.color : this.colorOverride);
+        o.color = (this.colorOverride == null ? this.body.master.color : this.colorAtBody ? (this.body.bond || this.body.source).color : this.colorOverride);
         // Keep track of it and give it the function it needs to deutil.log itself upon death
         if (this.countsOwnKids) {
             o.parent = this;
