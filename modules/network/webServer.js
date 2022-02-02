@@ -198,7 +198,8 @@ server.post("/patch/lib/definitions.js", function(request, response) {
     });
     response.send("Changes saved!");
 });
-if (global.fingerPrint.prefix == "ba") {
+if (global.fingerPrint.digitalOcean) {
+    const port = global.fingerPrint.digitalOceanBA ? 3000 : 3001;
     const privateKey = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');
     const certificate = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/fullchain.pem', 'utf8');
     const credentials = {
@@ -217,8 +218,8 @@ if (global.fingerPrint.prefix == "ba") {
     const wsHTTP = new WebSocket.Server({ server: httpServer });
     wsHTTP.on("connection", sockets.connect);*/
     const httpsServer = https.createServer(credentials, server);
-    httpsServer.listen(process.env.PORT || c.port, () => {
-        console.log("[HTTPS]: Express + WS server listening on port", process.env.PORT || c.port);
+    httpsServer.listen(port, () => {
+        console.log("[HTTPS]: Express + WS server listening on port", port);
         console.log("[HTTPS]: Tracking:", ...Object.entries(c.tracking));
         console.log("[HTTPS]: Accepting requests from:", c.clientAddresses.join(", "));
     });
