@@ -27,6 +27,8 @@ global.fingerPrint = (function() {
         herokuC,
         DogatorixDOGA,
         digitalOcean,
+        digitalOceanBA,
+        digitalOceanGA,
         localhost,
         prefix: ["oa", "ob", "ha", "hb", "c", "ba", "ga", "doga", "xyz"][herokuOA ? 0 : herokuOB ? 1 : herokuHA ? 2 : herokuHB ? 3 : herokuC ? 4 : digitalOceanBA ? 5 : digitalOceanGA ? 6 : DogatorixDOGA ? 7 : 8]
     }
