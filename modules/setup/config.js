@@ -749,7 +749,8 @@ const serverTable = {
     "ob": ["Domination", "Mothership", "Kill Race", "Soccer"],
     "ha": ["FFA", "TDM", "Duos"],
     "hb": ["Domination", "Center Control", "Survival", "Tag"],
-    "ba": ["Boss Rush", "Trench Battle", "Sandbox"],
+    "ba": ["Boss Rush", "Trench Battle"],
+    "ga": ["FFA", "TDM", "Duos", "Trios"],
     "c": ["Closed Beta"],
     "xyz": ["Closed Beta"]
 }

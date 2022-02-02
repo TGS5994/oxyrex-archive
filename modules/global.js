@@ -15,9 +15,10 @@ global.fingerPrint = (function() {
     const herokuHB = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "hb");
     const herokuC = process.argv.some(arg => arg.includes("heroku")) && (process.env.HASH === "c");
     const DogatorixDOGA = process.argv.some(arg => arg.includes("Dogatorix")) && (process.env.HASH === "doga");
-    const digitalOcean = process.argv.some(arg => arg.includes("ba"));
-    const extraVM = process.argv.some(arg => arg.includes("ga"));
-    const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuC && !digitalOcean && !extraVM && !DogatorixDOGA;
+    const digitalOcean = process.argv.some(arg => arg.includes("digital"));
+    const digitalOceanBA = digitalOcean && process.argv.some(arg => arg.includes("ba"));
+    const digitalOceanGA = digitalOcean && process.argv.some(arg => arg.includes("ga"));
+    const localhost = !herokuOA && !herokuOB && !herokuHA && !herokuHB && !herokuC && !digitalOcean && !DogatorixDOGA;
     return {
         herokuOA,
         herokuOB,
@@ -26,9 +27,8 @@ global.fingerPrint = (function() {
         herokuC,
         DogatorixDOGA,
         digitalOcean,
-        extraVM,
         localhost,
-        prefix: ["oa", "ob", "ha", "hb", "c", "ba", "ga", "doga", "xyz"][herokuOA ? 0 : herokuOB ? 1 : herokuHA ? 2 : herokuHB ? 3 : herokuC ? 4 : digitalOcean ? 5 : extraVM ? 6 : DogatorixDOGA ? 7 : 8]
+        prefix: ["oa", "ob", "ha", "hb", "c", "ba", "ga", "doga", "xyz"][herokuOA ? 0 : herokuOB ? 1 : herokuHA ? 2 : herokuHB ? 3 : herokuC ? 4 : digitalOceanBA ? 5 : digitalOceanGA ? 6 : DogatorixDOGA ? 7 : 8]
     }
 })();
 
