@@ -334,7 +334,7 @@ class HealthType {
                 return 1;
             case 'dynamic':
                 return (this.max) ? util.clamp(this.amount / this.max, 0, 1) : 0;
-        }
+        }l
     }
     get ratio() {
         return (this.max) ? util.clamp(1 - Math.pow(this.amount / this.max - 1, 4), 0, 1) : 0;
@@ -352,7 +352,7 @@ const purgeEntities = function() {
 };
 var bringToLife = (() => {
     let remapTarget = (i, ref, self) => {
-        if (i.target == null || (!i.main && !i.alt)) return undefined;
+        if (i.target == null || (!i.main && !i.alt)) return;
         return {
             x: i.target.x + ref.x - self.x,
             y: i.target.y + ref.y - self.y,
@@ -388,16 +388,24 @@ var bringToLife = (() => {
             if (!my.velocity.isShorterThan(0.1) || my.damageReceived) my.alpha = Math.min(1, my.alpha + my.invisible[0]);
         }
         // So we start with my master's thoughts and then we filter them down through our control stack
-        for (let i = 0, length = my.controllers.length; i < length; i++) {
-            let AI = my.controllers[i];
-            let a = AI.think(b);
-            let passValue = passer(a, b, AI.acceptsFromTop);
-            passValue('target');
-            passValue('goal');
-            passValue('fire');
-            passValue('main');
-            passValue('alt');
-            passValue('power');
+        for (let AI of my.controllers) {
+            let a = AI.think(b)
+            if (!a) continue
+            if (AI.acceptsFromTop) {
+                if (a.target) b.target = a.target;
+                if (a.goal) b.goal = a.goal;
+                if (a.fire) b.fire = a.fire;
+                if (a.main) b.main = a.main;
+                if (a.alt) b.alt = a.alt;
+                if (a.power) b.power = a.power;
+            } else {
+                if (a.target && !b.target) b.target = a.target;
+                if (a.goal && !b.goal) b.goal = a.goal;
+                if (a.fire && !b.fire) b.fire = a.fire;
+                if (a.main && !b.main) b.main = a.main;
+                if (a.alt && !b.alt) b.alt = a.alt;
+                if (a.power && !b.power) b.power = a.power;
+            }
         }
         my.control.target = (b.target == null) ? my.control.target : b.target;
         my.control.goal = b.goal ? b.goal : {
@@ -412,8 +420,8 @@ var bringToLife = (() => {
         my.move();
         my.face();
         // Handle guns and turrets if we've got them
-        loopThrough(my.guns, gun => gun.live());
-        loopThrough(my.turrets, turret => turret.life());
+        for (let gun of my.guns) gun.live();
+        for (let turret of my.turrets) turret.life();
         if (my.skill.maintain()) my.refreshBodyAttributes();
     };
 })();

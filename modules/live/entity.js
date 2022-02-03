@@ -724,18 +724,14 @@ class Entity {
             return {
                 update: () => {
                     if (this.isDead()) return 0;
-                    // Check if I'm in anybody's view
                     if (!active) {
                         this.removeFromGrid();
-                        // Remove bullets and swarm
                         if (this.settings.diesAtRange) this.kill();
-                        // Still have limited update cycles but do it much more slowly.
                         if (!(timer--)) active = true;
                     } else {
                         this.addToGrid();
                         timer = 15;
-                        active = views.some(v => v.check(this, 0.6));
-                        if (!active && (this.type === "drone" || this.isBot || this.alwaysActive)) active = true;
+                        active = views.some(v => v.check(this, 0.6)) || (this.type === "drone" || this.isBot || this.alwaysActive);
                     }
                 },
                 check: () => {
@@ -982,6 +978,7 @@ class Entity {
         this.updateAABB(true);
         entities.push(this); // everything else
         views.forEach(v => v.add(this));
+        this.activation.update();
     }
     transferEffects(instance) {
         if (instance.poison.status && (this.type === "tank" || this.type === "crasher" || this.type === "miniboss" || this.type === "food")) {
@@ -1635,12 +1632,10 @@ class Entity {
             this.define(saveMe);
             this.sendMessage('You have upgraded to ' + this.label + '.');
             if (typeof saveMe.TOOLTIP === "string") this.sendMessage("ToolTip: " + saveMe.TOOLTIP);
-            let ID = this.id;
-            let index = 0;
-            while (index < entities.length) {
-                let instance = entities[index];
-                if (instance.settings.clearOnMasterUpgrade && instance.master.id === ID) instance.kill();
-                index++;
+            for (let instance of entities) {
+                if (instance.settings.clearOnMasterUpgrade && instance.master.id === this.id) {
+                    instance.kill();
+                }
             }
             this.skill.update();
             this.refreshBodyAttributes();
@@ -1654,7 +1649,7 @@ class Entity {
                 return 1;
         }
     }
-    move() {
+    move() { // ENTITIES LOOP REMOVE WHEN POSSIBLE
         let g = {
             x: this.control.goal.x - this.x,
             y: this.control.goal.y - this.y,
@@ -1859,14 +1854,14 @@ class Entity {
             util.error(this.collisionArray);
             util.error(this.label);
             util.error(this);
-            nullVector(this.accel);
-            nullVector(this.velocity);
+            this.accel.null();
+            this.velocity.null();
         }
         // Apply acceleration
         this.velocity.x += this.accel.x;
         this.velocity.y += this.accel.y;
         // Reset acceleration
-        nullVector(this.accel);
+        this.accel.null();
         // Apply motion
         this.stepRemaining = 1;
         if (c.SPACE_PHYSICS) {
@@ -1895,15 +1890,49 @@ class Entity {
             util.error(this.collisionArray);
             util.error(this.label);
             util.error(this);
-            nullVector(this.accel);
-            nullVector(this.velocity);
+            this.accel.null();
+            this.velocity.null();
             return 0;
         }
+        let loc = {
+            x: this.x,
+            y: this.y
+        };
+        if (!this.settings.canGoOutsideRoom) {
+            if (c.ARENA_TYPE === "circle") {
+                const centerPoint = {
+                    x: room.width / 2,
+                    y: room.height / 2
+                };
+                const dist = util.getDistance(this, centerPoint);
+                if (dist > room.width / 2) {
+                    let lerp = (a, b, x) => a + x * (b - a);
+                    let strength = Math.abs((dist - room.width / 2) * (c.ROOM_BOUND_FORCE / roomSpeed)) / 100;
+                    this.x = lerp(this.x, room.width / 2, strength);
+                    this.y = lerp(this.y, room.height / 2, strength);
+                }
+            } else {
+                this.accel.x -= Math.min(this.x - this.realSize + 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                this.accel.x -= Math.max(this.x + this.realSize - room.width - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                this.accel.y -= Math.min(this.y - this.realSize + 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                this.accel.y -= Math.max(this.y + this.realSize - room.height - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                if (c.DIVIDER_LEFT) {
+                    let l = c.DIVIDER_LEFT;
+                    let r = c.DIVIDER_RIGHT;
+                    let m = (l + r) * 0.5;
+                    if (this.x > m && this.x < r) this.accel.x -= Math.min(this.x - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                    if (this.x > l && this.x < m) this.accel.x -= Math.max(this.x + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                }
+                if (c.DIVIDER_TOP) {
+                    let l = c.DIVIDER_TOP;
+                    let r = c.DIVIDER_BOTTOM;
+                    let m = (l + r) * 0.5;
+                    if (this.y > m && this.y < r) this.accel.y -= Math.min(this.y - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                    if (this.y > l && this.y < m) this.accel.y -= Math.max(this.y + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
+                }
+            }
+        }
         if (room.port.length) {
-            let loc = {
-                x: this.x,
-                y: this.y
-            };
             if (room.isIn("port", loc) && !this.passive && !this.settings.goThruObstacle && this.facingType !== "bound") {
                 let myRoom = room.isAt(loc);
                 let dx = loc.x - myRoom.x;
@@ -1947,44 +1976,7 @@ class Entity {
                 } else this.kill();
             }
         }
-        if (!this.settings.canGoOutsideRoom) {
-            if (c.ARENA_TYPE === "circle") {
-                const centerPoint = {
-                    x: room.width / 2,
-                    y: room.height / 2
-                };
-                const dist = util.getDistance(this, centerPoint);
-                if (dist > room.width / 2) {
-                    let lerp = (a, b, x) => a + x * (b - a);
-                    let strength = Math.abs((dist - room.width / 2) * (c.ROOM_BOUND_FORCE / roomSpeed)) / 100;
-                    this.x = lerp(this.x, room.width / 2, strength);
-                    this.y = lerp(this.y, room.height / 2, strength);
-                }
-            } else {
-                this.accel.x -= Math.min(this.x - this.realSize + 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                this.accel.x -= Math.max(this.x + this.realSize - room.width - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                this.accel.y -= Math.min(this.y - this.realSize + 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                this.accel.y -= Math.max(this.y + this.realSize - room.height - 50, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                if (c.DIVIDER_LEFT) {
-                    let l = c.DIVIDER_LEFT;
-                    let r = c.DIVIDER_RIGHT;
-                    let m = (l + r) * 0.5;
-                    if (this.x > m && this.x < r) this.accel.x -= Math.min(this.x - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                    if (this.x > l && this.x < m) this.accel.x -= Math.max(this.x + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                }
-                if (c.DIVIDER_TOP) {
-                    let l = c.DIVIDER_TOP;
-                    let r = c.DIVIDER_BOTTOM;
-                    let m = (l + r) * 0.5;
-                    if (this.y > m && this.y < r) this.accel.y -= Math.min(this.y - this.realSize + 50 - r, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                    if (this.y > l && this.y < m) this.accel.y -= Math.max(this.y + this.realSize - 50 - l, 0) * c.ROOM_BOUND_FORCE / roomSpeed;
-                }
-            }
-        }
-        if (room.isIn("outb", {
-            x: this.x,
-            y: this.y
-        }) && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive) {
+        if (room.isIn("outb", loc) && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive) {
             if (this.type === "miniboss" || this.type === "crasher") {
                 let pos = room.randomType("nest");
                 this.x = pos.x;
@@ -1994,10 +1986,6 @@ class Entity {
             }
         }
         if (room.gameMode === 'tdm' && this.type !== 'food' && !this.master.settings.goThroughBases && !this.master.godmode && !this.master.passive && c.DO_BASE_DAMAGE && !this.isArenaCloser && !this.master.isArenaCloser) {
-            let loc = {
-                x: this.x,
-                y: this.y,
-            };
             if ((this.team !== -1 && (room.isIn('bas1', loc) || room.isIn('bap1', loc))) || (this.team !== -2 && (room.isIn('bas2', loc) || room.isIn('bap2', loc))) || (this.team !== -3 && (room.isIn('bas3', loc) || room.isIn('bap3', loc))) || (this.team !== -4 && (room.isIn('bas4', loc) || room.isIn('bap4', loc))) || (this.team !== -5 && (room.isIn('bas5', loc) || room.isIn('bap5', loc))) || (this.team !== -6 && (room.isIn('bas6', loc) || room.isIn('bap6', loc))) || (this.team !== -7 && (room.isIn('bas7', loc) || room.isIn('bap7', loc))) || (this.team !== -8 && (room.isIn('bas8', loc) || room.isIn('bap8', loc)))) {
                 this.kill();
             }
@@ -2237,19 +2225,12 @@ class Entity {
     destroy() {
         // Remove from the protected entities list
         if (this.isProtected) util.remove(entitiesToAvoid, entitiesToAvoid.indexOf(this));
-        // Remove from minimap
-        let i = minimap.findIndex(entry => {
-            return entry[0] === this.id;
-        });
-        if (i != -1) util.remove(minimap, i);
         // Remove this from views
         views.forEach(v => v.remove(this));
         // Remove from parent lists if needed
         if (this.parent != null) util.remove(this.parent.children, this.parent.children.indexOf(this));
         // Kill all of its children
-        let ID = this.id;
-        let index = 0;
-        let killChild = (instance) => {
+        for (let instance of entities) {
             if (instance.source.id === this.id) {
                 if (instance.settings.persistsAfterDeath) {
                     instance.source = instance;
@@ -2264,9 +2245,7 @@ class Entity {
                 instance.kill();
                 instance.master = instance;
             }
-            index++;
-        };
-        while (index < entities.length) killChild(entities[index]);
+        }
         // Remove everything bound to it
         for (let i = 0; i < this.turrets.length; i++) this.turrets[i].destroy();
         // Remove from the collision grid

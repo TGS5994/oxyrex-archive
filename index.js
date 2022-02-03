@@ -43,7 +43,6 @@ const gameloop = (() => {
             return 0;
         }
         if (!instance.activation.check() && !other.activation.check()) {
-            util.warn('Tried to collide with an inactive instance.');
             return 0;
         }
         if (instance.settings.hitsOwnType === "everything" && other.settings.hitsOwnType === "everything") {
@@ -166,6 +165,7 @@ const gameloop = (() => {
                 my.takeSelfie();
                 logs.selfie.mark();
             }
+            entitiesactivationloop(my); // Activate it for the next loop if we are gonna live...
         }
         // Update collisions.
         my.collisionArray = [];
@@ -189,7 +189,7 @@ const gameloop = (() => {
             }
         });
         //loopThrough(entities, entitiesactivationloop);
-        for (let entity of entities) entitiesactivationloop(entity);
+        //for (let entity of entities) entitiesactivationloop(entity);
         logs.activation.mark();
         // Do collisions
         logs.collide.set();
@@ -205,7 +205,9 @@ const gameloop = (() => {
         // Do entities life
         logs.entities.set();
         //loopThrough(entities, entitiesliveloop);
-        for (let entity of entities) entitiesliveloop(entity);
+        for (let entity of entities) {
+            entitiesliveloop(entity);
+        }
         logs.entities.mark();
         logs.master.mark();
         // Remove dead entities

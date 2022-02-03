@@ -19,6 +19,7 @@
     "runSpeed": 1.5,
     "maxHeartbeatInterval": 360000,
     "verbose": true,
+    "minifyModules": true,
     "REQUIRE_TOKENS": false,
     "DO_BASE_DAMAGE": true,
     "WIDTH": 6500,

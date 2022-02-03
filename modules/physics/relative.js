@@ -26,6 +26,10 @@ class Vector {
     set y(value) {
         this.Y = value;
     }
+    null() {
+        this.X = 0;
+        this.Y = 0;
+    }
     update() {
         this.len = this.length;
         this.dir = this.direction;
