@@ -702,7 +702,7 @@ class Entity {
             // My settings
             status: false,
             amplification: 1,
-	    radius: 1
+	        radius: 1
         };
         this.isInGrid = false;
         this.removeFromGrid = () => {
@@ -731,7 +731,7 @@ class Entity {
                     } else {
                         this.addToGrid();
                         timer = 15;
-                        active = views.some(v => v.check(this, 0.6)) || (this.type === "drone" || this.isBot || this.alwaysActive);
+                        active = views.some(v => v.check(this, .6)) || this.alwaysActive;
                     }
                 },
                 check: () => {

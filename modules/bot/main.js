@@ -1,5 +1,6 @@
 // Import everything.
 const Discord = require("discord.js");
+const { SocketAddress } = require("net");
 const config = require("./botConfig.json");
 const util = require("./util.js");
 global.operatingSystem = require("os");
@@ -107,7 +108,25 @@ const whitelistedChannels = [
     "874413621206212668", // Staff Chat
     "874446523059044452" // Admin Chat
 ];
+async function pullCode() {
+    const cp = require("child_process");
+    async function awaitCommand(command) {
+        return new Promise((res) => {
+            cp.exec(command).on("close", res).on("error", console.log);
+        });
+    }
+    await awaitCommand("git pull origin main");
+    return true;
+};
 async function messageEvent(message) {
+    if (message.author.id === bot.user.id && message.content === "$root update") {
+        if (global.fingerPrint.digitalOcean) {
+            await pullCode();
+        }
+        sockets.broadcast("Update received, restarting...");
+        setTimeout(closeArena, 2500);
+        return;
+    }
     if (message.author.bot) return;
     if (message.channel.type === "dm") return util.error(message, "You cannot use commands in a DM channel!");
     if (message.guild.id === "874377758007001099" && !whitelistedChannels.includes(message.channel.id) && (message.content === config.prefix + "prefix" || message.content.startsWith(config.prefix + global.fingerPrint.prefix)) && util.checkPermissions(message) !== 3) return util.error(message, `Please go to <#874395524894187531> to use commands.`).then(function(sent) {
