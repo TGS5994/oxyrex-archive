@@ -389,23 +389,14 @@ var bringToLife = (() => {
         }
         // So we start with my master's thoughts and then we filter them down through our control stack
         for (let AI of my.controllers) {
-            let a = AI.think(b)
-            if (!a) continue
-            if (AI.acceptsFromTop) {
-                if (a.target) b.target = a.target;
-                if (a.goal) b.goal = a.goal;
-                if (a.fire) b.fire = a.fire;
-                if (a.main) b.main = a.main;
-                if (a.alt) b.alt = a.alt;
-                if (a.power) b.power = a.power;
-            } else {
-                if (a.target && !b.target) b.target = a.target;
-                if (a.goal && !b.goal) b.goal = a.goal;
-                if (a.fire && !b.fire) b.fire = a.fire;
-                if (a.main && !b.main) b.main = a.main;
-                if (a.alt && !b.alt) b.alt = a.alt;
-                if (a.power && !b.power) b.power = a.power;
-            }
+            let a = AI.think(b);
+            let passValue = passer(a, b, AI.acceptsFromTop);
+            passValue('target');
+            passValue('goal');
+            passValue('fire');
+            passValue('main');
+            passValue('alt');
+            passValue('power');
         }
         my.control.target = (b.target == null) ? my.control.target : b.target;
         my.control.goal = b.goal ? b.goal : {

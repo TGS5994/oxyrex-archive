@@ -165,7 +165,7 @@ const gameloop = (() => {
                 my.takeSelfie();
                 logs.selfie.mark();
             }
-            entitiesactivationloop(my); // Activate it for the next loop if we are gonna live...
+            entitiesactivationloop(my);
         }
         // Update collisions.
         my.collisionArray = [];
