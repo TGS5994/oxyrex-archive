@@ -715,7 +715,7 @@ class Entity {
             // My settings
             status: false,
             amplification: 1,
-	        radius: 1
+	          radius: 1
         };
         this.isInGrid = false;
         this.removeFromGrid = () => {
@@ -1059,8 +1059,8 @@ class Entity {
                             instance.shield.amount -= (.15 * this.tesla.amplification);
                             instance.shield.lastDamage = Date.now();
                         }
-                        instance.velocity.x -= (instance.velocity.x * (this.tesla.amplification / 6));
-                        instance.velocity.y -= (instance.velocity.y * (this.tesla.amplification / 6));
+                        instance.velocity.x -= (instance.velocity.x * (this.tesla.amplification / 8));
+                        instance.velocity.y -= (instance.velocity.y * (this.tesla.amplification / 8));
                     }
                 }
             }
