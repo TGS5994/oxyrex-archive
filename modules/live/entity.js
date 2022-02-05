@@ -305,7 +305,17 @@ class Gun {
             SIZE: this.body.size * this.width * this.settings.size / 2,
             LABEL: this.master.label + ((this.label) ? ' ' + this.label : '') + ' ' + o.label,
         });
-        o.color = (this.colorOverride == null ? this.body.master.color : this.colorAtBody ? (this.body.bond || this.body.source).color : this.colorOverride);
+        o.color = this.colorOverride == null ? this.body.master.color : this.colorOverride;
+        if (this.colorOverride == null) {
+            let source = this.body;
+            while (source.id != source.source.id) {
+                source = source.source;
+                if (source.isOverridingColor) {
+                    o.color = source.color;
+                    break;
+                }
+            }
+        }
         // Keep track of it and give it the function it needs to deutil.log itself upon death
         if (this.countsOwnKids) {
             o.parent = this;
@@ -1124,6 +1134,9 @@ class Entity {
         }
         if (set.COLOR != null) {
             this.color = set.COLOR;
+        }
+        if (set.OVERRIDING_COLOR != null) {
+            this.isOverridingColor = set.OVERRIDING_COLOR;
         }
         if (set.CONTROLLERS != null && mockupsLoaded) {
             let toAdd = [];
