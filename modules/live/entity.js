@@ -373,6 +373,9 @@ class Gun {
                 case "die": {
                     this.body.kill();
                 } break;
+                case "plane": {
+                    setTimeout(() => this.body.kill(), 2500);
+                } break;
                 case "kiva": {
                     if (!this.body.isDead()) this.body.define(Class.kivaaritehdasFire);
                     bullet.onDead = () => {
@@ -1781,6 +1784,11 @@ class Entity {
                 nullVector(this.accel);
                 this.blend = ref.blend;
                 this.skill.set(this.bond.skill.raw);
+                break;
+            case "shrinkTrail":
+                if (this.SIZE - .01 > 1) {
+                    this.SIZE -= .01;
+                }
                 break;
         }
         this.accel.x += engine.x * this.control.power;

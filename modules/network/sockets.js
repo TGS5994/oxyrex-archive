@@ -982,7 +982,7 @@ const sockets = (() => {
                                         player.body.sendMessage("Squadron relinquished.");
                                     }
                                 } break;
-                                case "heBomb": case "apBomb": case "skipBomb": case "sapBomb": case "carpetBomb": { // launch Dive / Skip Bombers
+                                case "diveBomb": { // launch Dive / Skip Bombers
                                     const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
                                     if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
                                         gun.coolDown.time = Date.now();
@@ -1014,7 +1014,7 @@ const sockets = (() => {
                                         }, 100 * gun.countsOwnKids);
                                     }
                                 } break;
-                                case "heRocket": case "apRocket": case "sapRocket": { // launch Rocket Attack Planes
+                                case "rocket": { // launch Rocket Attack Planes
                                     const gun = player.body.guns.find(r => r.launchSquadron === m[0]);
                                     if (gun && (Date.now() - gun.coolDown.time >= 10000 + (gun.countsOwnKids * 1000)) && !player.body.controllingSquadron) {
                                         gun.coolDown.time = Date.now();
