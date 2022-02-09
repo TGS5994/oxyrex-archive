@@ -1786,8 +1786,8 @@ class Entity {
                 this.skill.set(this.bond.skill.raw);
                 break;
             case "shrinkTrail":
-                if (this.SIZE - .01 > 1) {
-                    this.SIZE -= .01;
+                if (this.SIZE - .6 > 1) {
+                    this.SIZE -= .6;
                 }
                 break;
         }

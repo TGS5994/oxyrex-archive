@@ -1316,6 +1316,40 @@ ioTypes.carrierAI = class extends IO {
         return input;
     }
 }
+ioTypes.sineA = class extends IO {
+    constructor(b) {
+        super(b);
+        this.phase = 5;
+        const wo = this.body.master.facing;
+        this.wo = wo;
+    }
+    think(input) {
+        this.phase += .5;
+        this.body.x += this.phase * Math.cos(this.wo) - 10 * Math.cos(this.phase) * Math.sin(this.wo);
+        this.body.y += this.phase * Math.sin(this.wo) + 10 * Math.cos(this.phase) * Math.cos(this.wo);
+        this.body.facing = this.wo;
+        return {
+            power: 1
+        };
+    }
+}
+ioTypes.sineB = class  extends IO {
+    constructor(b) {
+        super(b);
+        this.phase = 5;
+        const wo = this.body.master.facing;
+        this.wo = wo;
+    }
+    think(input) {
+        this.phase += .5;
+        this.body.x += this.phase * Math.cos(this.wo) + 10 * Math.cos(this.phase) * Math.sin(this.wo);
+        this.body.y += this.phase * Math.sin(this.wo) - 10 * Math.cos(this.phase) * Math.cos(this.wo);
+        this.body.facing = this.wo;
+        return {
+            power: 1
+        };
+    }
+}
 module.exports = {
     IO,
     ioTypes

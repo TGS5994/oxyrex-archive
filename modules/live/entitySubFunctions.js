@@ -367,7 +367,8 @@ var bringToLife = (() => {
     };
     return my => {
         // Size
-        if (my.SIZE - my.coreSize) my.coreSize += my.type === "wall" ? my.SIZE - my.coreSize : (my.SIZE - my.coreSize) / 50;
+        my.coreSize = my.SIZE;
+        //if (my.SIZE - my.coreSize) my.coreSize += my.type === "wall" ? my.SIZE - my.coreSize : (my.SIZE - my.coreSize) / 50;
         // Think
         let faucet = (my.settings.independent || my.source == null || my.source === my) ? {} : my.source.control;
         let b = {
