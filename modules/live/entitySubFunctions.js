@@ -153,10 +153,10 @@ class Skill {
         this.rgn = apply(10, attrib[skcnv.rgn]);
         this.brst = 0.3 * (0.5 * attrib[skcnv.atk] + 0.5 * attrib[skcnv.hlt]);
         this.lancer = {
-            pen: apply(1.2, attrib[skcnv.pen]),
-            str: apply(1.2, attrib[skcnv.str]),
-            dam: apply(1.2, attrib[skcnv.dam]),
-            spd: apply(1.2, attrib[skcnv.spd])
+            pen: apply(10, attrib[skcnv.pen]),
+            str: apply(10, attrib[skcnv.str]),
+            dam: apply(10, attrib[skcnv.dam]),
+            spd: apply(10, attrib[skcnv.spd])
         }
     }
     set(thing) {
