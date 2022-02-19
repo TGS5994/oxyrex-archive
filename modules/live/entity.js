@@ -423,6 +423,9 @@ class Gun {
                         this.body.master.define(Class[`vessle${this.onShoot === "ves" ? i : 31 - i}`]);
                     }, 15 * i);
                     break;
+                case "kashmir": {
+                    this.body.master.define(Class.kashmir1);
+                } break;
                 case "hitScan":
                 case "hitScan1":
                 case "hitScan2":
@@ -1463,6 +1466,7 @@ class Entity {
         }
         if (set.SPAWN_ON_DEATH) this.spawnOnDeath = set.SPAWN_ON_DEATH;
         if (set.FRAG_SPAWNS) this.fragEntities = set.FRAG_SPAWNS;
+        if (set.DEATH_FUNCTION) this.deathFunction = set.DEATH_FUNCTION;
         if (set.TURRETS != null) {
             let o;
             this.turrets.forEach(o => o.destroy());
@@ -2055,6 +2059,17 @@ class Entity {
         if (this.isDead()) {
             delete global.squadronPoints[this.id];
             if (this.onDead) this.onDead();
+            if (this.deathFunction) {
+                switch (this.deathFunction) {
+                    case "kashmirDeath": {
+                        setTimeout(() => {
+                            if (this.source && this.source.health.amount > 0) {
+                                this.source.define(Class.kashmir0);
+                            }
+                        }, 1500);
+                    } break;
+                }
+            }
             if (c.KILL_RACE && (this.isPlayer || this.isBot)) {
                 killRace.getKillData(this);
             }
