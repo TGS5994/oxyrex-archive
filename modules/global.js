@@ -103,7 +103,7 @@ const requires = [
     "./live/entitySubFunctions.js", // Skill, HealthType and other functions related to entities are here.
     "./live/controllers.js", // The AI of the game.
     "./live/entity.js", // The actual Entity constructor.
-    "./setup/mockups.js", // This file loads the mockups.
+    "./setup/newMockups.js", // This file loads the mockups.
     "./physics/collisionFunctions.js", // The actual collision functions that make the game work.
     "./network/security/security.js", // Ava i STG I WILLL STOPPP UUUUUUUUUUUU
     "./network/tokenGenerator.js", // Public token generator

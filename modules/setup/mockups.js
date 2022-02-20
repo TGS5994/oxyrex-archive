@@ -162,7 +162,7 @@ const loadMockupJsonData = (() => {
             if (output[key] === defaults[key]) delete output[key];
             if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
         }*/
-        if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
+        /*if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
             const body = {};
             if (tank.PARENT) {
                 if (Array.isArray(tank.PARENT)) {
@@ -191,10 +191,9 @@ const loadMockupJsonData = (() => {
             }
             output.body = {};
             for (const key in body) output.body[bodyData[key]] = body[key];
-        }
+        }*/
         return output;
     }
-
     function getDimensions(entities) {
         let endpoints = [];
         let pointDisplay = [];

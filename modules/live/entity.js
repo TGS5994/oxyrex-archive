@@ -424,7 +424,8 @@ class Gun {
                     }, 15 * i);
                     break;
                 case "kashmir": {
-                    this.body.master.define(Class.kashmir1);
+                    this.body.master.define(Class.kashmir30);
+                    this.body.master.sendMessage("Hold Right-Click to detonate your missile!");
                 } break;
                 case "hitScan":
                 case "hitScan1":
@@ -2063,8 +2064,8 @@ class Entity {
                 switch (this.deathFunction) {
                     case "kashmirDeath": {
                         setTimeout(() => {
-                            if (this.source && this.source.health.amount > 0) {
-                                this.source.define(Class.kashmir0);
+                            if (this.source && this.source.health.amount > 0 && this.source.guns && this.source.guns.length) {
+                                this.source.guns[0].onShootFunction();
                             }
                         }, 1500);
                     } break;

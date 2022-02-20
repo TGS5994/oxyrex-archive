@@ -198,6 +198,7 @@ server.post("/patch/lib/definitions.js", function(request, response) {
     });
     response.send("Changes saved!");
 });
+require("./mockupAPI.js")(server);
 if (global.fingerPrint.digitalOcean) {
     const port = global.fingerPrint.digitalOceanBA ? 3000 : 3001;
     const privateKey = fs.readFileSync('/etc/letsencrypt/live/ext.oxyrex.io/privkey.pem', 'utf8');

@@ -12,6 +12,7 @@ let Class = (function() {
     for (let key in def) {
         if (!def.hasOwnProperty(key)) continue;
         def[key].index = i++;
+        def[key].className = key;
     }
     return def;
 })();
