@@ -94,29 +94,6 @@ const loadMockupJsonData = (() => {
         return +val.toPrecision(3);
     }
     // Define mocking up functions
-    const bodyData = {
-        HEALTH: "Health",
-        DAMAGE: "Body Damage",
-        SPEED: "Movement Speed",
-        REGEN: "Regeneration",
-        SHIELD: "Shield",
-        ACCELERATION: "Acceleration",
-        DENSITY: "Density",
-        PENETRATION: "Penetration",
-        PUSHABILITY: "Pushability"
-    };
-    const defaults = {
-        x: 0,
-        y: 0,
-        color: 16,
-        shape: 0,
-        size: 1,
-        realSize: 1,
-        facing: 0,
-        layer: 0,
-        statnames: 0,
-        defaultArrayLength: 0
-    };
     function getMockup(e, positionInfo, tank) {
         const output = {
             index: e.index,
@@ -158,40 +135,6 @@ const loadMockupJsonData = (() => {
                 return out;
             })
         };
-        /*for (const key in defaults) {
-            if (output[key] === defaults[key]) delete output[key];
-            if (Array.isArray(output[key]) && output[key].length === defaults.defaultArrayLength) delete output[key];
-        }*/
-        /*if (tank != null && (tank.BODY != null || (tank.PARENT != null && (Array.isArray(tank.PARENT) ? tank.PARENT.some(entry => entry.BODY) : tank.PARENT) != null))) {
-            const body = {};
-            if (tank.PARENT) {
-                if (Array.isArray(tank.PARENT)) {
-                    for (let parent of tank.PARENT) {
-                        if (parent.BODY) {
-                            for (let key in parent.BODY) {
-                                body[key] = parent.BODY[key];
-                            }
-                        }
-                    }
-                } else if (tank.PARENT.BODY) {
-                    for (let key in tank.PARENT.BODY) {
-                        body[key] = tank.PARENT.BODY[key];
-                    }
-                }
-            }
-            if (tank.BODY) {
-                for (let key in tank.BODY) {
-                    body[key] = tank.BODY[key];
-                }
-            }
-            for (const key in body) {
-                if (body[key] === Class.baseStats[key] || bodyData[key] == null) {
-                    delete body[key];
-                }
-            }
-            output.body = {};
-            for (const key in body) output.body[bodyData[key]] = body[key];
-        }*/
         return output;
     }
     function getDimensions(entities) {
@@ -243,33 +186,6 @@ const loadMockupJsonData = (() => {
                     y: y + l * Math.sin(gun.angle - r)
                 });
             }
-            /*model.guns.forEach(function(gun) {
-              let h = gun.aspect > 0 ? ((scale * gun.width) / 2) * gun.aspect : (scale * gun.width) / 2;
-              let r = Math.atan2(h, scale * gun.length) + rot;
-              let l = Math.sqrt(scale * scale * gun.length * gun.length + h * h);
-              let x =
-                focus.x +
-                scale * gun.offset * Math.cos(gun.direction + gun.angle + rot);
-              let y =
-                focus.y +
-                scale * gun.offset * Math.sin(gun.direction + gun.angle + rot);
-              endpoints.push({
-                x: x + l * Math.cos(gun.angle + r),
-                y: y + l * Math.sin(gun.angle + r)
-              });
-              endpoints.push({
-                x: x + l * Math.cos(gun.angle - r),
-                y: y + l * Math.sin(gun.angle - r)
-              });
-              pointDisplay.push({
-                x: x + l * Math.cos(gun.angle + r),
-                y: y + l * Math.sin(gun.angle + r)
-              });
-              pointDisplay.push({
-                x: x + l * Math.cos(gun.angle - r),
-                y: y + l * Math.sin(gun.angle - r)
-              });
-            });*/
             for (let i = 0; i < model.turrets.length; i++) {
                 let turret = model.turrets[i];
                 if (!turret.label.includes("Collision")) {
@@ -279,13 +195,6 @@ const loadMockupJsonData = (() => {
                     }, turret.bound.angle);
                 }
             }
-            /*model.turrets.forEach(function(turret) {
-              pushEndpoints(turret, turret.bound.size, {
-                x: turret.bound.offset * Math.cos(turret.bound.angle),
-                y: turret.bound.offset * Math.sin(turret.bound.angle)
-              },
-              turret.bound.angle);
-            });*/
         };
         pushEndpoints(entities, 1);
         // 2) Find their mass center

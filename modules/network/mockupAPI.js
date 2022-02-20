@@ -11,7 +11,7 @@ function lookup(type, search) {
         } break;
         case "searchName": {
             for (const key in Class) {
-                if (Class[key].LABEL == search) {
+                if (Class[key].LABEL.toLowerCase() == search.toLowerCase()) {
                     return key;
                 }
             }
