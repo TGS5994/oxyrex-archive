@@ -40,7 +40,7 @@ function winner(teamId) {
 function tagDeathEvent(instance) {
     let killers = [];
     for (let entry of instance.collisionArray)
-        if (entry.team > -5 && entry.team < 0 && instance.team !== entry.team) killers.push(entry);
+        if (entry.team > -9 && entry.team < 0 && instance.team !== entry.team) killers.push(entry);
     if (!killers.length) return;
     let killer = ran.choose(killers);
     if (instance.socket) instance.socket.rememberedTeam = -killer.team;
